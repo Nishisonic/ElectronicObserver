@@ -1,0 +1,41 @@
+﻿using ElectronicObserver.Data;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ElectronicObserver.Observer.kcsapi.api_req_map
+{
+	public class air_raid : APIBase
+	{
+		private int _success;
+
+		public override void OnRequestReceived(Dictionary<string, string> data)
+		{
+			_success = int.Parse(data["api_scc"]);
+
+			base.OnRequestReceived(data);
+		}
+
+		public override void OnResponseReceived(dynamic data)
+		{
+			CompassData compassData = KCDatabase.Instance.Battle.Compass;
+			Utility.Logger.Add(
+				2,
+				string.Format("{0}-{1}-{2} で基地に超重爆空襲を受けました。( {3}, {4} )",
+					compassData.RawData.api_maparea_id, 
+					compassData.RawData.api_mapinfo_no, 
+					compassData.RawData.api_no,
+					Constants.GetHeavyAirRaidButtonResult(_success),
+					Constants.GetAirRaidDamage((int)data.api_destruction_battle[0].api_lost_kind))
+				);
+
+			base.OnResponseReceived((object)data);
+		}
+
+		public override bool IsRequestSupported => true;
+
+		public override string APIName => "api_req_map/air_raid";
+	}
+}
