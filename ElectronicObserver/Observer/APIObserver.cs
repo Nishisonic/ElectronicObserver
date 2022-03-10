@@ -129,7 +129,7 @@ public sealed class APIObserver
 			new kcsapi.api_req_combined_battle.ld_shooting(),
 			new kcsapi.api_req_map.anchorage_repair(),
 			new kcsapi.api_get_member.preset_deck(),
-
+			new kcsapi.api_req_map.air_raid(),
 			new kcsapi.api_req_quest.clearitemget(),
 			new kcsapi.api_req_nyukyo.start(),
 			new kcsapi.api_req_nyukyo.speedchange(),
