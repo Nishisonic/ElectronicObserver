@@ -987,6 +987,15 @@ public partial class BattleViewModel : AnchorableViewModel
 			HPBars[index].Visible = false;
 		}
 
+		void SetEnemyBackground(int index)
+		{
+			HPBars[index].BackColor = HPBars[index].Value switch
+			{
+				< 1 => Color.FromArgb(0x40, 0x4D, 0xA6, 0xDF),
+				_ => Color.Transparent
+			};
+		}
+
 		// friend main
 		for (int i = 0; i < initial.FriendInitialHPs.Length; i++)
 		{
@@ -1057,6 +1066,7 @@ public partial class BattleViewModel : AnchorableViewModel
 
 				var bar = HPBars[refindex];
 				bar.Text = Constants.GetShipClassClassification(ship.ShipType);
+				SetEnemyBackground(refindex);
 
 				bar.ToolTip =
 					string.Format("{0} Lv. {1}\r\nHP: ({2} → {3})/{4} ({5}) [{6}]\r\n\r\n{7}",
@@ -1150,6 +1160,7 @@ public partial class BattleViewModel : AnchorableViewModel
 
 					var bar = HPBars[refindex];
 					bar.Text = Constants.GetShipClassClassification(ship.ShipType);
+					SetEnemyBackground(refindex);
 
 					bar.ToolTip =
 						string.Format("{0} Lv. {1}\r\nHP: ({2} → {3})/{4} ({5}) [{6}]\r\n\r\n{7}",
@@ -1240,11 +1251,15 @@ public partial class BattleViewModel : AnchorableViewModel
 			}
 		}
 
-		HPBars[BattleIndex.EnemyMain1].BackColor = bd.Initial.IsBossDamaged switch
+		// sunk background should be prioritized
+		if (HPBars[BattleIndex.EnemyMain1].Value > 0)
 		{
-			true => Utility.Configuration.Config.UI.Battle_ColorHPBarsBossDamaged,
-			_ => Color.Transparent
-		};
+			HPBars[BattleIndex.EnemyMain1].BackColor = bd.Initial.IsBossDamaged switch
+			{
+				true => Utility.Configuration.Config.UI.Battle_ColorHPBarsBossDamaged,
+				_ => Color.Transparent
+			};
+		}
 
 		if (!isBaseAirRaid)
 		{
