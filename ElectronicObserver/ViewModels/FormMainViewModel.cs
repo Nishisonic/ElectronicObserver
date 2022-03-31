@@ -1568,7 +1568,7 @@ public partial class FormMainViewModel : ObservableObject
 		System.Windows.Clipboard.SetText(string.Join(",\n", enumValues));
 	}
 
-#endregion
+	#endregion
 
 	#region Help
 
