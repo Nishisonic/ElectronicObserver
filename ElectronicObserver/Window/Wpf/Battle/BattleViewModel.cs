@@ -106,6 +106,7 @@ public partial class BattleViewModel : AnchorableViewModel
 	private bool IsPlayerCombinedFleet { get; set; }
 	public bool FleetFriendEscortVisible => IsPlayerCombinedFleet && PlayerFleetVisible;
 
+	public SolidColorBrush? FleetEnemyEscortForeColor { get; set; }
 	public SolidColorBrush? FleetEnemyEscortBackColor { get; set; }
 	private bool IsEnemyCombinedFleet { get; set; }
 	public bool FleetEnemyEscortVisible => IsEnemyCombinedFleet && ViewVisible;
@@ -123,6 +124,7 @@ public partial class BattleViewModel : AnchorableViewModel
 	public SolidColorBrush? WinRankForeColor { get; set; }
 
 	public string? DamageEnemyText { get; set; }
+
 
 	#endregion
 
@@ -290,7 +292,7 @@ public partial class BattleViewModel : AnchorableViewModel
 				SetAerialWarfare(null, bm.HeavyBaseAirRaids.Last().BaseAirRaid);
 				SetHPBar(bm.HeavyBaseAirRaids.Last());
 				SetDamageRate(bm);
-				
+
 				ViewVisible = !hideDuringBattle;
 				PlayerFleetVisible = true;
 				break;
@@ -503,6 +505,7 @@ public partial class BattleViewModel : AnchorableViewModel
 
 		BaseLayoutPanel.ResumeLayout();
 
+
 		if (Utility.Configuration.Config.UI.IsLayoutFixed)
 			TableTop.Width = TableTop.GetPreferredSize(BaseLayoutPanel.Size).Width;
 		else
@@ -520,25 +523,52 @@ public partial class BattleViewModel : AnchorableViewModel
 		FormationEnemyText = Constants.GetFormationShort(bm.FirstBattle.Searching.FormationEnemy);
 		FormationText = Constants.GetEngagementForm(bm.FirstBattle.Searching.EngagementForm);
 
-		FleetEnemyForeColor = bm.Compass?.EventID switch
-		{
-			5 => Utility.Configuration.Config.UI.Color_Red.ToBrush(),
-			_ => System.Drawing.SystemColors.ControlText.ToBrush()
-		};
+
 
 		if (bm.IsEnemyCombined && bm.StartsFromDayBattle)
 		{
+			// highlights for the fleet you'll fight in night battle
+			// todo: this should probably go to config
+			Color highlightForeColor = Color.Black;
+			Color highlightBackColor = Color.LightSteelBlue;
+
 			bool willMain = bm.WillNightBattleWithMainFleet();
-			FleetEnemyBackColor = (willMain ? Color.Maroon : Color.Transparent).ToBrush();
-			FleetEnemyEscortBackColor = (willMain ? Color.Transparent : Color.Maroon).ToBrush();
+
+			FleetEnemyForeColor = bm.Compass?.EventID switch
+			{
+				5 => Utility.Configuration.Config.UI.Color_Red.ToBrush(),
+				_ when willMain => highlightForeColor.ToBrush(),
+				_ => Utility.Configuration.Config.UI.ForeColor.ToBrush()
+			};
+
+			FleetEnemyBackColor = willMain switch
+			{
+				true => highlightBackColor.ToBrush(),
+				_ => Color.Transparent.ToBrush()
+			};
+
+			FleetEnemyEscortForeColor = willMain switch
+			{
+				true => Utility.Configuration.Config.UI.ForeColor.ToBrush(),
+				_ => highlightForeColor.ToBrush()
+			};
+
+			FleetEnemyEscortBackColor = willMain switch
+			{
+				true => Color.Transparent.ToBrush(),
+				_ => highlightBackColor.ToBrush()
+			};
 		}
 		else
 		{
-			FleetEnemyBackColor =
-				FleetEnemyEscortBackColor = Color.Transparent.ToBrush();
+			FleetEnemyForeColor = bm.Compass?.EventID switch
+			{
+				5 => Utility.Configuration.Config.UI.Color_Red.ToBrush(),
+				_ => Utility.Configuration.Config.UI.ForeColor.ToBrush()
+			};
+			FleetEnemyEscortForeColor = Utility.Configuration.Config.UI.ForeColor.ToBrush();
+			FleetEnemyBackColor = FleetEnemyEscortBackColor = Color.Transparent.ToBrush();
 		}
-
-		FleetEnemyForeColor = Utility.Configuration.Config.UI.ForeColor.ToBrush();
 
 		FormationForeColor = (bm.FirstBattle.Searching.EngagementForm switch
 		{
@@ -681,6 +711,7 @@ public partial class BattleViewModel : AnchorableViewModel
 		SearchingToolTip = null;
 	}
 
+
 	/// <summary>
 	/// 航空戦表示用ヘルパー
 	/// </summary>
@@ -743,6 +774,8 @@ public partial class BattleViewModel : AnchorableViewModel
 		ToolTipInfo.SetToolTip(label, null);
 		*/
 	}
+
+
 
 	private void SetAerialWarfare(PhaseAirBattleBase phaseJet, PhaseAirBattleBase phase1) => SetAerialWarfare(phaseJet, phase1, null);
 
@@ -828,6 +861,7 @@ public partial class BattleViewModel : AnchorableViewModel
 			// SetShootdown(AirStage1Friend, 1, true, needAppendInfo);
 			// SetShootdown(AirStage1Enemy, 1, false, needAppendInfo);
 
+
 			(AirStage1FriendText, AirStage1FriendToolTip, AirStage1FriendForeColor, AirStage1FriendIcon) =
 				SetShootdown(1, true, needAppendInfo);
 
@@ -889,6 +923,7 @@ public partial class BattleViewModel : AnchorableViewModel
 			bool needAppendInfo = phases[0].Stage2Enabled || phases[2].Stage2Enabled;
 			var phases2 = phases.Where(p => p.Stage2Enabled);
 
+
 			// SetShootdown(AirStage2Friend, 2, true, needAppendInfo);
 			// SetShootdown(AirStage2Enemy, 2, false, needAppendInfo);
 
@@ -937,7 +972,7 @@ public partial class BattleViewModel : AnchorableViewModel
 	{
 		AirSuperiorityText = "-";
 		AirSuperiorityToolTip = null;
-		AirSuperiorityForeColor = Utility.Configuration.Config.UI.ForeColor.ToBrush();
+
 		// ClearAircraftLabel(AirStage1Friend);
 		// ClearAircraftLabel(AirStage1Enemy);
 		// ClearAircraftLabel(AirStage2Friend);
@@ -1073,6 +1108,7 @@ public partial class BattleViewModel : AnchorableViewModel
 			}
 		}
 
+
 		// enemy main
 		for (int i = 0; i < initial.EnemyInitialHPs.Length; i++)
 		{
@@ -1104,6 +1140,7 @@ public partial class BattleViewModel : AnchorableViewModel
 				DisableHPBar(refindex);
 			}
 		}
+
 
 		// friend escort
 		if (isFriendCombined)
@@ -1162,6 +1199,8 @@ public partial class BattleViewModel : AnchorableViewModel
 
 		MoveHPBar(hasFriend7thShip);
 
+
+
 		// enemy escort
 		if (isEnemyCombined)
 		{
@@ -1209,6 +1248,9 @@ public partial class BattleViewModel : AnchorableViewModel
 			*/
 		}
 
+
+
+
 		if ((isFriendCombined || (hasFriend7thShip && !Utility.Configuration.Config.FormBattle.Display7thAsSingleLine)) && isEnemyCombined)
 		{
 			foreach (var bar in HPBars)
@@ -1229,6 +1271,7 @@ public partial class BattleViewModel : AnchorableViewModel
 					bar.Text = "HP:";
 			}
 		}
+
 
 		{   // support
 			PhaseSupport support = null;
@@ -1337,6 +1380,7 @@ public partial class BattleViewModel : AnchorableViewModel
 
 	}
 
+
 	/// <summary>
 	/// 損害率と戦績予測を設定します。
 	/// </summary>
@@ -1406,6 +1450,7 @@ public partial class BattleViewModel : AnchorableViewModel
 			}
 		}
 
+
 		//夜間触接判定
 		if (pd.TouchAircraftFriend != -1)
 		{
@@ -1464,6 +1509,7 @@ public partial class BattleViewModel : AnchorableViewModel
 		}
 	}
 
+
 	/// <summary>
 	/// 戦闘終了後に、MVP艦の表示を更新します。
 	/// </summary>
@@ -1479,6 +1525,7 @@ public partial class BattleViewModel : AnchorableViewModel
 		var friend = bd.Initial.FriendFleet;
 		var escort = !isCombined ? null : bd.Initial.FriendFleetEscort;
 
+
 		/*// DEBUG
 		{
 			BattleData lastbattle = bm.StartsFromDayBattle ? (BattleData)bm.BattleNight ?? bm.BattleDay : (BattleData)bm.BattleDay ?? bm.BattleNight;
@@ -1490,6 +1537,7 @@ public partial class BattleViewModel : AnchorableViewModel
 			}
 		}
 		//*/
+
 
 		for (int i = 0; i < friend.Members.Count; i++)
 		{
@@ -1538,6 +1586,7 @@ public partial class BattleViewModel : AnchorableViewModel
 
 	}
 
+
 	void ConfigurationChanged()
 	{
 		var config = Utility.Configuration.Config;
@@ -1556,6 +1605,7 @@ public partial class BattleViewModel : AnchorableViewModel
 		SubFont = config.UI.SubFont;
 
 		BaseLayoutPanel.AutoScroll = config.FormBattle.IsScrollable;
+
 
 		bool fixSize = config.UI.IsLayoutFixed;
 		bool showHPBar = config.FormBattle.ShowHPBar;
