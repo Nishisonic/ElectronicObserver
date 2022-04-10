@@ -58,7 +58,6 @@ public partial class ResourceChartWPF
 	private ScatterPlot? SteelPlot;
 	private ScatterPlot? BauxPlot;
 	private ScatterPlot? InstantRepairPlot;
-	private Collection<MenuItem> spancollection => new Collection<MenuItem>();
 	private ToolTip toolTip;
 	private int SelectedChartSpanIndex;
 	private int SelectedChartTypeIndex;
@@ -67,15 +66,6 @@ public partial class ResourceChartWPF
 	public ResourceChartWPF()
 	{
 		InitializeComponent();
-		spancollection.Add(DaySpan);
-		spancollection.Add(WeekSpan);
-		spancollection.Add(MonthSpan);
-		spancollection.Add(SeasonSpan);
-		spancollection.Add(YearSpan);
-		spancollection.Add(AllSpan);
-		spancollection.Add(WeekFirstSpan);
-		spancollection.Add(SeasonFirstSpan);
-		spancollection.Add(YearFirstSpan);
 		Loaded += ChartArea_Loaded;
 	}
 
@@ -210,11 +200,11 @@ public partial class ResourceChartWPF
 		//ChartArea.Configuration.Zoom = false;
 		//ChartArea.Configuration.Pan = false;
 		// Add a red circle we can move around later as a highlighted point indicator
-		HighlightedPoint = ChartArea.Plot.AddPoint(0, 0);
-		HighlightedPoint.Color = System.Drawing.Color.Red;
-		HighlightedPoint.MarkerSize = 10;
-		HighlightedPoint.MarkerShape = MarkerShape.none;
-		HighlightedPoint.IsVisible = false;
+		//HighlightedPoint = ChartArea.Plot.AddPoint(0, 0);
+		//HighlightedPoint.Color = System.Drawing.Color.Red;
+		//HighlightedPoint.MarkerSize = 10;
+		//HighlightedPoint.MarkerShape = MarkerShape.none;
+		//HighlightedPoint.IsVisible = false;
 		ChartArea.Refresh();
 	}
 
@@ -320,6 +310,7 @@ public partial class ResourceChartWPF
 				//axis.IntervalOffsetType = DateTimeIntervalType.Hours;
 				//axis.IntervalType = DateTimeIntervalType.Hours;
 				//axis.LabelStyle.Format = "MM/dd HH:mm";
+				ChartArea.Refresh();
 				break;
 			case ChartSpan.Month:
 			case ChartSpan.MonthFirst:
@@ -329,7 +320,7 @@ public partial class ResourceChartWPF
 				//axis.IntervalOffsetType = DateTimeIntervalType.Days;
 				//axis.IntervalType = DateTimeIntervalType.Days;
 				//axis.LabelStyle.Format = "yyyy/MM/dd";
-
+				ChartArea.Refresh();
 				break;
 			case ChartSpan.Season:
 			case ChartSpan.SeasonFirst:
@@ -337,7 +328,7 @@ public partial class ResourceChartWPF
 				//axis.IntervalOffsetType = DateTimeIntervalType.Days;
 				//axis.IntervalType = DateTimeIntervalType.Days;
 				//axis.LabelStyle.Format = "yyyy/MM/dd";
-
+				ChartArea.Refresh();
 				break;
 			case ChartSpan.Year:
 			case ChartSpan.YearFirst:
@@ -346,6 +337,7 @@ public partial class ResourceChartWPF
 				//axis.IntervalOffsetType = DateTimeIntervalType.Months;
 				//axis.IntervalType = DateTimeIntervalType.Months;
 				//axis.LabelStyle.Format = "yyyy/MM/dd";
+				ChartArea.Refresh();
 				break;
 		}
 	}
