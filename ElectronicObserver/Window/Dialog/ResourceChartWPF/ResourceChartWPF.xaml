@@ -16,7 +16,6 @@
 		<Menu DockPanel.Dock="Top">
 			<MenuItem Name="ChartSpanMenu" Header="Menu">
 				<MenuItem
-					Name="DaySpan"
 					Click="ChartSpan_Click"
 					Header="Day"
 					IsCheckable="True"
@@ -24,7 +23,6 @@
 					Tag="1"
 					/>
 				<MenuItem
-					Name="WeekSpan"
 					Click="ChartSpan_Click"
 					Header="Week"
 					IsCheckable="True"
@@ -32,7 +30,6 @@
 					Tag="2"
 					/>
 				<MenuItem
-					Name="MonthSpan"
 					Click="ChartSpan_Click"
 					Header="Month"
 					IsCheckable="True"
@@ -40,7 +37,6 @@
 					Tag="3"
 					/>
 				<MenuItem
-					Name="SeasonSpan"
 					Click="ChartSpan_Click"
 					Header="Season"
 					IsCheckable="True"
@@ -48,7 +44,6 @@
 					Tag="4"
 					/>
 				<MenuItem
-					Name="YearSpan"
 					Click="ChartSpan_Click"
 					Header="Year"
 					IsCheckable="True"
@@ -56,7 +51,6 @@
 					Tag="5"
 					/>
 				<MenuItem
-					Name="AllSpan"
 					Click="ChartSpan_Click"
 					Header="All"
 					IsCheckable="True"
@@ -64,7 +58,6 @@
 					Tag="6"
 					/>
 				<MenuItem
-					Name="WeekFirstSpan"
 					Click="ChartSpan_Click"
 					Header="WeekFirst"
 					IsCheckable="True"
@@ -72,7 +65,6 @@
 					Tag="7"
 					/>
 				<MenuItem
-					Name="MonthFirstSpan"
 					Click="ChartSpan_Click"
 					Header="MonthFirst"
 					IsCheckable="True"
@@ -80,7 +72,6 @@
 					Tag="8"
 					/>
 				<MenuItem
-					Name="SeasonFirstSpan"
 					Click="ChartSpan_Click"
 					Header="SeasonFirst"
 					IsCheckable="True"
@@ -88,7 +79,6 @@
 					Tag="9"
 					/>
 				<MenuItem
-					Name="YearFirstSpan"
 					Click="ChartSpan_Click"
 					Header="YearFirst"
 					IsCheckable="True"
