@@ -30,6 +30,7 @@ using ElectronicObserver.Window;
 using ElectronicObserver.Window.Dialog;
 using ElectronicObserver.Window.Dialog.QuestTrackerManager;
 using ElectronicObserver.Window.Dialog.VersionInformation;
+using ElectronicObserver.Window.Dialog.ResourceChartWPF;
 using ElectronicObserver.Window.Integrate;
 using ElectronicObserver.Window.Tools.DialogAlbumMasterEquipment;
 using ElectronicObserver.Window.Tools.DialogAlbumMasterShip;
@@ -838,8 +839,10 @@ public partial class FormMainViewModel : ObservableObject
 
 	private void StripMenu_Tool_ResourceChart_Click()
 	{
-		DialogResourceChart resourceChart = new();
+		//DialogResourceChart resourceChart = new();
 		RefreshTopMost();
+		//resourceChart.Show(Window);
+		ResourceChartWPF resourceChart = new();
 		resourceChart.Show(Window);
 	}
 
