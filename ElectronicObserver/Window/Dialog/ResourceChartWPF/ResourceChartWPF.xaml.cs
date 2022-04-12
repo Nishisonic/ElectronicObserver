@@ -81,7 +81,13 @@ public partial class ResourceChartWPF
 		//toolTip.Content = "ToolTip";
 
 		//ChartArea.ToolTip = toolTip;
-		SwitchMenuStrip(ChartSpanMenu, "6");
+		SwitchMenuStrip(ChartSpanMenu, "5");
+
+		ChartArea.Plot.Style(ScottPlot.Style.Black);
+		ChartArea.Configuration.Zoom = false;
+		ChartArea.Configuration.Pan = false;
+		ChartArea.Configuration.DoubleClickBenchmark = false;
+		UpdateChart();
 	}
 	/// <summary>
 	/// Chart onhover handler
@@ -133,7 +139,8 @@ public partial class ResourceChartWPF
 		List<double>? steel_list = Array.Empty<double>().ToList();
 
 		List<double>? instant_repair_list = Array.Empty<double>().ToList();
-
+		ChartArea.Plot.YAxis2.Ticks(true);
+		ChartArea.Plot.YAxis2.MajorGrid(true);
 		List<double>? date_list = Array.Empty<double>().ToList();
 
 		{
@@ -195,10 +202,10 @@ public partial class ResourceChartWPF
 		BauxPlot = ChartArea.Plot.AddScatterLines(date_list.ToArray(), baux_list.ToArray(), System.Drawing.Color.Orange, label: "Bauxite");
 		SteelPlot = ChartArea.Plot.AddScatterLines(date_list.ToArray(), steel_list.ToArray(), System.Drawing.Color.AliceBlue, label: "Steel");
 		InstantRepairPlot = ChartArea.Plot.AddScatterLines(date_list.ToArray(), instant_repair_list.ToArray(), System.Drawing.Color.Green, label: "Instant Repair");
+		InstantRepairPlot.YAxisIndex = 1;
 		//ChartArea.Plot.SetAxisLimitsX(date_list[0], date_list.LastOrDefault());
 		//ChartArea.Plot.SetAxisLimitsY(0, 400000);
-		//ChartArea.Configuration.Zoom = false;
-		//ChartArea.Configuration.Pan = false;
+
 		// Add a red circle we can move around later as a highlighted point indicator
 		//HighlightedPoint = ChartArea.Plot.AddPoint(0, 0);
 		//HighlightedPoint.Color = System.Drawing.Color.Red;
@@ -294,50 +301,33 @@ public partial class ResourceChartWPF
 		{
 			case ChartSpan.Day:
 				axis.TickLabelFormat("MM/dd HH:mm", true);
-				//axis.MinimumTickSpacing(2);
-				/*				axis.Interval = 2;
-								axis.MinimumTickSpacing = DateTimeIntervalType.Hours;
-								axis.IntervalType = DateTimeIntervalType.Hours;
-								axis.LabelStyle.Format = "MM/dd HH:mm";*/
-
-				ChartArea.Refresh();
+				axis.ManualTickSpacing(2, ScottPlot.Ticks.DateTimeUnit.Hour);
+				axis.TickLabelStyle(rotation: 90);
 				break;
 			case ChartSpan.Week:
 			case ChartSpan.WeekFirst:
 				axis.TickLabelFormat("MM/dd HH:mm", true);
-				//axis.MinimumTickSpacing(12);
-				//axis.Interval = 12;
-				//axis.IntervalOffsetType = DateTimeIntervalType.Hours;
-				//axis.IntervalType = DateTimeIntervalType.Hours;
-				//axis.LabelStyle.Format = "MM/dd HH:mm";
-				ChartArea.Refresh();
+				axis.ManualTickSpacing(12, ScottPlot.Ticks.DateTimeUnit.Hour);
+				axis.TickLabelStyle(rotation: 90);
 				break;
 			case ChartSpan.Month:
 			case ChartSpan.MonthFirst:
 				axis.TickLabelFormat("yyyy/MM/dd", true);
-				//axis.MinimumTickSpacing(3);
-				//axis.Interval = 3;
-				//axis.IntervalOffsetType = DateTimeIntervalType.Days;
-				//axis.IntervalType = DateTimeIntervalType.Days;
-				//axis.LabelStyle.Format = "yyyy/MM/dd";
-				ChartArea.Refresh();
+				axis.ManualTickSpacing(2, ScottPlot.Ticks.DateTimeUnit.Day);
+				axis.TickLabelStyle(rotation: 90);
 				break;
 			case ChartSpan.Season:
 			case ChartSpan.SeasonFirst:
-				//axis.Interval = 7;
-				//axis.IntervalOffsetType = DateTimeIntervalType.Days;
-				//axis.IntervalType = DateTimeIntervalType.Days;
-				//axis.LabelStyle.Format = "yyyy/MM/dd";
-				ChartArea.Refresh();
+				axis.TickLabelFormat("yyyy/MM/dd", true);
+				axis.ManualTickSpacing(7, ScottPlot.Ticks.DateTimeUnit.Day);
+				axis.TickLabelStyle(rotation: 90);
 				break;
 			case ChartSpan.Year:
 			case ChartSpan.YearFirst:
 			case ChartSpan.All:
-				//axis.Interval = 1;
-				//axis.IntervalOffsetType = DateTimeIntervalType.Months;
-				//axis.IntervalType = DateTimeIntervalType.Months;
-				//axis.LabelStyle.Format = "yyyy/MM/dd";
-				ChartArea.Refresh();
+				axis.TickLabelFormat("yyyy/MM/dd", true);
+				axis.TickLabelStyle(rotation: 90);
+				axis.ManualTickSpacing(1, ScottPlot.Ticks.DateTimeUnit.Month);
 				break;
 		}
 	}
@@ -405,7 +395,22 @@ public partial class ResourceChartWPF
 			ChartArea.Refresh();
 		}
 	}
-
+	private void InstantRepairShow(object sender, RoutedEventArgs e)
+	{
+		if (InstantRepairPlot is not null)
+		{
+			InstantRepairPlot.IsVisible = true;
+			ChartArea.Refresh();
+		}
+	}
+	private void InstantRepairHide(object sender, RoutedEventArgs e)
+	{
+		if (InstantRepairPlot is not null)
+		{
+			InstantRepairPlot.IsVisible = false;
+			ChartArea.Refresh();
+		}
+	}
 	private void ChartSpan_Click(object sender, RoutedEventArgs e)
 	{
 		SwitchMenuStrip(ChartSpanMenu, ((MenuItem)sender).Tag);
@@ -421,7 +426,7 @@ public partial class ResourceChartWPF
 	{
 		int intindex = int.Parse((string)index);
 		var items = parent.Items.OfType<MenuItem>();
-		int c = 1;
+		int c = 0;
 
 		foreach (var item in items)
 		{

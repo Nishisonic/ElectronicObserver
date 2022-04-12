@@ -20,73 +20,73 @@
 					Header="Day"
 					IsCheckable="True"
 					IsChecked="False"
-					Tag="1"
+					Tag="0"
 					/>
 				<MenuItem
 					Click="ChartSpan_Click"
 					Header="Week"
 					IsCheckable="True"
 					IsChecked="False"
-					Tag="2"
+					Tag="1"
 					/>
 				<MenuItem
 					Click="ChartSpan_Click"
 					Header="Month"
 					IsCheckable="True"
 					IsChecked="False"
-					Tag="3"
+					Tag="2"
 					/>
 				<MenuItem
 					Click="ChartSpan_Click"
 					Header="Season"
 					IsCheckable="True"
 					IsChecked="False"
-					Tag="4"
+					Tag="3"
 					/>
 				<MenuItem
 					Click="ChartSpan_Click"
 					Header="Year"
 					IsCheckable="True"
 					IsChecked="False"
-					Tag="5"
+					Tag="4"
 					/>
 				<MenuItem
 					Click="ChartSpan_Click"
 					Header="All"
 					IsCheckable="True"
 					IsChecked="True"
-					Tag="6"
+					Tag="5"
 					/>
 				<MenuItem
 					Click="ChartSpan_Click"
 					Header="WeekFirst"
 					IsCheckable="True"
 					IsChecked="False"
-					Tag="7"
+					Tag="6"
 					/>
 				<MenuItem
 					Click="ChartSpan_Click"
 					Header="MonthFirst"
 					IsCheckable="True"
 					IsChecked="False"
-					Tag="8"
+					Tag="7"
 					/>
 				<MenuItem
 					Click="ChartSpan_Click"
 					Header="SeasonFirst"
 					IsCheckable="True"
 					IsChecked="False"
-					Tag="9"
+					Tag="8"
 					/>
 				<MenuItem
 					Click="ChartSpan_Click"
 					Header="YearFirst"
 					IsCheckable="True"
-					Tag="10"
+					Tag="9"
 					/>
 			</MenuItem>
 		</Menu>
-		<StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal">
+		<StackPanel DockPanel.Dock="Right" Orientation="Vertical">
 			<CheckBox
 				Margin="10"
 				Checked="FuelShow"
@@ -114,6 +114,13 @@
 				Content="Baux"
 				IsChecked="True"
 				Unchecked="BauxHide"
+				/>
+			<CheckBox
+				Margin="10"
+				Checked="InstantRepairShow"
+				Content="Instant Repair"
+				IsChecked="True"
+				Unchecked="InstantRepairHide"
 				/>
 		</StackPanel>
 		<WpfPlot
