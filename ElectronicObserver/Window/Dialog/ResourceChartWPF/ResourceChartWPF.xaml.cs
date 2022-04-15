@@ -58,10 +58,11 @@ public partial class ResourceChartWPF
 	private ScatterPlot? SteelPlot;
 	private ScatterPlot? BauxPlot;
 	private ScatterPlot? InstantRepairPlot;
+	private ScatterPlot? InstantConstructionPlot;
+	private ScatterPlot? ModdingMaterialPlot;
+	private ScatterPlot? DevelopmentMaterialPlot;
 	private ToolTip toolTip;
-	private int SelectedChartSpanIndex;
-	private int SelectedChartTypeIndex;
-	//private ChartType SelectedChartType => (ChartType)SelectedChartTypeIndex
+	private ChartType SelectedChartType => (ChartType)GetSelectedMenuStripIndex(ChartTypeMenu);
 	private ChartSpan SelectedChartSpan => (ChartSpan)GetSelectedMenuStripIndex(ChartSpanMenu);
 	public ResourceChartWPF()
 	{
@@ -82,7 +83,7 @@ public partial class ResourceChartWPF
 
 		//ChartArea.ToolTip = toolTip;
 		SwitchMenuStrip(ChartSpanMenu, "5");
-
+		SwitchMenuStrip(ChartTypeMenu, "0");
 		ChartArea.Plot.Style(ScottPlot.Style.Black);
 		ChartArea.Configuration.Zoom = false;
 		ChartArea.Configuration.Pan = false;
@@ -129,7 +130,12 @@ public partial class ResourceChartWPF
 		ChartArea.Plot.XAxis.DateTimeFormat(true);
 		ChartArea.Plot.Legend(true, Alignment.LowerLeft);
 		AxisXIntervals(SelectedChartSpan);
-
+		FuelCheck.IsChecked = true;
+		AmmoCheck.IsChecked = true;
+		BauxCheck.IsChecked = true;
+		ResourcesPanel.Visibility = Visibility.Visible;
+		MaterialPanel.Visibility = Visibility.Collapsed;
+		InstantRepairCheck.IsChecked = true;
 		List<double>? fuel_list = Array.Empty<double>().ToList();
 
 		List<double>? ammo_list = Array.Empty<double>().ToList();
@@ -155,43 +161,12 @@ public partial class ResourceChartWPF
 					if (ShouldSkipRecord(r.Date - prev.Date))
 						continue;
 
-					//double[] ys = new double[] {
-					//	r.Fuel - prev.Fuel };
-					//r.Ammo - prev.Ammo,
-					//r.Steel - prev.Steel,
-					//r.Bauxite - prev.Bauxite,
-					//r.InstantRepair - prev.InstantRepair };
-					//double[] xs = new double[]
-					//{
-					//	r.Date.ToOADate()
-					//};
 					date_list.Add(r.Date.ToOADate());
 					fuel_list.Add(r.Fuel);
 					ammo_list.Add(r.Ammo);
 					baux_list.Add(r.Bauxite);
 					steel_list.Add(r.Steel);
 					instant_repair_list.Add(r.InstantRepair);
-					//date.Append(xs[0]);
-
-					//if (Menu_Option_DivideByDay.Checked)
-					//{
-					//	for (int i = 0; i < 4; i++)
-					//		ys[i] /= Math.Max((r.Date - prev.Date).TotalDays, 1.0 / 1440.0);
-					//}
-
-					//fuel.Points.AddXY(prev.Date.ToOADate(), ys[0]);
-
-					//fuel.UpdateX(prev.Date.ToOADate());
-					//ammo.Points.AddXY(prev.Date.ToOADate(), ys[1]);
-					//steel.Points.AddXY(prev.Date.ToOADate(), ys[2]);
-					//bauxite.Points.AddXY(prev.Date.ToOADate(), ys[3]);
-					//instantRepair.Points.AddXY(prev.Date.ToOADate(), ys[4]);
-
-					//fuel.Points.AddXY(r.Date.ToOADate(), ys[0]);
-					//ammo.Points.AddXY(r.Date.ToOADate(), ys[1]);
-					//steel.Points.AddXY(r.Date.ToOADate(), ys[2]);
-					//bauxite.Points.AddXY(r.Date.ToOADate(), ys[3]);
-					//instantRepair.Points.AddXY(r.Date.ToOADate(), ys[4]);
 
 					prev = r;
 				}
@@ -203,8 +178,6 @@ public partial class ResourceChartWPF
 		SteelPlot = ChartArea.Plot.AddScatterLines(date_list.ToArray(), steel_list.ToArray(), System.Drawing.Color.AliceBlue, label: "Steel");
 		InstantRepairPlot = ChartArea.Plot.AddScatterLines(date_list.ToArray(), instant_repair_list.ToArray(), System.Drawing.Color.Green, label: "Instant Repair");
 		InstantRepairPlot.YAxisIndex = 1;
-		//ChartArea.Plot.SetAxisLimitsX(date_list[0], date_list.LastOrDefault());
-		//ChartArea.Plot.SetAxisLimitsY(0, 400000);
 
 		// Add a red circle we can move around later as a highlighted point indicator
 		//HighlightedPoint = ChartArea.Plot.AddPoint(0, 0);
@@ -218,7 +191,7 @@ public partial class ResourceChartWPF
 	private bool ShouldSkipRecord(TimeSpan span)
 	{
 		//if (Menu_Option_ShowAllData.Checked)
-			//return false;
+		//return false;
 
 		if (span.Ticks == 0)        //初回のデータ( prev == First )は無視しない
 			return false;
@@ -284,6 +257,53 @@ public partial class ResourceChartWPF
 		//	//ResourceChart.ChartAreas[0].AxisY2.Enabled = AxisEnabled.False;
 		//}
 
+	}
+	private void SetMaterialChart()
+	{
+		ChartArea.Plot.Clear();
+		ResourcesPanel.Visibility = Visibility.Collapsed;
+		MaterialPanel.Visibility = Visibility.Visible;
+		ChartArea.Plot.YAxis2.IsVisible = false;
+		ChartArea.Plot.XAxis.Label("Date");
+		ChartArea.Plot.YAxis.Label("Material");
+		ChartArea.Plot.XAxis.DateTimeFormat(true);
+		AxisXIntervals(SelectedChartSpan);
+		ChartArea.Plot.Legend(true, Alignment.LowerLeft);
+		ModdingMaterialCheck.IsChecked = true;
+		InstantRepairMatCheck.IsChecked = true;
+		InstantConstructionMatCheck.IsChecked = true;
+		List<double>? instant_repair_list = Array.Empty<double>().ToList();
+		List<double>? development_material_list = Array.Empty<double>().ToList();
+		List<double>? modding_material_list = Array.Empty<double>().ToList();
+		List<double>? instant_contruction_list = Array.Empty<double>().ToList();
+
+		List<double>? date_list = Array.Empty<double>().ToList();
+		{
+			var record = GetRecords();
+
+			ResourceRecord.ResourceElement prev = null;
+			if (record.Any())
+			{
+				prev = record.First();
+				foreach (var r in record)
+				{
+					if (ShouldSkipRecord(r.Date - prev.Date))
+						continue;
+
+					date_list.Add(r.Date.ToOADate());
+					instant_repair_list.Add(r.InstantRepair);
+					development_material_list.Add(r.DevelopmentMaterial);
+					modding_material_list.Add(r.ModdingMaterial);
+					instant_contruction_list.Add(r.InstantConstruction);
+					prev = r;
+				}
+			}
+		}
+		InstantRepairPlot = ChartArea.Plot.AddScatterLines(date_list.ToArray(), instant_repair_list.ToArray(), System.Drawing.Color.Green, label: "Instant Repair");
+		DevelopmentMaterialPlot = ChartArea.Plot.AddScatterLines(date_list.ToArray(), development_material_list.ToArray(), System.Drawing.Color.Beige, label: "Development Material");
+		ModdingMaterialPlot = ChartArea.Plot.AddScatterLines(date_list.ToArray(), modding_material_list.ToArray(), System.Drawing.Color.Blue, label: "Modding Material");
+		InstantConstructionPlot = ChartArea.Plot.AddScatterLines(date_list.ToArray(), instant_contruction_list.ToArray(), System.Drawing.Color.Orange, label: "Instant Construction");
+		ChartArea.Refresh();
 	}
 
 	private void SetYBounds()
@@ -419,10 +439,20 @@ public partial class ResourceChartWPF
 
 	private void UpdateChart()
 	{
-		SetResourceChart();
+		switch (SelectedChartType)
+		{
+			case ChartType.Resource:
+				SetResourceChart();
+				break;
+			case ChartType.Material:
+				SetMaterialChart();
+				break;
+		}
+
 	}
 
-	private void SwitchMenuStrip(MenuItem parent,object index)
+
+	private void SwitchMenuStrip(MenuItem parent, object index)
 	{
 		int intindex = int.Parse((string)index);
 		var items = parent.Items.OfType<MenuItem>();
@@ -461,7 +491,6 @@ public partial class ResourceChartWPF
 			case ChartSpan.Year:
 				border = now.AddYears(-1);
 				break;
-
 			case ChartSpan.WeekFirst:
 				border = now.AddDays(now.DayOfWeek == DayOfWeek.Sunday ? -6 : (1 - (int)now.DayOfWeek));
 				break;
@@ -495,6 +524,72 @@ public partial class ResourceChartWPF
 				material.Fuel, material.Ammo, material.Steel, material.Bauxite,
 				material.InstantConstruction, material.InstantRepair, material.DevelopmentMaterial, material.ModdingMaterial,
 				admiral.Level, admiral.Exp);
+		}
+	}
+
+	private void MaterialMenu_Click(object sender, RoutedEventArgs e)
+	{
+		SwitchMenuStrip(ChartTypeMenu, "2");
+		UpdateChart();
+	}
+
+	private void ResourceMenu_Click(object sender, RoutedEventArgs e)
+	{
+		SwitchMenuStrip(ChartTypeMenu, "0");
+		UpdateChart();
+	}
+
+	private void InstantConstructionShow(object sender, RoutedEventArgs e)
+	{
+		if (InstantConstructionPlot is not null)
+		{
+			InstantConstructionPlot.IsVisible = true;
+			ChartArea.Refresh();
+		}
+	}
+
+	private void InstantConstructionHide(object sender, RoutedEventArgs e)
+	{
+		if (InstantConstructionPlot is not null)
+		{
+			InstantConstructionPlot.IsVisible = false;
+			ChartArea.Refresh();
+		}
+	}
+
+	private void ModdingMaterialShow(object sender, RoutedEventArgs e)
+	{
+		if (ModdingMaterialPlot is not null)
+		{
+			ModdingMaterialPlot.IsVisible = true;
+			ChartArea.Refresh();
+		}
+	}
+
+	private void ModdingMaterialHide(object sender, RoutedEventArgs e)
+	{
+		if (ModdingMaterialPlot is not null)
+		{
+			ModdingMaterialPlot.IsVisible = false;
+			ChartArea.Refresh();
+		}
+	}
+
+	private void DevelopmentMaterialShow(object sender, RoutedEventArgs e)
+	{
+		if (DevelopmentMaterialPlot is not null)
+		{
+			DevelopmentMaterialPlot.IsVisible = true;
+			ChartArea.Refresh();
+		}
+	}
+
+	private void DevelopmentMaterialHide(object sender, RoutedEventArgs e)
+	{
+		if (DevelopmentMaterialPlot is not null)
+		{
+			DevelopmentMaterialPlot.IsVisible = false;
+			ChartArea.Refresh();
 		}
 	}
 }
