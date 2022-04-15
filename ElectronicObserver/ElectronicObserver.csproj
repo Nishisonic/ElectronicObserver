@@ -435,8 +435,8 @@
 		<PackageReference Include="DynaJson" Version="2.2.0" />
 		<PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
 		<PackageReference Include="Microsoft.VisualBasic" Version="10.3.0" />
-		<PackageReference Include="ScottPlot" Version="4.1.40" />
-		<PackageReference Include="ScottPlot.WPF" Version="4.1.40" />
+		<PackageReference Include="ScottPlot" Version="4.1.41" />
+		<PackageReference Include="ScottPlot.WPF" Version="4.1.41" />
 		<PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
 		<PackageReference Include="System.Data.SqlClient" Version="4.8.3" />
 		<PackageReference Include="System.Diagnostics.EventLog" Version="6.0.0" />

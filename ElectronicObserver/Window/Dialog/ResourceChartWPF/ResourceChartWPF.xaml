@@ -85,9 +85,40 @@
 					Tag="9"
 					/>
 			</MenuItem>
+			<MenuItem Name="ChartTypeMenu" Header="Chart Type">
+				<MenuItem
+					Name="ResourceMenu"
+					Click="ResourceMenu_Click"
+					Header="Resource"
+					IsCheckable="True"
+					IsChecked="True"
+					Tag="0"
+					/>
+				<MenuItem
+					Name="ResourceDiffMenu"
+					Header="ResourceDiff"
+					IsCheckable="True"
+					IsChecked="False"
+					Tag="1"
+					/>
+				<MenuItem
+					Name="MaterialMenu"
+					Click="MaterialMenu_Click"
+					Header="Material"
+					IsCheckable="True"
+					IsChecked="False"
+					Tag="2"
+					/>
+			</MenuItem>
 		</Menu>
-		<StackPanel DockPanel.Dock="Right" Orientation="Vertical">
+		<StackPanel
+			Name="ResourcesPanel"
+			DockPanel.Dock="Right"
+			Orientation="Vertical"
+			Visibility="Visible"
+			>
 			<CheckBox
+				Name="FuelCheck"
 				Margin="10"
 				Checked="FuelShow"
 				Content="Fuel"
@@ -95,6 +126,7 @@
 				Unchecked="FuelHide"
 				/>
 			<CheckBox
+				Name="AmmoCheck"
 				Margin="10"
 				Checked="AmmoShow"
 				Content="Ammo"
@@ -102,6 +134,7 @@
 				Unchecked="AmmoHide"
 				/>
 			<CheckBox
+				Name="SteelCheck"
 				Margin="10"
 				Checked="SteelShow"
 				Content="Steel"
@@ -109,6 +142,7 @@
 				Unchecked="SteelHide"
 				/>
 			<CheckBox
+				Name="BauxCheck"
 				Margin="10"
 				Checked="BauxShow"
 				Content="Baux"
@@ -116,11 +150,51 @@
 				Unchecked="BauxHide"
 				/>
 			<CheckBox
+				Name="InstantRepairCheck"
 				Margin="10"
 				Checked="InstantRepairShow"
 				Content="Instant Repair"
 				IsChecked="True"
 				Unchecked="InstantRepairHide"
+				/>
+		</StackPanel>
+		<StackPanel
+			Name="MaterialPanel"
+			DockPanel.Dock="Right"
+			Orientation="Vertical"
+			Visibility="Collapsed"
+			>
+			<CheckBox
+				Name="InstantRepairMatCheck"
+				Margin="10"
+				Checked="InstantRepairShow"
+				Content="Instant Repair"
+				IsChecked="True"
+				Unchecked="InstantRepairHide"
+				/>
+			<CheckBox
+				Name="InstantConstructionMatCheck"
+				Margin="10"
+				Checked="InstantConstructionShow"
+				Content="Instant Construction"
+				IsChecked="True"
+				Unchecked="InstantConstructionHide"
+				/>
+			<CheckBox
+				Name="DevelopmentMaterialCheck"
+				Margin="10"
+				Checked="DevelopmentMaterialShow"
+				Content="Development Material"
+				IsChecked="True"
+				Unchecked="DevelopmentMaterialHide"
+				/>
+			<CheckBox
+				Name="ModdingMaterialCheck"
+				Margin="10"
+				Checked="ModdingMaterialShow"
+				Content="Modding Material"
+				IsChecked="True"
+				Unchecked="ModdingMaterialHide"
 				/>
 		</StackPanel>
 		<WpfPlot
