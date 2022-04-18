@@ -478,6 +478,78 @@ public partial class ResourceChartWPF
 		}
 	}
 
+	private void InstantConstructionShow(object sender, RoutedEventArgs e)
+	{
+		if (InstantConstructionPlot is not null)
+		{
+			InstantConstructionPlot.IsVisible = true;
+			ChartArea.Refresh();
+		}
+	}
+
+	private void InstantConstructionHide(object sender, RoutedEventArgs e)
+	{
+		if (InstantConstructionPlot is not null)
+		{
+			InstantConstructionPlot.IsVisible = false;
+			ChartArea.Refresh();
+		}
+	}
+
+	private void ModdingMaterialShow(object sender, RoutedEventArgs e)
+	{
+		if (ModdingMaterialPlot is not null)
+		{
+			ModdingMaterialPlot.IsVisible = true;
+			ChartArea.Refresh();
+		}
+	}
+
+	private void ModdingMaterialHide(object sender, RoutedEventArgs e)
+	{
+		if (ModdingMaterialPlot is not null)
+		{
+			ModdingMaterialPlot.IsVisible = false;
+			ChartArea.Refresh();
+		}
+	}
+
+	private void DevelopmentMaterialShow(object sender, RoutedEventArgs e)
+	{
+		if (DevelopmentMaterialPlot is not null)
+		{
+			DevelopmentMaterialPlot.IsVisible = true;
+			ChartArea.Refresh();
+		}
+	}
+
+	private void DevelopmentMaterialHide(object sender, RoutedEventArgs e)
+	{
+		if (DevelopmentMaterialPlot is not null)
+		{
+			DevelopmentMaterialPlot.IsVisible = false;
+			ChartArea.Refresh();
+		}
+	}
+
+	private void ExperienceShow(object sender, RoutedEventArgs e)
+	{
+		if (ExperiencePlot is not null)
+		{
+			ExperiencePlot.IsVisible = true;
+			ChartArea.Refresh();
+		}
+	}
+
+	private void ExperienceHide(object sender, RoutedEventArgs e)
+	{
+		if (ExperiencePlot is not null)
+		{
+			ExperiencePlot.IsVisible = false;
+			ChartArea.Refresh();
+		}
+	}
+
 	private void ChartSpan_Click(object sender, RoutedEventArgs e)
 	{
 		SwitchMenuStrip(ChartSpanMenu, ((MenuItem)sender).Tag);
@@ -598,61 +670,6 @@ public partial class ResourceChartWPF
 		SwitchMenuStrip(ChartTypeMenu, "0");
 		UpdateChart();
 	}
-
-	private void InstantConstructionShow(object sender, RoutedEventArgs e)
-	{
-		if (InstantConstructionPlot is not null)
-		{
-			InstantConstructionPlot.IsVisible = true;
-			ChartArea.Refresh();
-		}
-	}
-
-	private void InstantConstructionHide(object sender, RoutedEventArgs e)
-	{
-		if (InstantConstructionPlot is not null)
-		{
-			InstantConstructionPlot.IsVisible = false;
-			ChartArea.Refresh();
-		}
-	}
-
-	private void ModdingMaterialShow(object sender, RoutedEventArgs e)
-	{
-		if (ModdingMaterialPlot is not null)
-		{
-			ModdingMaterialPlot.IsVisible = true;
-			ChartArea.Refresh();
-		}
-	}
-
-	private void ModdingMaterialHide(object sender, RoutedEventArgs e)
-	{
-		if (ModdingMaterialPlot is not null)
-		{
-			ModdingMaterialPlot.IsVisible = false;
-			ChartArea.Refresh();
-		}
-	}
-
-	private void DevelopmentMaterialShow(object sender, RoutedEventArgs e)
-	{
-		if (DevelopmentMaterialPlot is not null)
-		{
-			DevelopmentMaterialPlot.IsVisible = true;
-			ChartArea.Refresh();
-		}
-	}
-
-	private void DevelopmentMaterialHide(object sender, RoutedEventArgs e)
-	{
-		if (DevelopmentMaterialPlot is not null)
-		{
-			DevelopmentMaterialPlot.IsVisible = false;
-			ChartArea.Refresh();
-		}
-	}
-
 	private void MaterialDiffMenu_Click(object sender, RoutedEventArgs e)
 	{
 	}
@@ -661,23 +678,5 @@ public partial class ResourceChartWPF
 	{
 		SwitchMenuStrip(ChartTypeMenu, "4");
 		UpdateChart();
-	}
-
-	private void ExperienceShow(object sender, RoutedEventArgs e)
-	{
-		if (ExperiencePlot is not null)
-		{
-			ExperiencePlot.IsVisible = true;
-			ChartArea.Refresh();
-		}
-	}
-
-	private void ExperienceHide(object sender, RoutedEventArgs e)
-	{
-		if (ExperiencePlot is not null)
-		{
-			ExperiencePlot.IsVisible = false;
-			ChartArea.Refresh();
-		}
 	}
 }
