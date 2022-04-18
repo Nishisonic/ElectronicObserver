@@ -1,28 +1,17 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using ElectronicObserver.Data;
-using ElectronicObserver.Resource;
 using ElectronicObserver.Resource.Record;
-using ElectronicObserver.Utility;
-using ElectronicObserver.ViewModels;
 using ScottPlot;
 using ScottPlot.Plottable;
 using Translation = ElectronicObserver.Properties.Window.Dialog.DialogResourceChart;
 
 namespace ElectronicObserver.Window.Dialog.ResourceChartWPF;
+
 /// <summary>
 /// Interaction logic for ResourceChartWPF.xaml
 /// </summary>
@@ -51,6 +40,7 @@ public partial class ResourceChartWPF
 		SeasonFirst,
 		YearFirst,
 	}
+
 	private MarkerPlot HighlightedPoint;
 	private int LastHighlightedIndex = -1;
 	private ScatterPlot? FuelPlot;
@@ -62,8 +52,11 @@ public partial class ResourceChartWPF
 	private ScatterPlot? ModdingMaterialPlot;
 	private ScatterPlot? DevelopmentMaterialPlot;
 	private ToolTip toolTip;
+	private ScatterPlot ExperiencePlot;
+
 	private ChartType SelectedChartType => (ChartType)GetSelectedMenuStripIndex(ChartTypeMenu);
 	private ChartSpan SelectedChartSpan => (ChartSpan)GetSelectedMenuStripIndex(ChartSpanMenu);
+
 	public ResourceChartWPF()
 	{
 		InitializeComponent();
@@ -90,6 +83,7 @@ public partial class ResourceChartWPF
 		ChartArea.Configuration.DoubleClickBenchmark = false;
 		UpdateChart();
 	}
+
 	/// <summary>
 	/// Chart onhover handler
 	/// </summary>
@@ -121,6 +115,7 @@ public partial class ResourceChartWPF
 		//toolTip.Content = "Fuel: " + pointY;
 		//HighlightedPoint.Text = "Fuel: " + pointY;
 	}
+
 	private void SetResourceChart()
 	{
 		ChartArea.Plot.Clear();
@@ -135,6 +130,7 @@ public partial class ResourceChartWPF
 		BauxCheck.IsChecked = true;
 		ResourcesPanel.Visibility = Visibility.Visible;
 		MaterialPanel.Visibility = Visibility.Collapsed;
+		ExperiencePanel.Visibility = Visibility.Collapsed;
 		InstantRepairCheck.IsChecked = true;
 		List<double>? fuel_list = Array.Empty<double>().ToList();
 
@@ -219,7 +215,6 @@ public partial class ResourceChartWPF
 
 	private void SetYBounds(double min, double max)
 	{
-
 		int order = (int)Math.Log10(Math.Max(max - min, 1));
 		double powered = Math.Pow(10, order);
 		double unitbase = Math.Round((max - min) / powered);
@@ -256,13 +251,14 @@ public partial class ResourceChartWPF
 		//{
 		//	//ResourceChart.ChartAreas[0].AxisY2.Enabled = AxisEnabled.False;
 		//}
-
 	}
+
 	private void SetMaterialChart()
 	{
 		ChartArea.Plot.Clear();
 		ResourcesPanel.Visibility = Visibility.Collapsed;
 		MaterialPanel.Visibility = Visibility.Visible;
+		ExperiencePanel.Visibility = Visibility.Collapsed;
 		ChartArea.Plot.YAxis2.IsVisible = false;
 		ChartArea.Plot.XAxis.Label("Date");
 		ChartArea.Plot.YAxis.Label("Material");
@@ -306,6 +302,42 @@ public partial class ResourceChartWPF
 		ChartArea.Refresh();
 	}
 
+	private void SetExperienceChart()
+	{
+		ChartArea.Plot.Clear();
+		ResourcesPanel.Visibility = Visibility.Collapsed;
+		MaterialPanel.Visibility = Visibility.Collapsed;
+		ExperiencePanel.Visibility = Visibility.Visible;
+		AxisXIntervals(SelectedChartSpan);
+		ChartArea.Plot.YAxis2.IsVisible = false;
+		ChartArea.Plot.XAxis.Label("Date");
+		ChartArea.Plot.YAxis.Label("Experience");
+		ChartArea.Plot.XAxis.DateTimeFormat(true);
+		List<double>? experience_list = Array.Empty<double>().ToList();
+
+		List<double>? date_list = Array.Empty<double>().ToList();
+
+		{
+			var record = GetRecords();
+
+			if (record.Any())
+			{
+				var prev = record.First();
+				foreach (var r in record)
+				{
+					if (ShouldSkipRecord(r.Date - prev.Date))
+						continue;
+
+					experience_list.Add(r.HQExp);
+					date_list.Add(r.Date.ToOADate());
+					prev = r;
+				}
+			}
+		}
+		ExperiencePlot = ChartArea.Plot.AddScatterLines(date_list.ToArray(), experience_list.ToArray(), System.Drawing.Color.Orange, label: "HQ Experience");
+		ChartArea.Refresh();
+	}
+
 	private void SetYBounds()
 	{
 		//SetYBounds(
@@ -324,24 +356,28 @@ public partial class ResourceChartWPF
 				axis.ManualTickSpacing(2, ScottPlot.Ticks.DateTimeUnit.Hour);
 				axis.TickLabelStyle(rotation: 90);
 				break;
+
 			case ChartSpan.Week:
 			case ChartSpan.WeekFirst:
 				axis.TickLabelFormat("MM/dd HH:mm", true);
 				axis.ManualTickSpacing(12, ScottPlot.Ticks.DateTimeUnit.Hour);
 				axis.TickLabelStyle(rotation: 90);
 				break;
+
 			case ChartSpan.Month:
 			case ChartSpan.MonthFirst:
 				axis.TickLabelFormat("yyyy/MM/dd", true);
 				axis.ManualTickSpacing(2, ScottPlot.Ticks.DateTimeUnit.Day);
 				axis.TickLabelStyle(rotation: 90);
 				break;
+
 			case ChartSpan.Season:
 			case ChartSpan.SeasonFirst:
 				axis.TickLabelFormat("yyyy/MM/dd", true);
 				axis.ManualTickSpacing(7, ScottPlot.Ticks.DateTimeUnit.Day);
 				axis.TickLabelStyle(rotation: 90);
 				break;
+
 			case ChartSpan.Year:
 			case ChartSpan.YearFirst:
 			case ChartSpan.All:
@@ -351,6 +387,7 @@ public partial class ResourceChartWPF
 				break;
 		}
 	}
+
 	private void FuelShow(object sender, RoutedEventArgs e)
 	{
 		if (FuelPlot is not null)
@@ -359,6 +396,7 @@ public partial class ResourceChartWPF
 			ChartArea.Refresh();
 		}
 	}
+
 	private void FuelHide(object sender, RoutedEventArgs e)
 	{
 		if (FuelPlot is not null)
@@ -367,6 +405,7 @@ public partial class ResourceChartWPF
 			ChartArea.Refresh();
 		}
 	}
+
 	private void AmmoShow(object sender, RoutedEventArgs e)
 	{
 		if (AmmoPlot is not null)
@@ -375,6 +414,7 @@ public partial class ResourceChartWPF
 			ChartArea.Refresh();
 		}
 	}
+
 	private void AmmoHide(object sender, RoutedEventArgs e)
 	{
 		if (AmmoPlot is not null)
@@ -383,6 +423,7 @@ public partial class ResourceChartWPF
 			ChartArea.Refresh();
 		}
 	}
+
 	private void SteelShow(object sender, RoutedEventArgs e)
 	{
 		if (SteelPlot is not null)
@@ -391,6 +432,7 @@ public partial class ResourceChartWPF
 			ChartArea.Refresh();
 		}
 	}
+
 	private void SteelHide(object sender, RoutedEventArgs e)
 	{
 		if (SteelPlot is not null)
@@ -399,6 +441,7 @@ public partial class ResourceChartWPF
 			ChartArea.Refresh();
 		}
 	}
+
 	private void BauxShow(object sender, RoutedEventArgs e)
 	{
 		if (BauxPlot is not null)
@@ -407,6 +450,7 @@ public partial class ResourceChartWPF
 			ChartArea.Refresh();
 		}
 	}
+
 	private void BauxHide(object sender, RoutedEventArgs e)
 	{
 		if (BauxPlot is not null)
@@ -415,6 +459,7 @@ public partial class ResourceChartWPF
 			ChartArea.Refresh();
 		}
 	}
+
 	private void InstantRepairShow(object sender, RoutedEventArgs e)
 	{
 		if (InstantRepairPlot is not null)
@@ -423,6 +468,7 @@ public partial class ResourceChartWPF
 			ChartArea.Refresh();
 		}
 	}
+
 	private void InstantRepairHide(object sender, RoutedEventArgs e)
 	{
 		if (InstantRepairPlot is not null)
@@ -431,6 +477,7 @@ public partial class ResourceChartWPF
 			ChartArea.Refresh();
 		}
 	}
+
 	private void ChartSpan_Click(object sender, RoutedEventArgs e)
 	{
 		SwitchMenuStrip(ChartSpanMenu, ((MenuItem)sender).Tag);
@@ -444,13 +491,16 @@ public partial class ResourceChartWPF
 			case ChartType.Resource:
 				SetResourceChart();
 				break;
+
 			case ChartType.Material:
 				SetMaterialChart();
 				break;
+
+			case ChartType.Experience:
+				SetExperienceChart();
+				break;
 		}
-
 	}
-
 
 	private void SwitchMenuStrip(MenuItem parent, object index)
 	{
@@ -465,10 +515,12 @@ public partial class ResourceChartWPF
 		}
 		parent.Tag = intindex;
 	}
+
 	private int GetSelectedMenuStripIndex(MenuItem parent)
 	{
 		return parent.Tag as int? ?? -1;
 	}
+
 	private IEnumerable<ResourceRecord.ResourceElement> GetRecords()
 	{
 		var border = DateTime.MinValue;
@@ -479,24 +531,31 @@ public partial class ResourceChartWPF
 			case ChartSpan.Day:
 				border = now.AddDays(-1);
 				break;
+
 			case ChartSpan.Week:
 				border = now.AddDays(-7);
 				break;
+
 			case ChartSpan.Month:
 				border = now.AddMonths(-1);
 				break;
+
 			case ChartSpan.Season:
 				border = now.AddMonths(-3);
 				break;
+
 			case ChartSpan.Year:
 				border = now.AddYears(-1);
 				break;
+
 			case ChartSpan.WeekFirst:
 				border = now.AddDays(now.DayOfWeek == DayOfWeek.Sunday ? -6 : (1 - (int)now.DayOfWeek));
 				break;
+
 			case ChartSpan.MonthFirst:
 				border = new DateTime(now.Year, now.Month, 1);
 				break;
+
 			case ChartSpan.SeasonFirst:
 			{
 				int m = now.Month / 3 * 3;
@@ -505,6 +564,7 @@ public partial class ResourceChartWPF
 				border = new DateTime(now.Year - (now.Month < 3 ? 1 : 0), m, 1);
 			}
 			break;
+
 			case ChartSpan.YearFirst:
 				border = new DateTime(now.Year, 1, 1);
 				break;
@@ -589,6 +649,34 @@ public partial class ResourceChartWPF
 		if (DevelopmentMaterialPlot is not null)
 		{
 			DevelopmentMaterialPlot.IsVisible = false;
+			ChartArea.Refresh();
+		}
+	}
+
+	private void MaterialDiffMenu_Click(object sender, RoutedEventArgs e)
+	{
+	}
+
+	private void ExperienceMenu_Click(object sender, RoutedEventArgs e)
+	{
+		SwitchMenuStrip(ChartTypeMenu, "4");
+		UpdateChart();
+	}
+
+	private void ExperienceShow(object sender, RoutedEventArgs e)
+	{
+		if (ExperiencePlot is not null)
+		{
+			ExperiencePlot.IsVisible = true;
+			ChartArea.Refresh();
+		}
+	}
+
+	private void ExperienceHide(object sender, RoutedEventArgs e)
+	{
+		if (ExperiencePlot is not null)
+		{
+			ExperiencePlot.IsVisible = false;
 			ChartArea.Refresh();
 		}
 	}

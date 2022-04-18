@@ -57,6 +57,7 @@
 					IsChecked="True"
 					Tag="5"
 					/>
+				<Separator />
 				<MenuItem
 					Click="ChartSpan_Click"
 					Header="WeekFirst"
@@ -108,6 +109,22 @@
 					IsCheckable="True"
 					IsChecked="False"
 					Tag="2"
+					/>
+				<MenuItem
+					Name="MaterialDiffMenu"
+					Click="MaterialDiffMenu_Click"
+					Header="MaterialDiff"
+					IsCheckable="True"
+					IsChecked="False"
+					Tag="3"
+					/>
+				<MenuItem
+					Name="ExperienceMenu"
+					Click="ExperienceMenu_Click"
+					Header="Experience"
+					IsCheckable="True"
+					IsChecked="False"
+					Tag="4"
 					/>
 			</MenuItem>
 		</Menu>
@@ -195,6 +212,20 @@
 				Content="Modding Material"
 				IsChecked="True"
 				Unchecked="ModdingMaterialHide"
+				/>
+		</StackPanel>
+		<StackPanel
+			Name="ExperiencePanel"
+			DockPanel.Dock="Right"
+			Visibility="Collapsed"
+			>
+			<CheckBox
+				Name="ExperienceCheck"
+				Margin="10"
+				Checked="ExperienceShow"
+				Content="Experience"
+				IsChecked="True"
+				Unchecked="ExperienceHide"
 				/>
 		</StackPanel>
 		<WpfPlot
