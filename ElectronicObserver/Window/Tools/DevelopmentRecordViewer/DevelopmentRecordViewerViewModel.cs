@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
 using CommunityToolkit.Mvvm.Input;
 using ElectronicObserver.Common;
 using ElectronicObserver.Data;
@@ -38,6 +39,8 @@ public partial class DevelopmentRecordViewerViewModel : WindowViewModelBase
 
 	public DateTime DateBegin { get; set; }
 	public DateTime DateEnd { get; set; }
+	public DateTime MinDate { get; set; }
+	public DateTime MaxDate { get; set; }
 	public bool MergeRows { get; set; }
 	public bool RawRows => !MergeRows;
 	public string StatusInfoText { get; set; }
@@ -50,6 +53,8 @@ public partial class DevelopmentRecordViewerViewModel : WindowViewModelBase
 	};
 
 	private string NameNotExist => Properties.Window.Dialog.DialogDevelopmentRecordViewer.NameNotExist; //(失敗)
+
+	public string Today => $"{DialogDevelopmentRecordViewer.Today}: {DateTime.Now:yyyy/MM/dd}";
 
 	public DevelopmentRecordViewerViewModel()
 	{
@@ -79,6 +84,12 @@ public partial class DevelopmentRecordViewerViewModel : WindowViewModelBase
 
 	private void Loaded()
 	{
+		DateBegin = Record.Record.First().Date.Date;
+		MinDate = Record.Record.First().Date.Date;
+
+		DateEnd = DateTime.Now.AddDays(1).Date;
+		MaxDate = DateTime.Now.AddDays(1).Date;
+
 		var includedEquipmentNames = Record.Record
 			.Select(r => r.EquipmentName)
 			.Distinct()
@@ -144,9 +155,6 @@ public partial class DevelopmentRecordViewerViewModel : WindowViewModelBase
 			.Cast<object>()
 			.Prepend(DevelopmentRecordOption.All)
 			.ToList();
-
-		DateBegin = Record.Record.First().Date.Date;
-		DateEnd = DateTime.Now.AddDays(1).Date;
 	}
 
 	private string GetRecipeString(int[] resources)
@@ -450,5 +458,13 @@ public partial class DevelopmentRecordViewerViewModel : WindowViewModelBase
 		StatusInfoTag = DateTime.Now;
 
 		Searcher.RunWorkerAsync();
+	}
+
+	[ICommand]
+	private void SelectToday(Calendar? calendar)
+	{
+		if (calendar is null) return;
+
+		calendar.SelectedDate = DateTime.Now.Date;
 	}
 }

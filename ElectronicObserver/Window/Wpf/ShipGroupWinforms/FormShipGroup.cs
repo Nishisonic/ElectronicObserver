@@ -10,6 +10,7 @@ using ElectronicObserver.Data.ShipGroup;
 using ElectronicObserver.Observer;
 using ElectronicObserver.Resource;
 using ElectronicObserver.Utility;
+using ElectronicObserver.Utility.Data;
 using ElectronicObserver.Utility.Mathematics;
 using ElectronicObserver.ViewModels;
 using ElectronicObserver.Window.Control;
@@ -221,6 +222,9 @@ public partial class FormShipGroup : DockContent
 		ShipView_Locked.HeaderText = GeneralRes.Lock;
 		ShipView_SallyArea.HeaderText = Translation.ShipView_SallyArea;
 
+		SortId.HeaderText = Translation.SortId;
+		RepairTimeUnit.HeaderText = Translation.RepairTimeUnit;
+
 		MenuMember_AddToGroup.Text = Translation.MenuMember_AddToGroup;
 		MenuMember_CreateGroup.Text = Translation.MenuMember_CreateGroup;
 		MenuMember_Exclude.Text = Translation.MenuMember_Exclude;
@@ -421,7 +425,9 @@ public partial class FormShipGroup : DockContent
 			ship.TorpedoPower,
 			ship.NightBattlePower,
 			ship.IsLocked ? 1 : ship.IsLockedByEquipment ? 2 : 0,
-			ship.SallyArea
+			ship.SallyArea,
+			ship.MasterShip.SortID,
+			(int)Calculator.CalculateDockingUnitTime(ship).TotalMilliseconds
 		);
 
 
@@ -759,7 +765,7 @@ public partial class FormShipGroup : DockContent
 			e.FormattingApplied = true;
 
 		}
-		else if (e.ColumnIndex == ShipView_RepairTime.Index)
+		else if (e.ColumnIndex == ShipView_RepairTime.Index || e.ColumnIndex == RepairTimeUnit.Index)
 		{
 
 			if ((int)e.Value < 0)
@@ -1094,7 +1100,7 @@ public partial class FormShipGroup : DockContent
 						ShipGroupItem updatedGroup = new(group);
 						ViewModel.Groups.RemoveAt(groupIndex);
 						ViewModel.Groups.Insert(groupIndex, updatedGroup);
-						
+
 						ViewModel.SelectGroupCommand.Execute(updatedGroup);
 					}
 				}

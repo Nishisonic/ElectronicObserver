@@ -19,7 +19,7 @@ namespace ElectronicObserver.Properties.Window {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class FormShipGroup {
@@ -386,6 +386,15 @@ namespace ElectronicObserver.Properties.Window {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to HP1あたり.
+        /// </summary>
+        public static string RepairTimeUnit {
+            get {
+                return ResourceManager.GetString("RepairTimeUnit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 選択: {0} / {1}隻.
         /// </summary>
         public static string SelectedShips {
@@ -526,6 +535,15 @@ namespace ElectronicObserver.Properties.Window {
         public static string ShipView_Slot5 {
             get {
                 return ResourceManager.GetString("ShipView_Slot5", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ソートID.
+        /// </summary>
+        public static string SortId {
+            get {
+                return ResourceManager.GetString("SortId", resourceCulture);
             }
         }
         
