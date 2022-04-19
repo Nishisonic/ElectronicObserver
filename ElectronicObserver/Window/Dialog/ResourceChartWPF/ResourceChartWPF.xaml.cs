@@ -17,16 +17,6 @@ namespace ElectronicObserver.Window.Dialog.ResourceChartWPF;
 /// </summary>
 public partial class ResourceChartWPF
 {
-	private enum ChartType
-	{
-		Resource,
-		ResourceDiff,
-		Material,
-		MaterialDiff,
-		Experience,
-		ExperienceDiff,
-	}
-
 	private enum ChartSpan
 	{
 		Day,
@@ -40,6 +30,17 @@ public partial class ResourceChartWPF
 		SeasonFirst,
 		YearFirst,
 	}
+	
+		private enum ChartType
+	{
+		Resource,
+		ResourceDiff,
+		Material,
+		MaterialDiff,
+		Experience,
+		ExperienceDiff,
+	}
+
 
 	private MarkerPlot HighlightedPoint;
 	private int LastHighlightedIndex = -1;
@@ -47,13 +48,21 @@ public partial class ResourceChartWPF
 	private ScatterPlot? AmmoPlot;
 	private ScatterPlot? SteelPlot;
 	private ScatterPlot? BauxPlot;
+	private BarPlot? FuelBarPlot;
+	private BarPlot? AmmoBarPlot;
+	private BarPlot? SteelBarPlot;
+	private BarPlot? BauxBarPlot;
 	private ScatterPlot? InstantRepairPlot;
 	private ScatterPlot? InstantConstructionPlot;
 	private ScatterPlot? ModdingMaterialPlot;
 	private ScatterPlot? DevelopmentMaterialPlot;
+	private BarPlot? InstantRepairBarPlot;
+	private BarPlot? InstantConstructionBarPlot;
+	private BarPlot? ModdingMaterialBarPlot;
+	private BarPlot? DevelopmentMaterialBarPlot;
 	private ToolTip toolTip;
-	private ScatterPlot ExperiencePlot;
-
+	private ScatterPlot? ExperiencePlot;
+	private BarPlot ExperienceBarPlot;
 	private ChartType SelectedChartType => (ChartType)GetSelectedMenuStripIndex(ChartTypeMenu);
 	private ChartSpan SelectedChartSpan => (ChartSpan)GetSelectedMenuStripIndex(ChartSpanMenu);
 
@@ -184,6 +193,75 @@ public partial class ResourceChartWPF
 		ChartArea.Refresh();
 	}
 
+
+	private void SetMaterialDiffChart()
+	{
+		ChartArea.Plot.Clear();
+		ResourcesPanel.Visibility = Visibility.Collapsed;
+		MaterialPanel.Visibility = Visibility.Visible;
+		ExperiencePanel.Visibility = Visibility.Collapsed;
+		ChartArea.Plot.YAxis2.IsVisible = false;
+		ChartArea.Plot.XAxis.Label("Date");
+		ChartArea.Plot.YAxis.Label("Material");
+		ChartArea.Plot.XAxis.DateTimeFormat(true);
+		AxisXIntervals(SelectedChartSpan);
+		ChartArea.Plot.Legend(true, Alignment.LowerLeft);
+		ModdingMaterialCheck.IsChecked = true;
+		InstantRepairMatCheck.IsChecked = true;
+		InstantConstructionMatCheck.IsChecked = true;
+		List<double>? instant_repair_list = Array.Empty<double>().ToList();
+		List<double>? development_material_list = Array.Empty<double>().ToList();
+		List<double>? modding_material_list = Array.Empty<double>().ToList();
+		List<double>? instant_contruction_list = Array.Empty<double>().ToList();
+
+		List<double>? date_list = Array.Empty<double>().ToList();
+		{
+			var record = GetRecords();
+
+			ResourceRecord.ResourceElement prev = null;
+			if (record.Any())
+			{
+				prev = record.First();
+				foreach (var r in record)
+				{
+					if (ShouldSkipRecord(r.Date - prev.Date))
+						continue;
+					//if (Menu_Option_DivideByDay.Checked)
+					//{
+					//	for (int i = 0; i < 4; i++)
+					//		ys[i] /= Math.Max((r.Date - prev.Date).TotalDays, 1.0 / 1440.0);
+					//}
+					date_list.Add(r.Date.ToOADate());
+					instant_repair_list.Add(r.InstantRepair - prev.InstantRepair);
+					development_material_list.Add(r.DevelopmentMaterial- prev.DevelopmentMaterial);
+					modding_material_list.Add(r.ModdingMaterial - prev.ModdingMaterial);
+					instant_contruction_list.Add(r.InstantConstruction - prev.InstantConstruction);
+					prev = r;
+				}
+			}
+		}
+		InstantRepairBarPlot = ChartArea.Plot.AddBar(instant_repair_list.ToArray(),date_list.ToArray());
+		InstantRepairBarPlot.Label = "Instant Repair";
+		InstantRepairBarPlot.FillColor = System.Drawing.Color.Green;
+		InstantRepairBarPlot.FillColorNegative = System.Drawing.Color.Green;
+		InstantRepairBarPlot.BorderColor = System.Drawing.Color.Transparent;
+		DevelopmentMaterialBarPlot = ChartArea.Plot.AddBar(development_material_list.ToArray(), date_list.ToArray());
+		DevelopmentMaterialBarPlot.Label = "Development Material";
+		DevelopmentMaterialBarPlot.FillColor = System.Drawing.Color.Aqua;
+		DevelopmentMaterialBarPlot.FillColorNegative = System.Drawing.Color.Aqua;
+		DevelopmentMaterialBarPlot.BorderColor = System.Drawing.Color.Transparent;
+		ModdingMaterialBarPlot = ChartArea.Plot.AddBar(modding_material_list.ToArray(), date_list.ToArray());
+		ModdingMaterialBarPlot.Label = "Modding Material";
+		ModdingMaterialBarPlot.FillColor = System.Drawing.Color.LightCoral;
+		ModdingMaterialBarPlot.FillColorNegative = System.Drawing.Color.LightCoral;
+		ModdingMaterialBarPlot.BorderColor = System.Drawing.Color.Transparent;
+		InstantConstructionBarPlot = ChartArea.Plot.AddBar(instant_contruction_list.ToArray(), date_list.ToArray());
+		InstantConstructionBarPlot.Label = "Instant Construction";
+		InstantConstructionBarPlot.FillColor = System.Drawing.Color.DarkOrange;
+		InstantConstructionBarPlot.FillColorNegative = System.Drawing.Color.DarkOrange;
+		InstantConstructionBarPlot.BorderColor = System.Drawing.Color.Transparent;
+		ChartArea.Refresh();
+	}
 	private bool ShouldSkipRecord(TimeSpan span)
 	{
 		//if (Menu_Option_ShowAllData.Checked)
@@ -199,11 +277,9 @@ public partial class ResourceChartWPF
 			case ChartSpan.WeekFirst:
 			default:
 				return false;
-
 			case ChartSpan.Month:
 			case ChartSpan.MonthFirst:
 				return span.TotalHours < 12.0;
-
 			case ChartSpan.Season:
 			case ChartSpan.SeasonFirst:
 			case ChartSpan.Year:
@@ -388,6 +464,8 @@ public partial class ResourceChartWPF
 		}
 	}
 
+	#region Chart Toggles
+
 	private void FuelShow(object sender, RoutedEventArgs e)
 	{
 		if (FuelPlot is not null)
@@ -467,6 +545,11 @@ public partial class ResourceChartWPF
 			InstantRepairPlot.IsVisible = true;
 			ChartArea.Refresh();
 		}
+		if (InstantRepairBarPlot is not null)
+		{
+			InstantRepairBarPlot.IsVisible = true;
+			ChartArea.Refresh();
+		}
 	}
 
 	private void InstantRepairHide(object sender, RoutedEventArgs e)
@@ -474,6 +557,11 @@ public partial class ResourceChartWPF
 		if (InstantRepairPlot is not null)
 		{
 			InstantRepairPlot.IsVisible = false;
+			ChartArea.Refresh();
+		}
+		if (InstantRepairBarPlot is not null)
+		{
+			InstantRepairBarPlot.IsVisible = false;
 			ChartArea.Refresh();
 		}
 	}
@@ -485,6 +573,11 @@ public partial class ResourceChartWPF
 			InstantConstructionPlot.IsVisible = true;
 			ChartArea.Refresh();
 		}
+		if (InstantConstructionBarPlot is not null)
+		{
+			InstantConstructionBarPlot.IsVisible = true;
+			ChartArea.Refresh();
+		}
 	}
 
 	private void InstantConstructionHide(object sender, RoutedEventArgs e)
@@ -492,6 +585,11 @@ public partial class ResourceChartWPF
 		if (InstantConstructionPlot is not null)
 		{
 			InstantConstructionPlot.IsVisible = false;
+			ChartArea.Refresh();
+		}
+		if (InstantConstructionBarPlot is not null)
+		{
+			InstantConstructionBarPlot.IsVisible = false;
 			ChartArea.Refresh();
 		}
 	}
@@ -503,6 +601,11 @@ public partial class ResourceChartWPF
 			ModdingMaterialPlot.IsVisible = true;
 			ChartArea.Refresh();
 		}
+		if (ModdingMaterialBarPlot is not null)
+		{
+			ModdingMaterialBarPlot.IsVisible = true;
+			ChartArea.Refresh();
+		}
 	}
 
 	private void ModdingMaterialHide(object sender, RoutedEventArgs e)
@@ -510,6 +613,11 @@ public partial class ResourceChartWPF
 		if (ModdingMaterialPlot is not null)
 		{
 			ModdingMaterialPlot.IsVisible = false;
+			ChartArea.Refresh();
+		}
+		if (ModdingMaterialBarPlot is not null)
+		{
+			ModdingMaterialBarPlot.IsVisible = false;
 			ChartArea.Refresh();
 		}
 	}
@@ -521,6 +629,11 @@ public partial class ResourceChartWPF
 			DevelopmentMaterialPlot.IsVisible = true;
 			ChartArea.Refresh();
 		}
+		if (DevelopmentMaterialBarPlot is not null)
+		{
+			DevelopmentMaterialBarPlot.IsVisible = true;
+			ChartArea.Refresh();
+		}
 	}
 
 	private void DevelopmentMaterialHide(object sender, RoutedEventArgs e)
@@ -528,6 +641,11 @@ public partial class ResourceChartWPF
 		if (DevelopmentMaterialPlot is not null)
 		{
 			DevelopmentMaterialPlot.IsVisible = false;
+			ChartArea.Refresh();
+		}
+		if (DevelopmentMaterialBarPlot is not null)
+		{
+			DevelopmentMaterialBarPlot.IsVisible = false;
 			ChartArea.Refresh();
 		}
 	}
@@ -550,6 +668,8 @@ public partial class ResourceChartWPF
 		}
 	}
 
+	#endregion Chart Toggles
+
 	private void ChartSpan_Click(object sender, RoutedEventArgs e)
 	{
 		SwitchMenuStrip(ChartSpanMenu, ((MenuItem)sender).Tag);
@@ -563,17 +683,17 @@ public partial class ResourceChartWPF
 			case ChartType.Resource:
 				SetResourceChart();
 				break;
-
 			case ChartType.Material:
 				SetMaterialChart();
 				break;
-
+			case ChartType.MaterialDiff:
+				SetMaterialDiffChart();
+				break;
 			case ChartType.Experience:
 				SetExperienceChart();
 				break;
 		}
 	}
-
 	private void SwitchMenuStrip(MenuItem parent, object index)
 	{
 		int intindex = int.Parse((string)index);
@@ -670,8 +790,11 @@ public partial class ResourceChartWPF
 		SwitchMenuStrip(ChartTypeMenu, "0");
 		UpdateChart();
 	}
+
 	private void MaterialDiffMenu_Click(object sender, RoutedEventArgs e)
 	{
+		SwitchMenuStrip(ChartTypeMenu, "3");
+		UpdateChart();
 	}
 
 	private void ExperienceMenu_Click(object sender, RoutedEventArgs e)
