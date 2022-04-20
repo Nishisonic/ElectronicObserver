@@ -1,13 +1,13 @@
 ﻿using System.Windows.Media;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using ElectronicObserver.Utility.Storage;
 using ElectronicObserver.ViewModels;
 using ElectronicObserver.Window.Dialog;
-using Microsoft.Toolkit.Mvvm.ComponentModel;
-using Microsoft.Toolkit.Mvvm.Input;
 
 namespace ElectronicObserver.Window.Wpf.Fleet.ViewModels;
 
-public class FleetLevelViewModel : ObservableObject
+public partial class FleetLevelViewModel : ObservableObject
 {
 	public string? TextNext { get; internal set; }
 	public int Value { get; set; }
@@ -23,10 +23,9 @@ public class FleetLevelViewModel : ObservableObject
 	public double SubFontSize => SubFont.FontData.ToSize();
 	public SolidColorBrush SubForeground => SubFontColor.ToBrush();
 
-	public IRelayCommand ShipLevelRightClick { get; }
-
-	public FleetLevelViewModel()
+	[ICommand]
+	private void OpenExpChecker()
 	{
-		ShipLevelRightClick = new RelayCommand(() => new DialogExpChecker(Tag).Show(App.Current.MainWindow));
+		new DialogExpChecker(Tag).Show(App.Current.MainWindow);
 	}
 }

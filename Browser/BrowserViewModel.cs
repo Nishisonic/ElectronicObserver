@@ -18,11 +18,11 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Browser.ExtraBrowser;
 using BrowserLibCore;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using Grpc.Core;
 using MagicOnion.Client;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Toolkit.Mvvm.ComponentModel;
-using Microsoft.Toolkit.Mvvm.Input;
 using Microsoft.Web.WebView2.Core;
 using Microsoft.Web.WebView2.Core.DevToolsProtocolExtension;
 using Microsoft.Web.WebView2.Wpf;
@@ -56,7 +56,7 @@ public class ImageProvider
 	}
 }
 
-public class BrowserViewModel : ObservableObject, BrowserLibCore.IBrowser
+public partial class BrowserViewModel : ObservableObject, BrowserLibCore.IBrowser
 {
 	public FormBrowserTranslationViewModel FormBrowser { get; }
 	private BrowserConfiguration Configuration { get; set; }
@@ -119,26 +119,6 @@ public class BrowserViewModel : ObservableObject, BrowserLibCore.IBrowser
 
 	public bool ZoomFit { get; set; }
 	public string CurrentZoom { get; set; } = "";
-	public int CurrentVolume { get; set; }
-	public ICommand ScreenshotCommand { get; }
-	public ICommand SetZoomCommand { get; }
-	public ICommand ModifyZoomCommand { get; }
-	public ICommand MuteCommand { get; }
-	public ICommand RefreshCommand { get; }
-	public ICommand GoToLoginPageCommand { get; }
-
-	public ICommand OpenLastScreenshotCommand { get; }
-	public ICommand OpenScreenshotFolderCommand { get; }
-	public ICommand CopyLastScreenshotCommand { get; }
-
-	public ICommand HardRefreshCommand { get; }
-	public ICommand GoToCommand { get; }
-	public ICommand ClearCacheCommand { get; }
-
-	public ICommand SetToolMenuAlignmentCommand { get; }
-	public ICommand SetToolMenuVisibilityCommand { get; }
-
-	public ICommand OpenDevtoolsCommand { get; }
 
 	/// <summary>
 	/// </summary>
@@ -148,25 +128,6 @@ public class BrowserViewModel : ObservableObject, BrowserLibCore.IBrowser
 		// System.Diagnostics.Debugger.Launch();
 
 		FormBrowser = App.Current.Services.GetService<FormBrowserTranslationViewModel>()!;
-		ScreenshotCommand = new RelayCommand(ToolMenu_Other_ScreenShot_Click);
-		SetZoomCommand = new RelayCommand<string>(SetZoom);
-		ModifyZoomCommand = new RelayCommand<string>(ModifyZoom);
-		MuteCommand = new RelayCommand(ToolMenu_Other_Mute_Click);
-		RefreshCommand = new RelayCommand(ToolMenu_Other_Refresh_Click);
-		GoToLoginPageCommand = new RelayCommand(ToolMenu_Other_NavigateToLogInPage_Click);
-
-		OpenLastScreenshotCommand = new RelayCommand(ToolMenu_Other_LastScreenShot_ImageHost_Click);
-		OpenScreenshotFolderCommand = new RelayCommand(ToolMenu_Other_LastScreenShot_OpenScreenShotFolder_Click);
-		CopyLastScreenshotCommand = new RelayCommand(ToolMenu_Other_LastScreenShot_CopyToClipboard_Click);
-
-		HardRefreshCommand = new RelayCommand(ToolMenu_Other_RefreshIgnoreCache_Click);
-		GoToCommand = new RelayCommand(ToolMenu_Other_Navigate_Click);
-		ClearCacheCommand = new RelayCommand(ToolMenu_Other_ClearCache_Click);
-
-		SetToolMenuAlignmentCommand = new RelayCommand<Dock>(SetToolMenuAlignment);
-		SetToolMenuVisibilityCommand = new RelayCommand<Visibility>(SetToolMenuVisibility);
-
-		OpenDevtoolsCommand = new RelayCommand(ToolMenu_Other_OpenDevTool_Click);
 
 		Host = host;
 		Port = port;
@@ -381,7 +342,7 @@ public class BrowserViewModel : ObservableObject, BrowserLibCore.IBrowser
 			$"--proxy-server=\"{ProxySettings}\"",
 			"--disable-features=\"HardwareMediaKeyHandling\"",
 			"--lang=\"ja\"",
-			"--log-file=\"BrowserLog.log\""
+			"--log-file=\"BrowserLog.log\" ",
 		};
 
 		if (Configuration.ForceColorProfile)
@@ -802,7 +763,7 @@ public class BrowserViewModel : ObservableObject, BrowserLibCore.IBrowser
 			await Browser.CoreWebView2.CapturePreviewAsync(browserImageFormat, memoryStream).ConfigureAwait(false);
 
 			Bitmap image = (Bitmap)Bitmap.FromStream(memoryStream, true);
-
+			
 			await App.Current.Dispatcher.BeginInvoke(() => LastScreenshot = image.ToBitmapSource());
 
 			if (savemode is 1 or 3)
@@ -897,17 +858,19 @@ public class BrowserViewModel : ObservableObject, BrowserLibCore.IBrowser
 			// 音量データ取得不能時
 			VolumeManager = null;
 		}
-
+		
 		Configuration.Volume = RealVolume;
 		Configuration.IsMute = IsMuted;
 		ConfigurationUpdated();
 	}
 
-	private async void ToolMenu_Other_ScreenShot_Click()
+	[ICommand]
+	private async void Screenshot()
 	{
 		await SaveScreenShot();
 	}
 
+	[ICommand]
 	private void SetZoom(string? zoomParameter)
 	{
 		if (!double.TryParse(zoomParameter, out double zoom)) return;
@@ -918,6 +881,7 @@ public class BrowserViewModel : ObservableObject, BrowserLibCore.IBrowser
 		ConfigurationUpdated();
 	}
 
+	[ICommand]
 	private void ModifyZoom(string? zoomParameter)
 	{
 		if (!double.TryParse(zoomParameter, out double zoom)) return;
@@ -928,6 +892,7 @@ public class BrowserViewModel : ObservableObject, BrowserLibCore.IBrowser
 		ConfigurationUpdated();
 	}
 
+	[ICommand]
 	private void SetToolMenuAlignment(Dock dock)
 	{
 		ToolMenuDock = dock;
@@ -944,6 +909,7 @@ public class BrowserViewModel : ObservableObject, BrowserLibCore.IBrowser
 		ConfigurationUpdated();
 	}
 
+	[ICommand]
 	private void SetToolMenuVisibility(Visibility visibility)
 	{
 		ToolMenuVisibility = visibility;
@@ -952,7 +918,8 @@ public class BrowserViewModel : ObservableObject, BrowserLibCore.IBrowser
 		ConfigurationUpdated();
 	}
 
-	private void ToolMenu_Other_Mute_Click()
+	[ICommand]
+	private void Mute()
 	{
 		if (VolumeManager == null)
 		{
@@ -1014,7 +981,8 @@ public class BrowserViewModel : ObservableObject, BrowserLibCore.IBrowser
 		ConfigurationUpdated();
 	}
 
-	private void ToolMenu_Other_Refresh_Click()
+	[ICommand]
+	private void Refresh()
 	{
 		if (!Configuration.ConfirmAtRefresh ||
 			MessageBox.Show(FormBrowser.ReloadDialog, FormBrowser.Confirmation,
@@ -1025,7 +993,8 @@ public class BrowserViewModel : ObservableObject, BrowserLibCore.IBrowser
 		}
 	}
 
-	private void ToolMenu_Other_RefreshIgnoreCache_Click()
+	[ICommand]
+	private void HardRefresh()
 	{
 		if (!Configuration.ConfirmAtRefresh ||
 			MessageBox.Show(FormBrowser.ReloadHardDialog, FormBrowser.Confirmation,
@@ -1036,7 +1005,8 @@ public class BrowserViewModel : ObservableObject, BrowserLibCore.IBrowser
 		}
 	}
 
-	private void ToolMenu_Other_NavigateToLogInPage_Click()
+	[ICommand]
+	private void GoToLoginPage()
 	{
 		if (MessageBox.Show(FormBrowser.LoginDialog, FormBrowser.Confirmation,
 				MessageBoxButton.OKCancel, MessageBoxImage.Question, MessageBoxResult.Cancel)
@@ -1046,7 +1016,8 @@ public class BrowserViewModel : ObservableObject, BrowserLibCore.IBrowser
 		}
 	}
 
-	private void ToolMenu_Other_Navigate_Click()
+	[ICommand]
+	private void GoTo()
 	{
 		BrowserHost.RequestNavigation(Browser.CoreWebView2?.Source ?? "");
 	}
@@ -1078,7 +1049,8 @@ public class BrowserViewModel : ObservableObject, BrowserLibCore.IBrowser
 		//Browser?.Focus();
 	}
 
-	void ToolMenu_Other_LastScreenShot_ImageHost_Click()
+	[ICommand]
+	void OpenLastScreenshot()
 	{
 		if (LastScreenShotPath is null || !File.Exists(LastScreenShotPath)) return;
 
@@ -1090,7 +1062,8 @@ public class BrowserViewModel : ObservableObject, BrowserLibCore.IBrowser
 		Process.Start(psi);
 	}
 
-	private void ToolMenu_Other_LastScreenShot_OpenScreenShotFolder_Click()
+	[ICommand]
+	private void OpenScreenshotFolder()
 	{
 		if (!Directory.Exists(Configuration.ScreenShotPath)) return;
 
@@ -1102,7 +1075,8 @@ public class BrowserViewModel : ObservableObject, BrowserLibCore.IBrowser
 		Process.Start(psi);
 	}
 
-	private void ToolMenu_Other_LastScreenShot_CopyToClipboard_Click()
+	[ICommand]
+	private void CopyLastScreenshot()
 	{
 		if (LastScreenshot is null) return;
 
@@ -1117,14 +1091,16 @@ public class BrowserViewModel : ObservableObject, BrowserLibCore.IBrowser
 		}
 	}
 
-	private void ToolMenu_Other_OpenDevTool_Click()
+	[ICommand]
+	private void OpenDevtools()
 	{
 		if (Browser is not { IsInitialized: true }) return;
 		if (Browser.CoreWebView2 is null) return;
 		Browser.CoreWebView2.OpenDevToolsWindow();
 	}
 
-	private async void ToolMenu_Other_ClearCache_Click()
+	[ICommand]
+	private async void ClearCache()
 	{
 		if (MessageBox.Show(FormBrowser.ClearCacheMessage, FormBrowser.ClearCacheTitle,
 			MessageBoxButton.YesNo, MessageBoxImage.Warning, MessageBoxResult.No) == MessageBoxResult.Yes)
@@ -1134,6 +1110,7 @@ public class BrowserViewModel : ObservableObject, BrowserLibCore.IBrowser
 		}
 	}
 
+	[ICommand]
 	public void OpenExtraBrowser()
 	{
 		new ExtraBrowserWindow().Show();

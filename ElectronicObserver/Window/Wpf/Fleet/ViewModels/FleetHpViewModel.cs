@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Windows.Input;
 using System.Windows.Media;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using ElectronicObserver.Utility.Mathematics;
 using ElectronicObserver.Utility.Storage;
 using ElectronicObserver.Window.Control;
-using Microsoft.Toolkit.Mvvm.ComponentModel;
-using Microsoft.Toolkit.Mvvm.Input;
 
 namespace ElectronicObserver.Window.Wpf.Fleet.ViewModels;
 
-public class FleetHpViewModel : ObservableObject
+public partial class FleetHpViewModel : ObservableObject
 {
 	public ProgressBarProps HPBar { get; } = new();
 	public ProgressBarProps AkashiRepairBar { get; } = new();
@@ -52,14 +52,8 @@ public class FleetHpViewModel : ObservableObject
 	public double SubFontSize => SubFont.FontData.ToSize();
 	public SolidColorBrush SubForeground => SubFontColor.ToBrush();
 
-	public ICommand MouseEnterCommand { get; }
-	public ICommand MouseLeaveCommand { get; }
-
 	public FleetHpViewModel()
 	{
-		MouseEnterCommand = new RelayCommand(ShipStatusHP_MouseEnter);
-		MouseLeaveCommand = new RelayCommand(ShipStatusHP_MouseLeave);
-
 		HPBar.PropertyChanged += HPBar_PropertyChanged;
 		AkashiRepairBar.PropertyChanged += AkashiRepairBar_PropertyChanged;
 		PropertyChanged += (sender, args) =>
@@ -82,7 +76,8 @@ public class FleetHpViewModel : ObservableObject
 		Foreground = MainForeground;
 	}
 
-	private void ShipStatusHP_MouseEnter()
+	[ICommand]
+	private void MouseEnter()
 	{
 		_onMouse = true;
 		/*
@@ -91,7 +86,8 @@ public class FleetHpViewModel : ObservableObject
 		*/
 	}
 
-	private void ShipStatusHP_MouseLeave()
+	[ICommand]
+	private void MouseLeave()
 	{
 		_onMouse = false;
 		/*

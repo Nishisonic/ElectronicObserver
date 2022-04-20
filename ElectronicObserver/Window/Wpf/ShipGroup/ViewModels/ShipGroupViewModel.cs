@@ -5,14 +5,13 @@ using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using CommunityToolkit.Mvvm.Input;
 using ElectronicObserver.Data;
 using ElectronicObserver.Observer;
 using ElectronicObserver.Resource;
 using ElectronicObserver.ViewModels;
 using ElectronicObserver.ViewModels.Translations;
 using ElectronicObserverTypes;
-using Microsoft.Toolkit.Mvvm.ComponentModel;
-using Microsoft.Toolkit.Mvvm.Input;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ElectronicObserver.Window.Wpf.ShipGroup.ViewModels;
@@ -94,7 +93,7 @@ public record ShipGroupItemViewModel(IShipData Ship)
 	public int SallyArea => Ship.SallyArea;
 }
 
-public class ShipGroupViewModel : AnchorableViewModel
+public partial class ShipGroupViewModel : AnchorableViewModel
 {
 	private KCDatabase Db { get; }
 
@@ -103,8 +102,7 @@ public class ShipGroupViewModel : AnchorableViewModel
 	public ObservableCollection<ShipGroupItemViewModel> Ships { get; set; } = new();
 	public ObservableCollection<ShipGroupData> Groups { get; }
 	public ShipGroupData? SelectedGroup { get; set; }
-
-	public ICommand SelectGroupCommand { get; }
+	
 	public List<ShipGroupItemViewModel> SelectedShips { get; set; } = new();
 
 	public string StatusBarText => MakeStatusBarText(SelectedGroup, SelectedShips);
@@ -149,8 +147,6 @@ public class ShipGroupViewModel : AnchorableViewModel
 
 		FormShipGroup = App.Current.Services.GetService<FormShipGroupTranslationViewModel>()!;
 
-		SelectGroupCommand = new RelayCommand<string>(ShipGroupSelected);
-
 		APIObserver o = APIObserver.Instance;
 
 		o.APIList["api_port/port"].ResponseReceived += APIUpdated;
@@ -165,7 +161,8 @@ public class ShipGroupViewModel : AnchorableViewModel
 		SetShips();
 	}
 
-	private void ShipGroupSelected(string name)
+	[ICommand]
+	private void SelectGroup(string name)
 	{
 		SelectedGroup = Db.ShipGroup.ShipGroups.Values.First(g => g.Name == name);
 		SetShips();

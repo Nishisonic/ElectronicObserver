@@ -1,13 +1,12 @@
 ﻿using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
-using Microsoft.Toolkit.Mvvm.ComponentModel;
-using Microsoft.Toolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 
 namespace ElectronicObserver.ViewModels;
 
-
-public class AnchorableViewModel : ObservableObject
+public partial class AnchorableViewModel : ObservableObject
 {
 	public string Title { get; set; }
 	public virtual string ContentId { get; }
@@ -19,14 +18,16 @@ public class AnchorableViewModel : ObservableObject
 	public bool CanFloat { get; set; }
 	public bool CanClose { get; set; }
 	public bool CanMove { get; set; }
-
-	public virtual ICommand CloseCommand { get; }
-
 	protected AnchorableViewModel(string title, string contentId, ImageSource? icon = null)
 	{
 		Title = title;
 		ContentId = contentId;
 		IconSource = icon;
-		CloseCommand = new RelayCommand(() => Visibility = Visibility.Collapsed, () => CanClose);
+	}
+
+	[ICommand(CanExecute = nameof(CanClose))]
+	protected virtual void Close()
+	{
+		Visibility = Visibility.Collapsed;
 	}
 }
