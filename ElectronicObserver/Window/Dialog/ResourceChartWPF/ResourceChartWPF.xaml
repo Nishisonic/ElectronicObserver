@@ -126,6 +126,14 @@
 					IsChecked="False"
 					Tag="4"
 					/>
+				<MenuItem
+					Name="ExperienceDiffMenu"
+					Click="ExperienceDiffMenu_Click"
+					Header="Experience - Delta"
+					IsCheckable="True"
+					IsChecked="False"
+					Tag="5"
+					/>
 			</MenuItem>
 		</Menu>
 		<StackPanel
