@@ -14,7 +14,14 @@
 	>
 	<DockPanel>
 		<Menu DockPanel.Dock="Top">
-			<MenuItem Name="ChartSpanMenu" Header="Menu">
+			<MenuItem Name="FileMenu" Header="File">
+				<MenuItem
+					Name="FileSaveImage"
+					Click="FileSaveImage_Click"
+					Header="Save Image"
+					/>
+			</MenuItem>
+			<MenuItem Name="ChartSpanMenu" Header="Range">
 				<MenuItem
 					Click="ChartSpan_Click"
 					Header="Day"
@@ -86,7 +93,7 @@
 					Tag="9"
 					/>
 			</MenuItem>
-			<MenuItem Name="ChartTypeMenu" Header="Chart Type">
+			<MenuItem Name="ChartTypeMenu" Header="View">
 				<MenuItem
 					Name="ResourceMenu"
 					Click="ResourceMenu_Click"
@@ -97,11 +104,13 @@
 					/>
 				<MenuItem
 					Name="ResourceDiffMenu"
+					Click="ResourceDiffMenu_Click"
 					Header="ResourceDiff"
 					IsCheckable="True"
 					IsChecked="False"
 					Tag="1"
 					/>
+				<Separator />
 				<MenuItem
 					Name="MaterialMenu"
 					Click="MaterialMenu_Click"
@@ -118,6 +127,7 @@
 					IsChecked="False"
 					Tag="3"
 					/>
+				<Separator />
 				<MenuItem
 					Name="ExperienceMenu"
 					Click="ExperienceMenu_Click"
@@ -135,6 +145,20 @@
 					Tag="5"
 					/>
 			</MenuItem>
+			<MenuItem Name="OptionsMenu" Header="Options">
+				<MenuItem
+					Name="Menu_Option_ShowAllData"
+					Click="Menu_Option_ShowAllData_Click"
+					Header="Show All Data"
+					IsCheckable="True"
+					/>
+				<MenuItem
+					Name="Menu_Option_DivideByDay"
+					Click="Menu_Option_DivideByDay_Click"
+					Header="Show Daily Average"
+					IsCheckable="True"
+					/>
+			</MenuItem>
 		</Menu>
 		<StackPanel
 			Name="ResourcesPanel"
@@ -142,46 +166,56 @@
 			Orientation="Vertical"
 			Visibility="Visible"
 			>
-			<CheckBox
-				Name="FuelCheck"
-				Margin="10"
-				Checked="FuelShow"
-				Content="Fuel"
-				IsChecked="True"
-				Unchecked="FuelHide"
-				/>
-			<CheckBox
-				Name="AmmoCheck"
-				Margin="10"
-				Checked="AmmoShow"
-				Content="Ammo"
-				IsChecked="True"
-				Unchecked="AmmoHide"
-				/>
-			<CheckBox
-				Name="SteelCheck"
-				Margin="10"
-				Checked="SteelShow"
-				Content="Steel"
-				IsChecked="True"
-				Unchecked="SteelHide"
-				/>
-			<CheckBox
-				Name="BauxCheck"
-				Margin="10"
-				Checked="BauxShow"
-				Content="Baux"
-				IsChecked="True"
-				Unchecked="BauxHide"
-				/>
-			<CheckBox
-				Name="InstantRepairCheck"
-				Margin="10"
-				Checked="InstantRepairShow"
-				Content="Instant Repair"
-				IsChecked="True"
-				Unchecked="InstantRepairHide"
-				/>
+			<Border Background="Green">
+				<CheckBox
+					Name="FuelCheck"
+					Margin="10"
+					Checked="FuelShow"
+					Content="Fuel"
+					IsChecked="True"
+					Unchecked="FuelHide"
+					/>
+			</Border>
+			<Border Background="DarkOrange">
+				<CheckBox
+					Name="AmmoCheck"
+					Margin="10"
+					Checked="AmmoShow"
+					Content="Ammo"
+					IsChecked="True"
+					Unchecked="AmmoHide"
+					/>
+			</Border>
+			<Border Background="Blue">
+				<CheckBox
+					Name="SteelCheck"
+					Margin="10"
+					Checked="SteelShow"
+					Content="Steel"
+					IsChecked="True"
+					Unchecked="SteelHide"
+					/>
+			</Border>
+			<Border Background="Orange">
+				<CheckBox
+					Name="BauxCheck"
+					Margin="10"
+					Checked="BauxShow"
+					Content="Baux"
+					IsChecked="True"
+					Unchecked="BauxHide"
+					/>
+			</Border>
+			<Border Background="CadetBlue">
+				<CheckBox
+					Name="InstantRepairCheck"
+					Margin="10"
+					Checked="InstantRepairShow"
+					Content="Instant Repair"
+					IsChecked="True"
+					Unchecked="InstantRepairHide"
+					/>
+			</Border>
 		</StackPanel>
 		<StackPanel
 			Name="MaterialPanel"
@@ -189,52 +223,62 @@
 			Orientation="Vertical"
 			Visibility="Collapsed"
 			>
-			<CheckBox
-				Name="InstantRepairMatCheck"
-				Margin="10"
-				Checked="InstantRepairShow"
-				Content="Instant Repair"
-				IsChecked="True"
-				Unchecked="InstantRepairHide"
-				/>
-			<CheckBox
-				Name="InstantConstructionMatCheck"
-				Margin="10"
-				Checked="InstantConstructionShow"
-				Content="Instant Construction"
-				IsChecked="True"
-				Unchecked="InstantConstructionHide"
-				/>
-			<CheckBox
-				Name="DevelopmentMaterialCheck"
-				Margin="10"
-				Checked="DevelopmentMaterialShow"
-				Content="Development Material"
-				IsChecked="True"
-				Unchecked="DevelopmentMaterialHide"
-				/>
-			<CheckBox
-				Name="ModdingMaterialCheck"
-				Margin="10"
-				Checked="ModdingMaterialShow"
-				Content="Modding Material"
-				IsChecked="True"
-				Unchecked="ModdingMaterialHide"
-				/>
+			<Border Background="CadetBlue">
+				<CheckBox
+					Name="InstantRepairMatCheck"
+					Margin="10"
+					Checked="InstantRepairShow"
+					Content="Instant Repair"
+					IsChecked="True"
+					Unchecked="InstantRepairHide"
+					/>
+			</Border>
+			<Border Background="Orange">
+				<CheckBox
+					Name="InstantConstructionMatCheck"
+					Margin="10"
+					Checked="InstantConstructionShow"
+					Content="Instant Construction"
+					IsChecked="True"
+					Unchecked="InstantConstructionHide"
+					/>
+			</Border>
+			<Border Background="DarkOrchid">
+				<CheckBox
+					Name="DevelopmentMaterialCheck"
+					Margin="10"
+					Checked="DevelopmentMaterialShow"
+					Content="Development Material"
+					IsChecked="True"
+					Unchecked="DevelopmentMaterialHide"
+					/>
+			</Border>
+			<Border Background="Blue">
+				<CheckBox
+					Name="ModdingMaterialCheck"
+					Margin="10"
+					Checked="ModdingMaterialShow"
+					Content="Modding Material"
+					IsChecked="True"
+					Unchecked="ModdingMaterialHide"
+					/>
+			</Border>
 		</StackPanel>
 		<StackPanel
 			Name="ExperiencePanel"
 			DockPanel.Dock="Right"
 			Visibility="Collapsed"
 			>
-			<CheckBox
-				Name="ExperienceCheck"
-				Margin="10"
-				Checked="ExperienceShow"
-				Content="Experience"
-				IsChecked="True"
-				Unchecked="ExperienceHide"
-				/>
+			<Border Background="DarkOrchid">
+				<CheckBox
+					Name="ExperienceCheck"
+					Margin="10"
+					Checked="ExperienceShow"
+					Content="Experience"
+					IsChecked="True"
+					Unchecked="ExperienceHide"
+					/>
+			</Border>
 		</StackPanel>
 		<WpfPlot
 			Name="ChartArea"
