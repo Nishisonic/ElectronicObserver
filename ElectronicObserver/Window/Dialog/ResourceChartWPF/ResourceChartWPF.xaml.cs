@@ -6,6 +6,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using ElectronicObserver.Data;
 using ElectronicObserver.Resource.Record;
+using Microsoft.Win32;
 using ScottPlot;
 using ScottPlot.Plottable;
 using Translation = ElectronicObserver.Properties.Window.Dialog.DialogResourceChart;
@@ -41,8 +42,6 @@ public partial class ResourceChartWPF
 		ExperienceDiff,
 	}
 
-	private MarkerPlot HighlightedPoint;
-	private int LastHighlightedIndex = -1;
 	private ScatterPlot? FuelPlot;
 	private ScatterPlot? AmmoPlot;
 	private ScatterPlot? SteelPlot;
@@ -59,7 +58,7 @@ public partial class ResourceChartWPF
 	private SignalPlotXY? InstantConstructionSignalPlot;
 	private SignalPlotXY? ModdingMaterialSignalPlot;
 	private SignalPlotXY? DevelopmentMaterialSignalPlot;
-	private ToolTip toolTip;
+	private ToolTip? toolTip;
 	private ScatterPlot? ExperiencePlot;
 	private SignalPlotXY ExperienceSignalPlot;
 	private ChartType SelectedChartType => (ChartType)GetSelectedMenuStripIndex(ChartTypeMenu);
@@ -70,7 +69,6 @@ public partial class ResourceChartWPF
 		InitializeComponent();
 		Loaded += ChartArea_Loaded;
 	}
-
 	private void ChartArea_Loaded(object sender, RoutedEventArgs e)
 	{
 		if (!RecordManager.Instance.Resource.Record.Any())
@@ -79,15 +77,19 @@ public partial class ResourceChartWPF
 			Close();
 			return;
 		}
-		//toolTip = new ToolTip();
-		//toolTip.Content = "ToolTip";
 
-		//ChartArea.ToolTip = toolTip;
+
+		toolTip = new ToolTip
+		{
+			Content = "ToolTip"
+		};
+		ChartArea.ToolTip = toolTip;
 		SwitchMenuStrip(ChartSpanMenu, "5");
 		SwitchMenuStrip(ChartTypeMenu, "0");
 		ChartArea.Plot.Style(ScottPlot.Style.Black);
 		ChartArea.Configuration.Zoom = false;
 		ChartArea.Configuration.Pan = false;
+		ChartArea.RightClicked -= ChartArea.DefaultRightClickEvent;
 		ChartArea.Configuration.DoubleClickBenchmark = false;
 		UpdateChart();
 	}
@@ -100,28 +102,88 @@ public partial class ResourceChartWPF
 	private void ChartArea_MouseMove(object sender, MouseEventArgs e)
 	{
 		// determine point nearest the cursor
-		//(double mouseCoordX, double mouseCoordY) = ChartArea.GetMouseCoordinates();
-		//double xyRatio = ChartArea.Plot.XAxis.Dims.PxPerUnit / ChartArea.Plot.YAxis.Dims.PxPerUnit;
-		//(double pointX, double pointY, int pointIndex) = FuelPlot.GetPointNearest(mouseCoordX, mouseCoordY, xyRatio);
-		// place the highlight over the point of interest
-		//HighlightedPoint.X = pointX;
-		//HighlightedPoint.Y = pointY;
-		//HighlightedPoint.IsVisible = true;
-		// render if the highlighted point chnaged
-		//if (LastHighlightedIndex != pointIndex)
-		//{
-		//	LastHighlightedIndex = pointIndex;
-		//	ChartArea.Refresh();
-		//}
-
+		(double mouseCoordX, double mouseCoordY) = ChartArea.GetMouseCoordinates();
+		double xyRatio = ChartArea.Plot.XAxis.Dims.PxPerUnit / ChartArea.Plot.YAxis.Dims.PxPerUnit;
+		if (SelectedChartType == ChartType.Resource)
+		{
+			(double fuelpointX, double fuelpointY, int fuelpointIndex) = FuelPlot.GetPointNearest(mouseCoordX, mouseCoordY, xyRatio);
+			(double ammopointX, double ammopointY, int ammopointIndex) = AmmoPlot.GetPointNearest(mouseCoordX, mouseCoordY, xyRatio);
+			(double steelpointX, double steelpointY, int steelpointIndex) = SteelPlot.GetPointNearest(mouseCoordX, mouseCoordY, xyRatio);
+			(double bauxpointX, double bauxpointY, int bauxpointIndex) = BauxPlot.GetPointNearest(mouseCoordX, mouseCoordY, xyRatio);
+			(double instantrepairpointX, double instantrepairpointY, int instantrepairpointIndex) = InstantRepairPlot.GetPointNearest(mouseCoordX, mouseCoordY, xyRatio);
+			DateTime date = DateTime.FromOADate(fuelpointX);
+			toolTip.Content = string.Format("{0}\nFuel: {1}\nAmmo:{2}\nSteel: {3}\nBaux: {4}\nInstant Repair: {5}", date, fuelpointY, ammopointY, steelpointY, bauxpointY, instantrepairpointY);
+		}
+		else if(SelectedChartType == ChartType.ResourceDiff)
+		{
+			(double fuelpointX, double fuelpointY, int fuelpointIndex) = FuelSignalPlot.GetPointNearestX(mouseCoordX);
+			(double ammopointX, double ammopointY, int ammopointIndex) = AmmoSignalPlot.GetPointNearestX(mouseCoordX);
+			(double steelpointX, double steelpointY, int steelpointIndex) = SteelSignalPlot.GetPointNearestX(mouseCoordX);
+			(double bauxpointX, double bauxpointY, int bauxpointIndex) = BauxSignalPlot.GetPointNearestX(mouseCoordX);
+			(double instantrepairpointX, double instantrepairpointY, int instantrepairpointIndex) = InstantRepairSignalPlot.GetPointNearestX(mouseCoordX);
+			DateTime date = DateTime.FromOADate(fuelpointX);
+			if (Menu_Option_DivideByDay.IsChecked)
+			{
+				toolTip.Content = string.Format("{0}\nFuel: {1:+0;-0;±0} /day \nAmmo:{2:+0;-0;±0} /day \nSteel: {3:+0;-0;±0}/day \nBaux: {4:+0;-0;±0} /day\nInstant Repair: {5:+0;-0;±0} /day", date, fuelpointY, ammopointY, steelpointY, bauxpointY, instantrepairpointY);
+			}
+			else
+			{
+				toolTip.Content = string.Format("{0}\nFuel: {1}\nAmmo:{2}\nSteel: {3}\nBaux: {4}\nInstant Repair: {5}", date, fuelpointY, ammopointY, steelpointY, bauxpointY, instantrepairpointY);
+			}
+		}
+		else if (SelectedChartType == ChartType.Material)
+		{
+			(double instantconstructionpointX, double instantconstructionpointY, int instantconstructionpointpointIndex) = InstantConstructionPlot.GetPointNearest(mouseCoordX, mouseCoordY, xyRatio);
+			(double moddingmaterialpointX, double moddingmaterialpointY, int moddingmaterialpointIndex) = ModdingMaterialPlot.GetPointNearest(mouseCoordX, mouseCoordY, xyRatio);
+			(double developmentmaterialpointX, double developmentmaterialpointY, int developmentmaterialpointIndex) = DevelopmentMaterialPlot.GetPointNearest(mouseCoordX, mouseCoordY, xyRatio);
+			(double instantrepairpointX, double instantrepairpointY, int instantrepairpointIndex) = InstantRepairPlot.GetPointNearest(mouseCoordX, mouseCoordY, xyRatio);
+			DateTime date = DateTime.FromOADate(instantconstructionpointX);
+			toolTip.Content = string.Format("{0}\nDevelopment Material: {1}\nModding Material:{2}\nInstant Construction: {3}\nInstant Repair: {4}", date, developmentmaterialpointY, moddingmaterialpointY, instantconstructionpointY, instantrepairpointY);
+		}
+		else if (SelectedChartType == ChartType.MaterialDiff)
+		{
+			(double instantconstructionpointX, double instantconstructionpointY, int instantconstructionpointpointIndex) = InstantConstructionSignalPlot.GetPointNearestX(mouseCoordX);
+			(double moddingmaterialpointX, double moddingmaterialpointY, int moddingmaterialpointIndex) = ModdingMaterialSignalPlot.GetPointNearestX(mouseCoordX);
+			(double developmentmaterialpointX, double developmentmaterialpointY, int developmentmaterialpointIndex) = DevelopmentMaterialSignalPlot.GetPointNearestX(mouseCoordX);
+			(double instantrepairpointX, double instantrepairpointY, int instantrepairpointIndex) = InstantRepairSignalPlot.GetPointNearestX(mouseCoordX);
+			DateTime date = DateTime.FromOADate(instantconstructionpointX);
+			if (Menu_Option_DivideByDay.IsChecked)
+			{
+				toolTip.Content = string.Format("{0}\nDevelopment Material: {1:+0;-0;±0} /day\nModding Material:{2:+0;-0;±0} /day\nInstant Construction: {3:+0;-0;±0} /day\nInstant Repair: {4:+0;-0;±0} /day", date, developmentmaterialpointY, moddingmaterialpointY, instantconstructionpointY, instantrepairpointY);
+			}
+			else
+			{
+				toolTip.Content = string.Format("{0}\nDevelopment Material: {1}\nModding Material:{2}\nInstant Construction: {3}\nInstant Repair: {4}", date, developmentmaterialpointY, moddingmaterialpointY, instantconstructionpointY, instantrepairpointY);
+			}
+		}else if (SelectedChartType == ChartType.Experience)
+		{
+			(double experiencepointX, double experiencepointY, int experiencepointIndex) = ExperiencePlot.GetPointNearest(mouseCoordX, mouseCoordY, xyRatio);
+			DateTime date = DateTime.FromOADate(experiencepointX);
+			toolTip.Content = $"{date}\nHQ Experience: {experiencepointY}";
+		}
+		else if (SelectedChartType == ChartType.ExperienceDiff)
+		{
+			(double experiencepointX, double experiencepointY, int experiencepointIndex) = ExperienceSignalPlot.GetPointNearestX(mouseCoordX);
+			DateTime date = DateTime.FromOADate(experiencepointX);
+			if (Menu_Option_DivideByDay.IsChecked)
+			{
+				toolTip.Content = string.Format("{0}\nHQ Experience: {1:+0;-0;±0}", date, experiencepointY);
+			}
+			else
+			{
+				toolTip.Content = string.Format("{0}\nHQ Experience: {1:+0;-0;±0} /day", date, experiencepointY);
+			}
+		}
+		else
+		{
+			toolTip = null;
+		}
 		// update the GUI to describe the highlighted point
 		double mouseX = e.GetPosition(this).X;
 		double mouseY = e.GetPosition(this).Y;
 
-		//toolTip.HorizontalOffset = mouseX;
-		//toolTip.VerticalOffset = mouseY-20;
-		//toolTip.Content = "Fuel: " + pointY;
-		//HighlightedPoint.Text = "Fuel: " + pointY;
+		toolTip.HorizontalOffset = mouseX;
+		toolTip.VerticalOffset = mouseY - 20;
 	}
 
 	private void SetResourceChart()
@@ -131,7 +193,6 @@ public partial class ResourceChartWPF
 		ChartArea.Plot.XAxis.Label("Date");
 		ChartArea.Plot.YAxis.Label("Resource");
 		ChartArea.Plot.XAxis.DateTimeFormat(true);
-		ChartArea.Plot.Legend(true, Alignment.LowerLeft);
 		AxisXIntervals(SelectedChartSpan);
 		FuelCheck.IsChecked = true;
 		AmmoCheck.IsChecked = true;
@@ -182,13 +243,103 @@ public partial class ResourceChartWPF
 		SteelPlot = ChartArea.Plot.AddScatterLines(date_list.ToArray(), steel_list.ToArray(), System.Drawing.Color.AliceBlue, label: "Steel");
 		InstantRepairPlot = ChartArea.Plot.AddScatterLines(date_list.ToArray(), instant_repair_list.ToArray(), System.Drawing.Color.Green, label: "Instant Repair");
 		InstantRepairPlot.YAxisIndex = 1;
+		ChartArea.Refresh();
+	}
+	private void SetResourceDiffChart()
+	{
+		ChartArea.Plot.Clear();
 
-		// Add a red circle we can move around later as a highlighted point indicator
-		//HighlightedPoint = ChartArea.Plot.AddPoint(0, 0);
-		//HighlightedPoint.Color = System.Drawing.Color.Red;
-		//HighlightedPoint.MarkerSize = 10;
-		//HighlightedPoint.MarkerShape = MarkerShape.none;
-		//HighlightedPoint.IsVisible = false;
+		ChartArea.Plot.XAxis.Label("Date");
+		ChartArea.Plot.YAxis.Label("Resource");
+		ChartArea.Plot.XAxis.DateTimeFormat(true);
+		AxisXIntervals(SelectedChartSpan);
+		FuelCheck.IsChecked = true;
+		AmmoCheck.IsChecked = true;
+		BauxCheck.IsChecked = true;
+		ResourcesPanel.Visibility = Visibility.Visible;
+		MaterialPanel.Visibility = Visibility.Collapsed;
+		ExperiencePanel.Visibility = Visibility.Collapsed;
+		InstantRepairCheck.IsChecked = true;
+		List<double>? fuel_list = Array.Empty<double>().ToList();
+
+		List<double>? ammo_list = Array.Empty<double>().ToList();
+
+		List<double>? baux_list = Array.Empty<double>().ToList();
+
+		List<double>? steel_list = Array.Empty<double>().ToList();
+
+		List<double>? instant_repair_list = Array.Empty<double>().ToList();
+		ChartArea.Plot.YAxis2.Ticks(true);
+		ChartArea.Plot.YAxis2.MajorGrid(true);
+		List<double>? date_list = Array.Empty<double>().ToList();
+
+		{
+			var record = GetRecords();
+
+			ResourceRecord.ResourceElement prev = null;
+			if (record.Any())
+			{
+				prev = record.First();
+				foreach (var r in record)
+				{
+					if (ShouldSkipRecord(r.Date - prev.Date))
+						continue;
+
+					double[] ys = new double[] {
+						r.Fuel - prev.Fuel,
+						r.Ammo - prev.Ammo,
+						r.Steel - prev.Steel,
+						r.Bauxite - prev.Bauxite,
+						r.InstantRepair - prev.InstantRepair };
+					if (Menu_Option_DivideByDay.IsChecked)
+					{
+						for (int i = 0; i < 4; i++)
+							ys[i] /= Math.Max((r.Date - prev.Date).TotalDays, 1.0 / 1440.0);
+					}
+
+					date_list.Add(r.Date.ToOADate());
+
+					fuel_list.Add(ys[0]);
+					ammo_list.Add(ys[1]);
+					steel_list.Add(ys[2]);
+					baux_list.Add(ys[3]);
+					instant_repair_list.Add(ys[4]);
+
+					prev = r;
+				}
+			}
+		}
+		InstantRepairSignalPlot = ChartArea.Plot.AddSignalXY(date_list.ToArray(), instant_repair_list.ToArray());
+		InstantRepairSignalPlot.StepDisplay = true;
+		InstantRepairSignalPlot.FillAboveAndBelow(System.Drawing.Color.Green, System.Drawing.Color.Transparent, System.Drawing.Color.Transparent, System.Drawing.Color.Green, 1);
+		InstantRepairSignalPlot.Label = "Instant Repair";
+		InstantRepairSignalPlot.MarkerSize = 0;
+		InstantRepairSignalPlot.YAxisIndex = 1;
+
+		FuelSignalPlot = ChartArea.Plot.AddSignalXY(date_list.ToArray(), fuel_list.ToArray());
+		FuelSignalPlot.StepDisplay = true;
+		FuelSignalPlot.FillAboveAndBelow(System.Drawing.Color.LimeGreen, System.Drawing.Color.Transparent, System.Drawing.Color.Transparent, System.Drawing.Color.LimeGreen, 1);
+		FuelSignalPlot.Label = "Fuel";
+		FuelSignalPlot.MarkerSize = 0;
+
+		AmmoSignalPlot = ChartArea.Plot.AddSignalXY(date_list.ToArray(), ammo_list.ToArray());
+		AmmoSignalPlot.StepDisplay = true;
+		AmmoSignalPlot.FillAboveAndBelow(System.Drawing.Color.Brown, System.Drawing.Color.Transparent, System.Drawing.Color.Transparent, System.Drawing.Color.Brown, 1);
+		AmmoSignalPlot.Label = "Ammo";
+		AmmoSignalPlot.MarkerSize = 0;
+
+		SteelSignalPlot = ChartArea.Plot.AddSignalXY(date_list.ToArray(), steel_list.ToArray());
+		SteelSignalPlot.StepDisplay = true;
+		SteelSignalPlot.FillAboveAndBelow(System.Drawing.Color.AliceBlue, System.Drawing.Color.Transparent, System.Drawing.Color.Transparent, System.Drawing.Color.AliceBlue, 1);
+		SteelSignalPlot.Label = "Steel";
+		SteelSignalPlot.MarkerSize = 0;
+
+		BauxSignalPlot = ChartArea.Plot.AddSignalXY(date_list.ToArray(), baux_list.ToArray());
+		BauxSignalPlot.StepDisplay = true;
+		BauxSignalPlot.FillAboveAndBelow(System.Drawing.Color.Brown, System.Drawing.Color.Transparent, System.Drawing.Color.Transparent, System.Drawing.Color.Brown, 1);
+		BauxSignalPlot.Label = "Bauxite";
+		BauxSignalPlot.MarkerSize = 0;
+
 		ChartArea.Refresh();
 	}
 	private void SetMaterialDiffChart()
@@ -223,21 +374,28 @@ public partial class ResourceChartWPF
 				{
 					if (ShouldSkipRecord(r.Date - prev.Date))
 						continue;
-					//if (Menu_Option_DivideByDay.Checked)
-					//{
-					//	for (int i = 0; i < 4; i++)
-					//		ys[i] /= Math.Max((r.Date - prev.Date).TotalDays, 1.0 / 1440.0);
-					//}
+					double[] ys = new double[] {
+						r.InstantConstruction - prev.InstantConstruction ,
+						r.InstantRepair - prev.InstantRepair,
+						r.DevelopmentMaterial - prev.DevelopmentMaterial ,
+						r.ModdingMaterial - prev.ModdingMaterial };
+
+					if (Menu_Option_DivideByDay.IsChecked)
+					{
+						for (int i = 0; i < 4; i++)
+							ys[i] /= Math.Max((r.Date - prev.Date).TotalDays, 1.0 / 1440.0);
+					}
 					date_list.Add(r.Date.ToOADate());
-					instant_repair_list.Add(r.InstantRepair - prev.InstantRepair);
-					development_material_list.Add(r.DevelopmentMaterial - prev.DevelopmentMaterial);
-					modding_material_list.Add(r.ModdingMaterial - prev.ModdingMaterial);
-					instant_contruction_list.Add(r.InstantConstruction - prev.InstantConstruction);
+					instant_contruction_list.Add(ys[0]);
+					instant_repair_list.Add(ys[1]);
+					development_material_list.Add(ys[2]);
+					modding_material_list.Add(ys[3]);
+
 					prev = r;
 				}
 			}
 		}
-		InstantRepairSignalPlot = ChartArea.Plot.AddSignalXY(date_list.ToArray(),instant_repair_list.ToArray());
+		InstantRepairSignalPlot = ChartArea.Plot.AddSignalXY(date_list.ToArray(), instant_repair_list.ToArray());
 		InstantRepairSignalPlot.StepDisplay = true;
 		InstantRepairSignalPlot.FillAboveAndBelow(System.Drawing.Color.Green, System.Drawing.Color.Transparent, System.Drawing.Color.Transparent, System.Drawing.Color.Green, 1);
 		InstantRepairSignalPlot.Label = "Instant Repair";
@@ -265,8 +423,8 @@ public partial class ResourceChartWPF
 	}
 	private bool ShouldSkipRecord(TimeSpan span)
 	{
-		//if (Menu_Option_ShowAllData.Checked)
-		//return false;
+		if (Menu_Option_ShowAllData.IsChecked)
+			return false;
 
 		if (span.Ticks == 0)        //初回のデータ( prev == First )は無視しない
 			return false;
@@ -341,7 +499,6 @@ public partial class ResourceChartWPF
 		ChartArea.Plot.YAxis.Label("Material");
 		ChartArea.Plot.XAxis.DateTimeFormat(true);
 		AxisXIntervals(SelectedChartSpan);
-		ChartArea.Plot.Legend(true, Alignment.LowerLeft);
 		ModdingMaterialCheck.IsChecked = true;
 		InstantRepairMatCheck.IsChecked = true;
 		InstantConstructionMatCheck.IsChecked = true;
@@ -474,6 +631,11 @@ public partial class ResourceChartWPF
 			FuelPlot.IsVisible = true;
 			ChartArea.Refresh();
 		}
+		if (FuelSignalPlot is not null)
+		{
+			FuelSignalPlot.IsVisible = true;
+			ChartArea.Refresh();
+		}
 	}
 
 	private void FuelHide(object sender, RoutedEventArgs e)
@@ -481,6 +643,11 @@ public partial class ResourceChartWPF
 		if (FuelPlot is not null)
 		{
 			FuelPlot.IsVisible = false;
+			ChartArea.Refresh();
+		}
+		if (FuelSignalPlot is not null)
+		{
+			FuelSignalPlot.IsVisible = false;
 			ChartArea.Refresh();
 		}
 	}
@@ -492,6 +659,11 @@ public partial class ResourceChartWPF
 			AmmoPlot.IsVisible = true;
 			ChartArea.Refresh();
 		}
+		if (AmmoSignalPlot is not null)
+		{
+			AmmoSignalPlot.IsVisible = true;
+			ChartArea.Refresh();
+		}
 	}
 
 	private void AmmoHide(object sender, RoutedEventArgs e)
@@ -499,6 +671,11 @@ public partial class ResourceChartWPF
 		if (AmmoPlot is not null)
 		{
 			AmmoPlot.IsVisible = false;
+			ChartArea.Refresh();
+		}
+		if (AmmoSignalPlot is not null)
+		{
+			AmmoSignalPlot.IsVisible = false;
 			ChartArea.Refresh();
 		}
 	}
@@ -510,6 +687,11 @@ public partial class ResourceChartWPF
 			SteelPlot.IsVisible = true;
 			ChartArea.Refresh();
 		}
+		if (SteelSignalPlot is not null)
+		{
+			SteelSignalPlot.IsVisible = true;
+			ChartArea.Refresh();
+		}
 	}
 
 	private void SteelHide(object sender, RoutedEventArgs e)
@@ -517,6 +699,11 @@ public partial class ResourceChartWPF
 		if (SteelPlot is not null)
 		{
 			SteelPlot.IsVisible = false;
+			ChartArea.Refresh();
+		}
+		if (SteelSignalPlot is not null)
+		{
+			SteelSignalPlot.IsVisible = false;
 			ChartArea.Refresh();
 		}
 	}
@@ -528,6 +715,11 @@ public partial class ResourceChartWPF
 			BauxPlot.IsVisible = true;
 			ChartArea.Refresh();
 		}
+		if (BauxSignalPlot is not null)
+		{
+			BauxSignalPlot.IsVisible = true;
+			ChartArea.Refresh();
+		}
 	}
 
 	private void BauxHide(object sender, RoutedEventArgs e)
@@ -535,6 +727,11 @@ public partial class ResourceChartWPF
 		if (BauxPlot is not null)
 		{
 			BauxPlot.IsVisible = false;
+			ChartArea.Refresh();
+		}
+		if (BauxSignalPlot is not null)
+		{
+			BauxSignalPlot.IsVisible = false;
 			ChartArea.Refresh();
 		}
 	}
@@ -694,6 +891,9 @@ public partial class ResourceChartWPF
 			case ChartType.Resource:
 				SetResourceChart();
 				break;
+			case ChartType.ResourceDiff:
+				SetResourceDiffChart();
+				break;
 			case ChartType.Material:
 				SetMaterialChart();
 				break;
@@ -734,11 +934,11 @@ public partial class ResourceChartWPF
 				{
 					if (ShouldSkipRecord(r.Date - prev.Date))
 						continue;
+					double ys = r.HQExp - prev.HQExp;
+					if (Menu_Option_DivideByDay.IsChecked)
+						ys /= Math.Max((r.Date - prev.Date).TotalDays, 1.0 / 1440.0);
 
-					//if (Menu_Option_DivideByDay.Checked)
-					//	ys /= Math.Max((r.Date - prev.Date).TotalDays, 1.0 / 1440.0)
-
-					experience_list.Add(r.HQExp - prev.HQExp);
+					experience_list.Add(ys);
 					date_list.Add(r.Date.ToOADate());
 					prev = r;
 				}
@@ -865,5 +1065,36 @@ public partial class ResourceChartWPF
 	{
 		SwitchMenuStrip(ChartTypeMenu, "5");
 		UpdateChart();
+	}
+
+	private void ResourceDiffMenu_Click(object sender, RoutedEventArgs e)
+	{
+		SwitchMenuStrip(ChartTypeMenu, "1");
+		UpdateChart();
+	}
+
+	private void Menu_Option_ShowAllData_Click(object sender, RoutedEventArgs e)
+	{
+		UpdateChart();
+	}
+
+	private void Menu_Option_DivideByDay_Click(object sender, RoutedEventArgs e)
+	{
+		UpdateChart();
+	}
+
+	private void FileSaveImage_Click(object sender, RoutedEventArgs e)
+	{
+		var sfd = new SaveFileDialog
+		{
+			FileName = "ResourceChart.png",
+			Filter = "PNG Files (*.png)|*.png;*.png" +
+			 "|JPG Files (*.jpg, *.jpeg)|*.jpg;*.jpeg" +
+			 "|BMP Files (*.bmp)|*.bmp;*.bmp" +
+			 "|All files (*.*)|*.*"
+		};
+
+		if (sfd.ShowDialog() is true)
+			ChartArea.Plot.SaveFig(sfd.FileName);
 	}
 }
