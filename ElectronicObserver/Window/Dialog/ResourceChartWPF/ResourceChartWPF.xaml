@@ -9,6 +9,7 @@
 	Title="ResourceChartWPF"
 	Width="950"
 	Height="450"
+	d:DataContext="{d:DesignInstance local:ResourceChartViewModel}"
 	ui:WindowHelper.UseModernWindowStyle="True"
 	mc:Ignorable="d"
 	>
@@ -170,50 +171,40 @@
 				<CheckBox
 					Name="FuelCheck"
 					Margin="10"
-					Checked="FuelShow"
 					Content="Fuel"
-					IsChecked="True"
-					Unchecked="FuelHide"
+					IsChecked="{Binding ShowFuel}"
 					/>
 			</Border>
 			<Border Background="DarkOrange">
 				<CheckBox
 					Name="AmmoCheck"
 					Margin="10"
-					Checked="AmmoShow"
 					Content="Ammo"
-					IsChecked="True"
-					Unchecked="AmmoHide"
+					IsChecked="{Binding ShowAmmo}"
 					/>
 			</Border>
 			<Border Background="Blue">
 				<CheckBox
 					Name="SteelCheck"
 					Margin="10"
-					Checked="SteelShow"
 					Content="Steel"
-					IsChecked="True"
-					Unchecked="SteelHide"
+					IsChecked="{Binding ShowSteel}"
 					/>
 			</Border>
 			<Border Background="Orange">
 				<CheckBox
 					Name="BauxCheck"
 					Margin="10"
-					Checked="BauxShow"
 					Content="Baux"
-					IsChecked="True"
-					Unchecked="BauxHide"
+					IsChecked="{Binding ShowBaux}"
 					/>
 			</Border>
 			<Border Background="CadetBlue">
 				<CheckBox
 					Name="InstantRepairCheck"
 					Margin="10"
-					Checked="InstantRepairShow"
 					Content="Instant Repair"
-					IsChecked="True"
-					Unchecked="InstantRepairHide"
+					IsChecked="{Binding ShowInstantRepair}"
 					/>
 			</Border>
 		</StackPanel>
@@ -227,40 +218,32 @@
 				<CheckBox
 					Name="InstantRepairMatCheck"
 					Margin="10"
-					Checked="InstantRepairShow"
 					Content="Instant Repair"
-					IsChecked="True"
-					Unchecked="InstantRepairHide"
+					IsChecked="{Binding ShowInstantRepair}"
 					/>
 			</Border>
 			<Border Background="Orange">
 				<CheckBox
 					Name="InstantConstructionMatCheck"
 					Margin="10"
-					Checked="InstantConstructionShow"
 					Content="Instant Construction"
-					IsChecked="True"
-					Unchecked="InstantConstructionHide"
+					IsChecked="{Binding ShowInstantConstruction}"
 					/>
 			</Border>
 			<Border Background="DarkOrchid">
 				<CheckBox
 					Name="DevelopmentMaterialCheck"
 					Margin="10"
-					Checked="DevelopmentMaterialShow"
 					Content="Development Material"
-					IsChecked="True"
-					Unchecked="DevelopmentMaterialHide"
+					IsChecked="{Binding ShowDevelopmentMaterial}"
 					/>
 			</Border>
 			<Border Background="Blue">
 				<CheckBox
 					Name="ModdingMaterialCheck"
 					Margin="10"
-					Checked="ModdingMaterialShow"
 					Content="Modding Material"
-					IsChecked="True"
-					Unchecked="ModdingMaterialHide"
+					IsChecked="{Binding ShowModdingMaterial}"
 					/>
 			</Border>
 		</StackPanel>
@@ -273,10 +256,8 @@
 				<CheckBox
 					Name="ExperienceCheck"
 					Margin="10"
-					Checked="ExperienceShow"
 					Content="Experience"
-					IsChecked="True"
-					Unchecked="ExperienceHide"
+					IsChecked="{Binding ShowExperience}"
 					/>
 			</Border>
 		</StackPanel>

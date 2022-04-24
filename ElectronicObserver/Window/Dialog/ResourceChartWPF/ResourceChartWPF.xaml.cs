@@ -18,6 +18,7 @@ namespace ElectronicObserver.Window.Dialog.ResourceChartWPF;
 /// </summary>
 public partial class ResourceChartWPF
 {
+	public ResourceChartViewModel ViewModel { get; } = new();
 	private enum ChartSpan
 	{
 		Day,
@@ -67,7 +68,155 @@ public partial class ResourceChartWPF
 	public ResourceChartWPF()
 	{
 		InitializeComponent();
+		DataContext = ViewModel;
 		Loaded += ChartArea_Loaded;
+
+		#region Chart Toggles
+		ViewModel.PropertyChanged += (sender, args) =>
+{
+	if (args.PropertyName is not nameof(ViewModel.ShowFuel)) return;
+
+	if (FuelPlot is not null)
+	{
+		FuelPlot.IsVisible = ViewModel.ShowFuel;
+		ChartArea.Refresh();
+	}
+
+	if (FuelSignalPlot is not null)
+	{
+		FuelSignalPlot.IsVisible = ViewModel.ShowFuel;
+		ChartArea.Refresh();
+	}
+};
+		ViewModel.PropertyChanged += (sender, args) =>
+		{
+			if (args.PropertyName is not nameof(ViewModel.ShowAmmo)) return;
+
+			if (AmmoPlot is not null)
+			{
+				AmmoPlot.IsVisible = ViewModel.ShowAmmo;
+				ChartArea.Refresh();
+			}
+
+			if (AmmoSignalPlot is not null)
+			{
+				AmmoSignalPlot.IsVisible = ViewModel.ShowAmmo;
+				ChartArea.Refresh();
+			}
+		};
+		ViewModel.PropertyChanged += (sender, args) =>
+		{
+			if (args.PropertyName is not nameof(ViewModel.ShowSteel)) return;
+
+			if (SteelPlot is not null)
+			{
+				SteelPlot.IsVisible = ViewModel.ShowSteel;
+				ChartArea.Refresh();
+			}
+
+			if (SteelSignalPlot is not null)
+			{
+				SteelSignalPlot.IsVisible = ViewModel.ShowSteel;
+				ChartArea.Refresh();
+			}
+		};
+		ViewModel.PropertyChanged += (sender, args) =>
+		{
+			if (args.PropertyName is not nameof(ViewModel.ShowBaux)) return;
+
+			if (BauxPlot is not null)
+			{
+				BauxPlot.IsVisible = ViewModel.ShowBaux;
+				ChartArea.Refresh();
+			}
+
+			if (BauxSignalPlot is not null)
+			{
+				BauxSignalPlot.IsVisible = ViewModel.ShowBaux;
+				ChartArea.Refresh();
+			}
+		};
+		ViewModel.PropertyChanged += (sender, args) =>
+		{
+			if (args.PropertyName is not nameof(ViewModel.ShowInstantRepair)) return;
+
+			if (InstantRepairPlot is not null)
+			{
+				InstantRepairPlot.IsVisible = ViewModel.ShowInstantRepair;
+				ChartArea.Refresh();
+			}
+
+			if (InstantRepairSignalPlot is not null)
+			{
+				InstantRepairSignalPlot.IsVisible = ViewModel.ShowInstantRepair;
+				ChartArea.Refresh();
+			}
+		};
+		ViewModel.PropertyChanged += (sender, args) =>
+		{
+			if (args.PropertyName is not nameof(ViewModel.ShowInstantConstruction)) return;
+
+			if (InstantConstructionPlot is not null)
+			{
+				InstantConstructionPlot.IsVisible = ViewModel.ShowInstantConstruction;
+				ChartArea.Refresh();
+			}
+
+			if (InstantConstructionSignalPlot is not null)
+			{
+				InstantConstructionSignalPlot.IsVisible = ViewModel.ShowInstantConstruction;
+				ChartArea.Refresh();
+			}
+		};
+		ViewModel.PropertyChanged += (sender, args) =>
+		{
+			if (args.PropertyName is not nameof(ViewModel.ShowDevelopmentMaterial)) return;
+
+			if (DevelopmentMaterialPlot is not null)
+			{
+				DevelopmentMaterialPlot.IsVisible = ViewModel.ShowDevelopmentMaterial;
+				ChartArea.Refresh();
+			}
+
+			if (DevelopmentMaterialSignalPlot is not null)
+			{
+				DevelopmentMaterialSignalPlot.IsVisible = ViewModel.ShowDevelopmentMaterial;
+				ChartArea.Refresh();
+			}
+		};
+		ViewModel.PropertyChanged += (sender, args) =>
+		{
+			if (args.PropertyName is not nameof(ViewModel.ShowModdingMaterial)) return;
+
+			if (ModdingMaterialPlot is not null)
+			{
+				ModdingMaterialPlot.IsVisible = ViewModel.ShowModdingMaterial;
+				ChartArea.Refresh();
+			}
+
+			if (ModdingMaterialSignalPlot is not null)
+			{
+				ModdingMaterialSignalPlot.IsVisible = ViewModel.ShowModdingMaterial;
+				ChartArea.Refresh();
+			}
+		};
+		ViewModel.PropertyChanged += (sender, args) =>
+		{
+			if (args.PropertyName is not nameof(ViewModel.ShowExperience)) return;
+
+			if (ExperiencePlot is not null)
+			{
+				ExperiencePlot.IsVisible = ViewModel.ShowExperience;
+				ChartArea.Refresh();
+			}
+
+			if (ExperienceSignalPlot is not null)
+			{
+				ExperienceSignalPlot.IsVisible = ViewModel.ShowExperience;
+				ChartArea.Refresh();
+			}
+		}; 
+		#endregion
 	}
 	private void ChartArea_Loaded(object sender, RoutedEventArgs e)
 	{
@@ -78,13 +227,12 @@ public partial class ResourceChartWPF
 			return;
 		}
 
-
 		toolTip = new ToolTip
 		{
 			Content = "ToolTip"
 		};
 		ChartArea.ToolTip = toolTip;
-		SwitchMenuStrip(ChartSpanMenu, "5");
+		SwitchMenuStrip(ChartSpanMenu, "2");
 		SwitchMenuStrip(ChartTypeMenu, "0");
 		ChartArea.Plot.Style(ScottPlot.Style.Black);
 		ChartArea.Configuration.Zoom = false;
@@ -114,7 +262,7 @@ public partial class ResourceChartWPF
 			DateTime date = DateTime.FromOADate(fuelpointX);
 			toolTip.Content = string.Format("{0}\nFuel: {1}\nAmmo:{2}\nSteel: {3}\nBaux: {4}\nInstant Repair: {5}", date, fuelpointY, ammopointY, steelpointY, bauxpointY, instantrepairpointY);
 		}
-		else if(SelectedChartType == ChartType.ResourceDiff)
+		else if (SelectedChartType == ChartType.ResourceDiff)
 		{
 			(double fuelpointX, double fuelpointY, int fuelpointIndex) = FuelSignalPlot.GetPointNearestX(mouseCoordX);
 			(double ammopointX, double ammopointY, int ammopointIndex) = AmmoSignalPlot.GetPointNearestX(mouseCoordX);
@@ -155,7 +303,8 @@ public partial class ResourceChartWPF
 			{
 				toolTip.Content = string.Format("{0}\nDevelopment Material: {1}\nModding Material:{2}\nInstant Construction: {3}\nInstant Repair: {4}", date, developmentmaterialpointY, moddingmaterialpointY, instantconstructionpointY, instantrepairpointY);
 			}
-		}else if (SelectedChartType == ChartType.Experience)
+		}
+		else if (SelectedChartType == ChartType.Experience)
 		{
 			(double experiencepointX, double experiencepointY, int experiencepointIndex) = ExperiencePlot.GetPointNearest(mouseCoordX, mouseCoordY, xyRatio);
 			DateTime date = DateTime.FromOADate(experiencepointX);
@@ -621,262 +770,6 @@ public partial class ResourceChartWPF
 				break;
 		}
 	}
-
-	#region Chart Toggles
-
-	private void FuelShow(object sender, RoutedEventArgs e)
-	{
-		if (FuelPlot is not null)
-		{
-			FuelPlot.IsVisible = true;
-			ChartArea.Refresh();
-		}
-		if (FuelSignalPlot is not null)
-		{
-			FuelSignalPlot.IsVisible = true;
-			ChartArea.Refresh();
-		}
-	}
-
-	private void FuelHide(object sender, RoutedEventArgs e)
-	{
-		if (FuelPlot is not null)
-		{
-			FuelPlot.IsVisible = false;
-			ChartArea.Refresh();
-		}
-		if (FuelSignalPlot is not null)
-		{
-			FuelSignalPlot.IsVisible = false;
-			ChartArea.Refresh();
-		}
-	}
-
-	private void AmmoShow(object sender, RoutedEventArgs e)
-	{
-		if (AmmoPlot is not null)
-		{
-			AmmoPlot.IsVisible = true;
-			ChartArea.Refresh();
-		}
-		if (AmmoSignalPlot is not null)
-		{
-			AmmoSignalPlot.IsVisible = true;
-			ChartArea.Refresh();
-		}
-	}
-
-	private void AmmoHide(object sender, RoutedEventArgs e)
-	{
-		if (AmmoPlot is not null)
-		{
-			AmmoPlot.IsVisible = false;
-			ChartArea.Refresh();
-		}
-		if (AmmoSignalPlot is not null)
-		{
-			AmmoSignalPlot.IsVisible = false;
-			ChartArea.Refresh();
-		}
-	}
-
-	private void SteelShow(object sender, RoutedEventArgs e)
-	{
-		if (SteelPlot is not null)
-		{
-			SteelPlot.IsVisible = true;
-			ChartArea.Refresh();
-		}
-		if (SteelSignalPlot is not null)
-		{
-			SteelSignalPlot.IsVisible = true;
-			ChartArea.Refresh();
-		}
-	}
-
-	private void SteelHide(object sender, RoutedEventArgs e)
-	{
-		if (SteelPlot is not null)
-		{
-			SteelPlot.IsVisible = false;
-			ChartArea.Refresh();
-		}
-		if (SteelSignalPlot is not null)
-		{
-			SteelSignalPlot.IsVisible = false;
-			ChartArea.Refresh();
-		}
-	}
-
-	private void BauxShow(object sender, RoutedEventArgs e)
-	{
-		if (BauxPlot is not null)
-		{
-			BauxPlot.IsVisible = true;
-			ChartArea.Refresh();
-		}
-		if (BauxSignalPlot is not null)
-		{
-			BauxSignalPlot.IsVisible = true;
-			ChartArea.Refresh();
-		}
-	}
-
-	private void BauxHide(object sender, RoutedEventArgs e)
-	{
-		if (BauxPlot is not null)
-		{
-			BauxPlot.IsVisible = false;
-			ChartArea.Refresh();
-		}
-		if (BauxSignalPlot is not null)
-		{
-			BauxSignalPlot.IsVisible = false;
-			ChartArea.Refresh();
-		}
-	}
-
-	private void InstantRepairShow(object sender, RoutedEventArgs e)
-	{
-		if (InstantRepairPlot is not null)
-		{
-			InstantRepairPlot.IsVisible = true;
-			ChartArea.Refresh();
-		}
-		if (InstantRepairSignalPlot is not null)
-		{
-			InstantRepairSignalPlot.IsVisible = true;
-			ChartArea.Refresh();
-		}
-	}
-
-	private void InstantRepairHide(object sender, RoutedEventArgs e)
-	{
-		if (InstantRepairPlot is not null)
-		{
-			InstantRepairPlot.IsVisible = false;
-			ChartArea.Refresh();
-		}
-		if (InstantRepairSignalPlot is not null)
-		{
-			InstantRepairSignalPlot.IsVisible = false;
-			ChartArea.Refresh();
-		}
-	}
-
-	private void InstantConstructionShow(object sender, RoutedEventArgs e)
-	{
-		if (InstantConstructionPlot is not null)
-		{
-			InstantConstructionPlot.IsVisible = true;
-			ChartArea.Refresh();
-		}
-		if (InstantConstructionSignalPlot is not null)
-		{
-			InstantConstructionSignalPlot.IsVisible = true;
-			ChartArea.Refresh();
-		}
-	}
-
-	private void InstantConstructionHide(object sender, RoutedEventArgs e)
-	{
-		if (InstantConstructionPlot is not null)
-		{
-			InstantConstructionPlot.IsVisible = false;
-			ChartArea.Refresh();
-		}
-		if (InstantConstructionSignalPlot is not null)
-		{
-			InstantConstructionSignalPlot.IsVisible = false;
-			ChartArea.Refresh();
-		}
-	}
-
-	private void ModdingMaterialShow(object sender, RoutedEventArgs e)
-	{
-		if (ModdingMaterialPlot is not null)
-		{
-			ModdingMaterialPlot.IsVisible = true;
-			ChartArea.Refresh();
-		}
-		if (ModdingMaterialSignalPlot is not null)
-		{
-			ModdingMaterialSignalPlot.IsVisible = true;
-			ChartArea.Refresh();
-		}
-	}
-
-	private void ModdingMaterialHide(object sender, RoutedEventArgs e)
-	{
-		if (ModdingMaterialPlot is not null)
-		{
-			ModdingMaterialPlot.IsVisible = false;
-			ChartArea.Refresh();
-		}
-		if (ModdingMaterialSignalPlot is not null)
-		{
-			ModdingMaterialSignalPlot.IsVisible = false;
-			ChartArea.Refresh();
-		}
-	}
-
-	private void DevelopmentMaterialShow(object sender, RoutedEventArgs e)
-	{
-		if (DevelopmentMaterialPlot is not null)
-		{
-			DevelopmentMaterialPlot.IsVisible = true;
-			ChartArea.Refresh();
-		}
-		if (DevelopmentMaterialSignalPlot is not null)
-		{
-			DevelopmentMaterialSignalPlot.IsVisible = true;
-			ChartArea.Refresh();
-		}
-	}
-
-	private void DevelopmentMaterialHide(object sender, RoutedEventArgs e)
-	{
-		if (DevelopmentMaterialPlot is not null)
-		{
-			DevelopmentMaterialPlot.IsVisible = false;
-			ChartArea.Refresh();
-		}
-		if (DevelopmentMaterialSignalPlot is not null)
-		{
-			DevelopmentMaterialSignalPlot.IsVisible = false;
-			ChartArea.Refresh();
-		}
-	}
-
-	private void ExperienceShow(object sender, RoutedEventArgs e)
-	{
-		if (ExperiencePlot is not null)
-		{
-			ExperiencePlot.IsVisible = true;
-			ChartArea.Refresh();
-		}
-		if (ExperienceSignalPlot is not null)
-		{
-			ExperienceSignalPlot.IsVisible = true;
-			ChartArea.Refresh();
-		}
-	}
-
-	private void ExperienceHide(object sender, RoutedEventArgs e)
-	{
-		if (ExperiencePlot is not null)
-		{
-			ExperiencePlot.IsVisible = false;
-			ChartArea.Refresh();
-		}
-		if (ExperienceSignalPlot is not null)
-		{
-			ExperienceSignalPlot.IsVisible = false;
-			ChartArea.Refresh();
-		}
-	}
-
-	#endregion Chart Toggles
 
 	private void ChartSpan_Click(object sender, RoutedEventArgs e)
 	{
