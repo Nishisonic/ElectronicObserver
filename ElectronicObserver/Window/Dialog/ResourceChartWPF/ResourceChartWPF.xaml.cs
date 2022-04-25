@@ -71,7 +71,6 @@ public partial class ResourceChartWPF
 		InitializeComponent();
 		DataContext = ViewModel;
 		Loaded += ChartArea_Loaded;
-		Translate();
 		#region Chart Toggles
 		ViewModel.PropertyChanged += (sender, args) =>
 {
@@ -219,29 +218,6 @@ public partial class ResourceChartWPF
 		}; 
 		#endregion
 	}
-
-	private void Translate()
-	{
-		Menu_Span_Day.Header = GeneralRes.Day;
-		Menu_Span_Week.Header = GeneralRes.Week;
-		Menu_Span_Month.Header = GeneralRes.Month;
-		Menu_Span_Season.Header = GeneralRes.ThreeMonths;
-		Menu_Span_Year.Header = GeneralRes.Year;
-		Menu_Span_All.Header = GeneralRes.AllData;
-		OptionsMenu.Header = GeneralRes.Option;
-
-		AmmoCheck.Content = GeneralRes.Ammo;
-		FuelCheck.Content = GeneralRes.Fuel;
-		BauxCheck.Content = GeneralRes.Baux;
-		SteelCheck.Content = GeneralRes.Steel;
-		DevelopmentMaterialCheck.Content = GeneralRes.DevMat;
-		ModdingMaterialCheck.Content = GeneralRes.ImpMat;
-		InstantRepairCheck.Content = GeneralRes.Bucket;
-		InstantRepairMatCheck.Content = GeneralRes.Bucket;
-		InstantConstructionMatCheck.Content = GeneralRes.Flamethrower;
-		ExperienceCheck.Content = GeneralRes.Experience;
-	}
-
 	private void ChartArea_Loaded(object sender, RoutedEventArgs e)
 	{
 		if (!RecordManager.Instance.Resource.Record.Any())

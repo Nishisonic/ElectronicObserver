@@ -24,41 +24,41 @@
 			</MenuItem>
 			<MenuItem Name="ChartSpanMenu" Header="{Binding DialogResourceChart.Menu_Span}">
 				<MenuItem
-					Name="Menu_Span_Day"
+					Name="ChartMenuDay"
 					Click="ChartSpan_Click"
-					Header="Day"
+					Header="{Binding DialogResourceChart.Menu_Span_Day}"
 					IsCheckable="True"
 					IsChecked="False"
 					Tag="0"
 					/>
 				<MenuItem
-					Name="Menu_Span_Week"
+					Name="ChartMenuWeek"
 					Click="ChartSpan_Click"
-					Header="Week"
+					Header="{Binding DialogResourceChart.Menu_Span_Week}"
 					IsCheckable="True"
 					IsChecked="False"
 					Tag="1"
 					/>
 				<MenuItem
-					Name="Menu_Span_Month"
+					Name="ChartMenuMonth"
 					Click="ChartSpan_Click"
-					Header="Month"
+					Header="{Binding DialogResourceChart.Menu_Span_Month}"
 					IsCheckable="True"
 					IsChecked="False"
 					Tag="2"
 					/>
 				<MenuItem
-					Name="Menu_Span_Season"
+					Name="ChartMenuSeason"
 					Click="ChartSpan_Click"
-					Header="Season"
+					Header="{Binding DialogResourceChart.Menu_Span_Season}"
 					IsCheckable="True"
 					IsChecked="False"
 					Tag="3"
 					/>
 				<MenuItem
-					Name="Menu_Span_Year"
+					Name="ChartMenuYear"
 					Click="ChartSpan_Click"
-					Header="Year"
+					Header="{Binding DialogResourceChart.Menu_Span_Year}"
 					IsCheckable="True"
 					IsChecked="False"
 					Tag="4"
@@ -66,7 +66,7 @@
 				<MenuItem
 					Name="Menu_Span_All"
 					Click="ChartSpan_Click"
-					Header="All"
+					Header="{Binding DialogResourceChart.Menu_Span_All}"
 					IsCheckable="True"
 					IsChecked="True"
 					Tag="5"
@@ -74,28 +74,28 @@
 				<Separator />
 				<MenuItem
 					Click="ChartSpan_Click"
-					Header="WeekFirst"
+					Header="{Binding DialogResourceChart.Menu_Span_WeekFirst}"
 					IsCheckable="True"
 					IsChecked="False"
 					Tag="6"
 					/>
 				<MenuItem
 					Click="ChartSpan_Click"
-					Header="MonthFirst"
+					Header="{Binding DialogResourceChart.Menu_Span_MonthFirst}"
 					IsCheckable="True"
 					IsChecked="False"
 					Tag="7"
 					/>
 				<MenuItem
 					Click="ChartSpan_Click"
-					Header="SeasonFirst"
+					Header="{Binding DialogResourceChart.Menu_Span_SeasonFirst}"
 					IsCheckable="True"
 					IsChecked="False"
 					Tag="8"
 					/>
 				<MenuItem
 					Click="ChartSpan_Click"
-					Header="YearFirst"
+					Header="{Binding DialogResourceChart.Menu_Span_YearFirst}"
 					IsCheckable="True"
 					Tag="9"
 					/>
@@ -152,7 +152,7 @@
 					Tag="5"
 					/>
 			</MenuItem>
-			<MenuItem Name="OptionsMenu" Header="Options">
+			<MenuItem Name="OptionsMenu" Header="{Binding DialogResourceChart.OptionsMenu}">
 				<MenuItem
 					Name="Menu_Option_ShowAllData"
 					Click="Menu_Option_ShowAllData_Click"
@@ -177,7 +177,7 @@
 				<CheckBox
 					Name="FuelCheck"
 					Margin="10"
-					Content="Fuel"
+					Content="{Binding DialogResourceChart.Fuel}"
 					IsChecked="{Binding ShowFuel}"
 					/>
 			</Border>
@@ -185,7 +185,7 @@
 				<CheckBox
 					Name="AmmoCheck"
 					Margin="10"
-					Content="Ammo"
+					Content="{Binding DialogResourceChart.Ammo}"
 					IsChecked="{Binding ShowAmmo}"
 					/>
 			</Border>
@@ -193,7 +193,7 @@
 				<CheckBox
 					Name="SteelCheck"
 					Margin="10"
-					Content="Steel"
+					Content="{Binding DialogResourceChart.Steel}"
 					IsChecked="{Binding ShowSteel}"
 					/>
 			</Border>
@@ -201,7 +201,7 @@
 				<CheckBox
 					Name="BauxCheck"
 					Margin="10"
-					Content="Baux"
+					Content="{Binding DialogResourceChart.Baux}"
 					IsChecked="{Binding ShowBaux}"
 					/>
 			</Border>
@@ -209,7 +209,7 @@
 				<CheckBox
 					Name="InstantRepairCheck"
 					Margin="10"
-					Content="Instant Repair"
+					Content="{Binding DialogResourceChart.InstantRepair}"
 					IsChecked="{Binding ShowInstantRepair}"
 					/>
 			</Border>
@@ -224,7 +224,7 @@
 				<CheckBox
 					Name="InstantRepairMatCheck"
 					Margin="10"
-					Content="Instant Repair"
+					Content="{Binding DialogResourceChart.InstantRepair}"
 					IsChecked="{Binding ShowInstantRepair}"
 					/>
 			</Border>
@@ -232,7 +232,7 @@
 				<CheckBox
 					Name="InstantConstructionMatCheck"
 					Margin="10"
-					Content="Instant Construction"
+					Content="{Binding DialogResourceChart.InstantConstruction}"
 					IsChecked="{Binding ShowInstantConstruction}"
 					/>
 			</Border>
@@ -240,7 +240,7 @@
 				<CheckBox
 					Name="DevelopmentMaterialCheck"
 					Margin="10"
-					Content="Development Material"
+					Content="{Binding DialogResourceChart.DevelopmentMaterial}"
 					IsChecked="{Binding ShowDevelopmentMaterial}"
 					/>
 			</Border>
@@ -248,7 +248,7 @@
 				<CheckBox
 					Name="ModdingMaterialCheck"
 					Margin="10"
-					Content="Modding Material"
+					Content="{Binding DialogResourceChart.ModdingMaterial}"
 					IsChecked="{Binding ShowModdingMaterial}"
 					/>
 			</Border>
@@ -262,7 +262,7 @@
 				<CheckBox
 					Name="ExperienceCheck"
 					Margin="10"
-					Content="Experience"
+					Content="{Binding DialogResourceChart.Experience}"
 					IsChecked="{Binding ShowExperience}"
 					/>
 			</Border>
