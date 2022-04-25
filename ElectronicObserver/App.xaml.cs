@@ -182,6 +182,7 @@ public partial class App : Application
 		services.AddSingleton<DialogConstructionRecordViewerTranslationViewModel>();
 		services.AddSingleton<DialogEquipmentListTranslationViewModel>();
 		services.AddSingleton<QuestTrackerManagerTranslationViewModel>();
+		services.AddSingleton<DialogResourceChartTranslationViewModel>();
 
 		services.AddSingleton<ShipPickerViewModel>();
 

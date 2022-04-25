@@ -15,15 +15,16 @@
 	>
 	<DockPanel>
 		<Menu DockPanel.Dock="Top">
-			<MenuItem Name="FileMenu" Header="File">
+			<MenuItem Name="FileMenu" Header="{Binding DialogResourceChart.Menu_File}">
 				<MenuItem
 					Name="FileSaveImage"
 					Click="FileSaveImage_Click"
-					Header="Save Image"
+					Header="{Binding DialogResourceChart.Menu_File_SaveImage}"
 					/>
 			</MenuItem>
-			<MenuItem Name="ChartSpanMenu" Header="Range">
+			<MenuItem Name="ChartSpanMenu" Header="{Binding DialogResourceChart.Menu_Span}">
 				<MenuItem
+					Name="Menu_Span_Day"
 					Click="ChartSpan_Click"
 					Header="Day"
 					IsCheckable="True"
@@ -31,6 +32,7 @@
 					Tag="0"
 					/>
 				<MenuItem
+					Name="Menu_Span_Week"
 					Click="ChartSpan_Click"
 					Header="Week"
 					IsCheckable="True"
@@ -38,6 +40,7 @@
 					Tag="1"
 					/>
 				<MenuItem
+					Name="Menu_Span_Month"
 					Click="ChartSpan_Click"
 					Header="Month"
 					IsCheckable="True"
@@ -45,6 +48,7 @@
 					Tag="2"
 					/>
 				<MenuItem
+					Name="Menu_Span_Season"
 					Click="ChartSpan_Click"
 					Header="Season"
 					IsCheckable="True"
@@ -52,6 +56,7 @@
 					Tag="3"
 					/>
 				<MenuItem
+					Name="Menu_Span_Year"
 					Click="ChartSpan_Click"
 					Header="Year"
 					IsCheckable="True"
@@ -59,6 +64,7 @@
 					Tag="4"
 					/>
 				<MenuItem
+					Name="Menu_Span_All"
 					Click="ChartSpan_Click"
 					Header="All"
 					IsCheckable="True"
@@ -94,11 +100,11 @@
 					Tag="9"
 					/>
 			</MenuItem>
-			<MenuItem Name="ChartTypeMenu" Header="View">
+			<MenuItem Name="ChartTypeMenu" Header="{Binding DialogResourceChart.Menu_Graph}">
 				<MenuItem
 					Name="ResourceMenu"
 					Click="ResourceMenu_Click"
-					Header="Resource"
+					Header="{Binding DialogResourceChart.Menu_Graph_Resource}"
 					IsCheckable="True"
 					IsChecked="True"
 					Tag="0"
@@ -106,7 +112,7 @@
 				<MenuItem
 					Name="ResourceDiffMenu"
 					Click="ResourceDiffMenu_Click"
-					Header="ResourceDiff"
+					Header="{Binding DialogResourceChart.Menu_Graph_ResourceDiff}"
 					IsCheckable="True"
 					IsChecked="False"
 					Tag="1"
@@ -115,7 +121,7 @@
 				<MenuItem
 					Name="MaterialMenu"
 					Click="MaterialMenu_Click"
-					Header="Material"
+					Header="{Binding DialogResourceChart.Menu_Graph_Material}"
 					IsCheckable="True"
 					IsChecked="False"
 					Tag="2"
@@ -123,7 +129,7 @@
 				<MenuItem
 					Name="MaterialDiffMenu"
 					Click="MaterialDiffMenu_Click"
-					Header="MaterialDiff"
+					Header="{Binding DialogResourceChart.Menu_Graph_MaterialDiff}"
 					IsCheckable="True"
 					IsChecked="False"
 					Tag="3"
@@ -132,7 +138,7 @@
 				<MenuItem
 					Name="ExperienceMenu"
 					Click="ExperienceMenu_Click"
-					Header="Experience"
+					Header="{Binding DialogResourceChart.Menu_Graph_Experience}"
 					IsCheckable="True"
 					IsChecked="False"
 					Tag="4"
@@ -140,7 +146,7 @@
 				<MenuItem
 					Name="ExperienceDiffMenu"
 					Click="ExperienceDiffMenu_Click"
-					Header="Experience - Delta"
+					Header="{Binding DialogResourceChart.Menu_Graph_ExperienceDiff}"
 					IsCheckable="True"
 					IsChecked="False"
 					Tag="5"
@@ -150,13 +156,13 @@
 				<MenuItem
 					Name="Menu_Option_ShowAllData"
 					Click="Menu_Option_ShowAllData_Click"
-					Header="Show All Data"
+					Header="{Binding DialogResourceChart.Menu_Option_ShowAllData}"
 					IsCheckable="True"
 					/>
 				<MenuItem
 					Name="Menu_Option_DivideByDay"
 					Click="Menu_Option_DivideByDay_Click"
-					Header="Show Daily Average"
+					Header="{Binding DialogResourceChart.Menu_Option_DivideByDay}"
 					IsCheckable="True"
 					/>
 			</MenuItem>
