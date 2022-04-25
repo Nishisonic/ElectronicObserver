@@ -6,6 +6,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using ElectronicObserver.Data;
 using ElectronicObserver.Resource.Record;
+using ElectronicObserver.Utility;
 using ElectronicObserver.ViewModels.Translations;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Win32;
@@ -70,6 +71,8 @@ public partial class ResourceChartWPF
 	{
 		InitializeComponent();
 		DataContext = ViewModel;
+		Configuration.Instance.ConfigurationChanged += ConfigurationChanged;
+		ConfigurationChanged();
 		Loaded += ChartArea_Loaded;
 		#region Chart Toggles
 		ViewModel.PropertyChanged += (sender, args) =>
@@ -218,6 +221,21 @@ public partial class ResourceChartWPF
 		}; 
 		#endregion
 	}
+
+	private void ConfigurationChanged()
+	{
+		Configuration.ConfigurationData c = Configuration.Config;
+		switch (c.UI.ThemeMode)
+		{
+			case 0:
+				ChartArea.Plot.Style(ScottPlot.Style.Default);
+				break;
+			default:
+				ChartArea.Plot.Style(ScottPlot.Style.Black);
+				break;
+		}
+	}
+
 	private void ChartArea_Loaded(object sender, RoutedEventArgs e)
 	{
 		if (!RecordManager.Instance.Resource.Record.Any())
@@ -234,7 +252,7 @@ public partial class ResourceChartWPF
 		ChartArea.ToolTip = toolTip;
 		SwitchMenuStrip(ChartSpanMenu, "2");
 		SwitchMenuStrip(ChartTypeMenu, "0");
-		ChartArea.Plot.Style(ScottPlot.Style.Black);
+		
 		ChartArea.Configuration.Zoom = false;
 		ChartArea.Configuration.Pan = false;
 		ChartArea.RightClicked -= ChartArea.DefaultRightClickEvent;
@@ -269,7 +287,7 @@ public partial class ResourceChartWPF
 			(double bauxpointX, double bauxpointY, int bauxpointIndex) = BauxPlot.GetPointNearest(mouseCoordX, mouseCoordY, xyRatio);
 			(double instantrepairpointX, double instantrepairpointY, int instantrepairpointIndex) = InstantRepairPlot.GetPointNearest(mouseCoordX, mouseCoordY, xyRatio);
 			DateTime date = DateTime.FromOADate(fuelpointX);
-			toolTip.Content = string.Format("{0}\n:{6} {1}\n{7}:{2}\n{8}: {3}\n{9}: {4}\n{10}: {5}", date, fuelpointY, ammopointY, steelpointY, bauxpointY, instantrepairpointY, fuel,ammo,steel,baux,instant_repair);
+			toolTip.Content = string.Format("{0}\n{6}: {1}\n{7}:{2}\n{8}: {3}\n{9}: {4}\n{10}: {5}", date, fuelpointY, ammopointY, steelpointY, bauxpointY, instantrepairpointY, fuel,ammo,steel,baux,instant_repair);
 		}
 		else if (SelectedChartType == ChartType.ResourceDiff)
 		{
