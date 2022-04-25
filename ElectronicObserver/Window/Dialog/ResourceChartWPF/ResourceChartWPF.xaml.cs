@@ -373,6 +373,7 @@ public partial class ResourceChartWPF
 		ViewModel.ShowFuel = true;
 		ViewModel.ShowAmmo = true;
 		ViewModel.ShowBaux = true;
+		ViewModel.ShowSteel = true;
 		ResourcesPanel.Visibility = Visibility.Visible;
 		MaterialPanel.Visibility = Visibility.Collapsed;
 		ExperiencePanel.Visibility = Visibility.Collapsed;
@@ -432,6 +433,7 @@ public partial class ResourceChartWPF
 		ViewModel.ShowFuel = true;
 		ViewModel.ShowAmmo = true;
 		ViewModel.ShowBaux = true;
+		ViewModel.ShowSteel = true;
 		ResourcesPanel.Visibility = Visibility.Visible;
 		MaterialPanel.Visibility = Visibility.Collapsed;
 		ExperiencePanel.Visibility = Visibility.Collapsed;
@@ -529,6 +531,7 @@ public partial class ResourceChartWPF
 		ChartArea.Plot.YAxis.Label("Material");
 		ChartArea.Plot.XAxis.DateTimeFormat(true);
 		AxisXIntervals(SelectedChartSpan);
+		ViewModel.ShowDevelopmentMaterial = true;
 		ViewModel.ShowModdingMaterial = true;
 		ViewModel.ShowInstantRepair = true;
 		ViewModel.ShowInstantConstruction = true;
@@ -675,6 +678,7 @@ public partial class ResourceChartWPF
 		ChartArea.Plot.XAxis.DateTimeFormat(true);
 		AxisXIntervals(SelectedChartSpan);
 		ViewModel.ShowModdingMaterial = true;
+		ViewModel.ShowDevelopmentMaterial = true;
 		ViewModel.ShowInstantRepair = true;
 		ViewModel.ShowInstantConstruction = true;
 		List<double>? instant_repair_list = Array.Empty<double>().ToList();
@@ -722,6 +726,7 @@ public partial class ResourceChartWPF
 		ChartArea.Plot.XAxis.Label("Date");
 		ChartArea.Plot.YAxis.Label("Experience");
 		ChartArea.Plot.XAxis.DateTimeFormat(true);
+		ViewModel.ShowExperience = true;
 		List<double>? experience_list = Array.Empty<double>().ToList();
 
 		List<double>? date_list = Array.Empty<double>().ToList();
@@ -839,6 +844,7 @@ public partial class ResourceChartWPF
 		ChartArea.Plot.XAxis.Label("Date");
 		ChartArea.Plot.YAxis.Label("Experience");
 		ChartArea.Plot.XAxis.DateTimeFormat(true);
+		ViewModel.ShowExperience = true;
 		List<double>? experience_list = Array.Empty<double>().ToList();
 
 		List<double>? date_list = Array.Empty<double>().ToList();
