@@ -173,46 +173,36 @@
 			Orientation="Vertical"
 			Visibility="Visible"
 			>
-			<Border Background="Green">
-				<CheckBox
-					Name="FuelCheck"
-					Margin="10"
-					Content="{Binding DialogResourceChart.Fuel}"
-					IsChecked="{Binding ShowFuel}"
-					/>
-			</Border>
-			<Border Background="DarkOrange">
-				<CheckBox
-					Name="AmmoCheck"
-					Margin="10"
-					Content="{Binding DialogResourceChart.Ammo}"
-					IsChecked="{Binding ShowAmmo}"
-					/>
-			</Border>
-			<Border Background="Blue">
-				<CheckBox
-					Name="SteelCheck"
-					Margin="10"
-					Content="{Binding DialogResourceChart.Steel}"
-					IsChecked="{Binding ShowSteel}"
-					/>
-			</Border>
-			<Border Background="Orange">
-				<CheckBox
-					Name="BauxCheck"
-					Margin="10"
-					Content="{Binding DialogResourceChart.Baux}"
-					IsChecked="{Binding ShowBaux}"
-					/>
-			</Border>
-			<Border Background="CadetBlue">
-				<CheckBox
-					Name="InstantRepairCheck"
-					Margin="10"
-					Content="{Binding DialogResourceChart.InstantRepair}"
-					IsChecked="{Binding ShowInstantRepair}"
-					/>
-			</Border>
+			<local:ChartItemToggle
+				Margin="10"
+				IsChecked="{Binding ShowFuel}"
+				Text="{Binding DialogResourceChart.Fuel}"
+				Color="Green"
+				/>
+			<local:ChartItemToggle
+				Margin="10"
+				IsChecked="{Binding ShowAmmo}"
+				Text="{Binding DialogResourceChart.Ammo}"
+				Color="DarkOrange"
+				/>
+			<local:ChartItemToggle
+				Margin="10"
+				IsChecked="{Binding ShowSteel}"
+				Text="{Binding DialogResourceChart.Steel}"
+				Color="Blue"
+				/>
+			<local:ChartItemToggle
+				Margin="10"
+				IsChecked="{Binding ShowBaux}"
+				Text="{Binding DialogResourceChart.Baux}"
+				Color="Orange"
+				/>
+			<local:ChartItemToggle
+				Margin="10"
+				IsChecked="{Binding ShowInstantRepair}"
+				Text="{Binding DialogResourceChart.InstantRepair}"
+				Color="CadetBlue"
+				/>
 		</StackPanel>
 		<StackPanel
 			Name="MaterialPanel"
@@ -220,52 +210,42 @@
 			Orientation="Vertical"
 			Visibility="Collapsed"
 			>
-			<Border Background="CadetBlue">
-				<CheckBox
-					Name="InstantRepairMatCheck"
-					Margin="10"
-					Content="{Binding DialogResourceChart.InstantRepair}"
-					IsChecked="{Binding ShowInstantRepair}"
-					/>
-			</Border>
-			<Border Background="Orange">
-				<CheckBox
-					Name="InstantConstructionMatCheck"
-					Margin="10"
-					Content="{Binding DialogResourceChart.InstantConstruction}"
-					IsChecked="{Binding ShowInstantConstruction}"
-					/>
-			</Border>
-			<Border Background="DarkOrchid">
-				<CheckBox
-					Name="DevelopmentMaterialCheck"
-					Margin="10"
-					Content="{Binding DialogResourceChart.DevelopmentMaterial}"
-					IsChecked="{Binding ShowDevelopmentMaterial}"
-					/>
-			</Border>
-			<Border Background="Blue">
-				<CheckBox
-					Name="ModdingMaterialCheck"
-					Margin="10"
-					Content="{Binding DialogResourceChart.ModdingMaterial}"
-					IsChecked="{Binding ShowModdingMaterial}"
-					/>
-			</Border>
+			<local:ChartItemToggle
+				Margin="10"
+				IsChecked="{Binding ShowInstantRepair}"
+				Text="{Binding DialogResourceChart.InstantRepair}"
+				Color="CadetBlue"
+				/>
+			<local:ChartItemToggle
+				Margin="10"
+				IsChecked="{Binding ShowInstantConstruction}"
+				Text="{Binding DialogResourceChart.InstantConstruction}"
+				Color="Orange"
+				/>
+			<local:ChartItemToggle
+				Margin="10"
+				IsChecked="{Binding ShowDevelopmentMaterial}"
+				Text="{Binding DialogResourceChart.DevelopmentMaterial}"
+				Color="DarkOrchid"
+				/>
+			<local:ChartItemToggle
+				Margin="10"
+				IsChecked="{Binding ShowModdingMaterial}"
+				Text="{Binding DialogResourceChart.ModdingMaterial}"
+				Color="Blue"
+				/>
 		</StackPanel>
 		<StackPanel
 			Name="ExperiencePanel"
 			DockPanel.Dock="Right"
 			Visibility="Collapsed"
 			>
-			<Border Background="DarkOrchid">
-				<CheckBox
-					Name="ExperienceCheck"
-					Margin="10"
-					Content="{Binding DialogResourceChart.Experience}"
-					IsChecked="{Binding ShowExperience}"
-					/>
-			</Border>
+			<local:ChartItemToggle
+				Margin="10"
+				IsChecked="{Binding ShowExperience}"
+				Text="{Binding DialogResourceChart.Experience}"
+				Color="DarkOrchid"
+				/>
 		</StackPanel>
 		<WpfPlot
 			Name="ChartArea"

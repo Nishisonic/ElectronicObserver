@@ -370,13 +370,13 @@ public partial class ResourceChartWPF
 		ChartArea.Plot.YAxis.Label("Resource");
 		ChartArea.Plot.XAxis.DateTimeFormat(true);
 		AxisXIntervals(SelectedChartSpan);
-		FuelCheck.IsChecked = true;
-		AmmoCheck.IsChecked = true;
-		BauxCheck.IsChecked = true;
+		ViewModel.ShowFuel = true;
+		ViewModel.ShowAmmo = true;
+		ViewModel.ShowBaux = true;
 		ResourcesPanel.Visibility = Visibility.Visible;
 		MaterialPanel.Visibility = Visibility.Collapsed;
 		ExperiencePanel.Visibility = Visibility.Collapsed;
-		InstantRepairCheck.IsChecked = true;
+		ViewModel.ShowInstantRepair = true;
 		List<double>? fuel_list = Array.Empty<double>().ToList();
 
 		List<double>? ammo_list = Array.Empty<double>().ToList();
@@ -429,13 +429,13 @@ public partial class ResourceChartWPF
 		ChartArea.Plot.YAxis.Label("Resource");
 		ChartArea.Plot.XAxis.DateTimeFormat(true);
 		AxisXIntervals(SelectedChartSpan);
-		FuelCheck.IsChecked = true;
-		AmmoCheck.IsChecked = true;
-		BauxCheck.IsChecked = true;
+		ViewModel.ShowFuel = true;
+		ViewModel.ShowAmmo = true;
+		ViewModel.ShowBaux = true;
 		ResourcesPanel.Visibility = Visibility.Visible;
 		MaterialPanel.Visibility = Visibility.Collapsed;
 		ExperiencePanel.Visibility = Visibility.Collapsed;
-		InstantRepairCheck.IsChecked = true;
+		ViewModel.ShowInstantRepair = true;
 		List<double>? fuel_list = Array.Empty<double>().ToList();
 
 		List<double>? ammo_list = Array.Empty<double>().ToList();
