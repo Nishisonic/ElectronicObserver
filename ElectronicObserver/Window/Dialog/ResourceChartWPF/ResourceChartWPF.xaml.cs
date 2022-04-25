@@ -529,9 +529,9 @@ public partial class ResourceChartWPF
 		ChartArea.Plot.YAxis.Label("Material");
 		ChartArea.Plot.XAxis.DateTimeFormat(true);
 		AxisXIntervals(SelectedChartSpan);
-		ModdingMaterialCheck.IsChecked = true;
-		InstantRepairMatCheck.IsChecked = true;
-		InstantConstructionMatCheck.IsChecked = true;
+		ViewModel.ShowModdingMaterial = true;
+		ViewModel.ShowInstantRepair = true;
+		ViewModel.ShowInstantConstruction = true;
 		List<double>? instant_repair_list = Array.Empty<double>().ToList();
 		List<double>? development_material_list = Array.Empty<double>().ToList();
 		List<double>? modding_material_list = Array.Empty<double>().ToList();
@@ -674,9 +674,9 @@ public partial class ResourceChartWPF
 		ChartArea.Plot.YAxis.Label("Material");
 		ChartArea.Plot.XAxis.DateTimeFormat(true);
 		AxisXIntervals(SelectedChartSpan);
-		ModdingMaterialCheck.IsChecked = true;
-		InstantRepairMatCheck.IsChecked = true;
-		InstantConstructionMatCheck.IsChecked = true;
+		ViewModel.ShowModdingMaterial = true;
+		ViewModel.ShowInstantRepair = true;
+		ViewModel.ShowInstantConstruction = true;
 		List<double>? instant_repair_list = Array.Empty<double>().ToList();
 		List<double>? development_material_list = Array.Empty<double>().ToList();
 		List<double>? modding_material_list = Array.Empty<double>().ToList();
