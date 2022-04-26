@@ -32,26 +32,26 @@ public abstract class QuestTrackerManagerBase : WindowViewModelBase
 	{
 		var ao = APIObserver.Instance;
 
-		ao.APIList["api_port/port"].ResponseReceived += TimerSave;
+		ao.ApiPort_Port.ResponseReceived += TimerSave;
 
-		ao.APIList["api_get_member/questlist"].ResponseReceived += QuestUpdated;
+		ao.ApiGetMember_QuestList.ResponseReceived += QuestUpdated;
 
-		ao.APIList["api_req_map/start"].ResponseReceived += StartSortie;
+		ao.ApiReqMap_Start.ResponseReceived += StartSortie;
 
-		ao.APIList["api_req_map/next"].ResponseReceived += NextSortie;
+		ao.ApiReqMap_Next.ResponseReceived += NextSortie;
 
-		ao.APIList["api_req_sortie/battleresult"].ResponseReceived += BattleFinished;
-		ao.APIList["api_req_combined_battle/battleresult"].ResponseReceived += BattleFinished;
+		ao.ApiReqSortie_BattleResult.ResponseReceived += BattleFinished;
+		ao.ApiReqCombinedBattle_BattleResult.ResponseReceived += BattleFinished;
 
-		ao.APIList["api_req_sortie/battleresult"].ResponseReceived += BossBattleFinished;
-		ao.APIList["api_req_combined_battle/battleresult"].ResponseReceived += BossBattleFinished;
+		ao.ApiReqSortie_BattleResult.ResponseReceived += BossBattleFinished;
+		ao.ApiReqCombinedBattle_BattleResult.ResponseReceived += BossBattleFinished;
 
-		ao.APIList["api_req_sortie/battleresult"].ResponseReceived += MapClearedFirstTime;
-		ao.APIList["api_req_combined_battle/battleresult"].ResponseReceived += MapClearedFirstTime;
+		ao.ApiReqSortie_BattleResult.ResponseReceived += MapClearedFirstTime;
+		ao.ApiReqCombinedBattle_BattleResult.ResponseReceived += MapClearedFirstTime;
 
-		ao.APIList["api_req_practice/battle_result"].ResponseReceived += PracticeFinished;
+		ao.ApiReqPractice_BattleResult.ResponseReceived += PracticeFinished;
 
-		ao.APIList["api_req_mission/result"].ResponseReceived += ExpeditionCompleted;
+		ao.ApiReqMission_Result.ResponseReceived += ExpeditionCompleted;
 	}
 
 	private void TimerSave(string apiname, dynamic data)

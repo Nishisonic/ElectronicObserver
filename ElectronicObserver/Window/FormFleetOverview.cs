@@ -190,33 +190,33 @@ public partial class FormFleetOverview : DockContent
 		//api register
 		APIObserver o = APIObserver.Instance;
 
-		o["api_req_nyukyo/start"].RequestReceived += Updated;
-		o["api_req_nyukyo/speedchange"].RequestReceived += Updated;
-		o["api_req_hensei/change"].RequestReceived += Updated;
-		o["api_req_kousyou/destroyship"].RequestReceived += Updated;
-		o["api_req_member/updatedeckname"].RequestReceived += Updated;
-		o["api_req_map/start"].RequestReceived += Updated;
-		o["api_req_hensei/combined"].RequestReceived += Updated;
-		o["api_req_kaisou/open_exslot"].RequestReceived += Updated;
+		o.ApiReqNyukyo_Start.RequestReceived += Updated;
+		o.ApiReqNyukyo_SpeedChange.RequestReceived += Updated;
+		o.ApiReqHensei_Change.RequestReceived += Updated;
+		o.ApiReqKousyou_DestroyShip.RequestReceived += Updated;
+		o.ApiReqMember_UpdateDeckName.RequestReceived += Updated;
+		o.ApiReqMap_Start.RequestReceived += Updated;
+		o.ApiReqHensei_Combined.RequestReceived += Updated;
+		o.ApiReqKaisou_OpenExSlot.RequestReceived += Updated;
 
-		o["api_port/port"].ResponseReceived += Updated;
-		o["api_get_member/ship2"].ResponseReceived += Updated;
-		o["api_get_member/ndock"].ResponseReceived += Updated;
-		o["api_req_kousyou/getship"].ResponseReceived += Updated;
-		o["api_req_hokyu/charge"].ResponseReceived += Updated;
-		o["api_req_kousyou/destroyship"].ResponseReceived += Updated;
-		o["api_get_member/ship3"].ResponseReceived += Updated;
-		o["api_req_kaisou/powerup"].ResponseReceived += Updated;        //requestのほうは面倒なのでこちらでまとめてやる
-		o["api_get_member/deck"].ResponseReceived += Updated;
-		o["api_req_map/start"].ResponseReceived += Updated;
-		o["api_req_map/next"].ResponseReceived += Updated;
-		o["api_get_member/ship_deck"].ResponseReceived += Updated;
-		o["api_req_hensei/preset_select"].ResponseReceived += Updated;
-		o["api_req_kaisou/slot_exchange_index"].ResponseReceived += Updated;
-		o["api_get_member/require_info"].ResponseReceived += Updated;
-		o["api_req_kaisou/slot_deprive"].ResponseReceived += Updated;
-		o["api_req_kaisou/marriage"].ResponseReceived += Updated;
-		o["api_req_map/anchorage_repair"].ResponseReceived += Updated;
+		o.ApiPort_Port.ResponseReceived += Updated;
+		o.ApiGetMember_Ship2.ResponseReceived += Updated;
+		o.ApiGetMember_NDock.ResponseReceived += Updated;
+		o.ApiReqKousyou_GetShip.ResponseReceived += Updated;
+		o.ApiReqHokyu_Charge.ResponseReceived += Updated;
+		o.ApiReqKousyou_DestroyShip.ResponseReceived += Updated;
+		o.ApiGetMember_Ship3.ResponseReceived += Updated;
+		o.ApiReqKaisou_PowerUp.ResponseReceived += Updated;        //requestのほうは面倒なのでこちらでまとめてやる
+		o.ApiGetMember_Deck.ResponseReceived += Updated;
+		o.ApiReqMap_Start.ResponseReceived += Updated;
+		o.ApiReqMap_Next.ResponseReceived += Updated;
+		o.ApiGetMember_ShipDeck.ResponseReceived += Updated;
+		o.ApiReqHensei_PresetSelect.ResponseReceived += Updated;
+		o.ApiReqKaisou_SlotExchangeIndex.ResponseReceived += Updated;
+		o.ApiGetMember_RequireInfo.ResponseReceived += Updated;
+		o.ApiReqKaisou_SlotDeprive.ResponseReceived += Updated;
+		o.ApiReqKaisou_Marriage.ResponseReceived += Updated;
+		o.ApiReqMap_AnchorageRepair.ResponseReceived += Updated;
 
 		Utility.Configuration.Instance.ConfigurationChanged += ConfigurationChanged;
 	}

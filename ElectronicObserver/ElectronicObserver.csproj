@@ -38,10 +38,9 @@
 		<Copyright>Copyright ©  2014 Andante</Copyright>
 		<Trademark />
 		<Culture />
-		<AssemblyVersion>5.1.3.3</AssemblyVersion>
-		<FileVersion>5.1.3.3</FileVersion>
-		<Version>5.1.3.3</Version>
-		<SourceRevisionId>build$([System.DateTime]::UtcNow.ToString("yyyy-MM-ddTHH:mm:ss"))</SourceRevisionId>
+		<AssemblyVersion>5.1.4.1</AssemblyVersion>
+		<FileVersion>5.1.4.1</FileVersion>
+		<Version>5.1.4.1</Version>
 		<AnalysisLevel>preview</AnalysisLevel>
 		<EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
 	</PropertyGroup>
@@ -114,9 +113,9 @@
 			<DependentUpon>ResourceRecord.resx</DependentUpon>
 		</Compile>
 		<Compile Update="Properties\Resources.Designer.cs">
-		  <DesignTime>True</DesignTime>
-		  <AutoGen>True</AutoGen>
-		  <DependentUpon>Resources.resx</DependentUpon>
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>Resources.resx</DependentUpon>
 		</Compile>
 		<Compile Update="Properties\Utility\SoftwareInformation.Designer.cs">
 			<DesignTime>True</DesignTime>
@@ -412,6 +411,11 @@
 		<ProjectReference Include="..\BrowserLibCore\BrowserLibCore.csproj" />
 		<ProjectReference Include="..\DockPanelSuite\WinFormsUI\ThemeVS2012.csproj" />
 		<ProjectReference Include="..\DockPanelSuite\WinFormsUI\WinFormsUI.csproj" />
+		<ProjectReference
+			Include="..\ElectronicObserver.SourceGenerators\ElectronicObserver.SourceGenerators.csproj"
+			OutputItemType="Analyzer"
+			ReferenceOutputAssembly="false"
+			/>
 		<ProjectReference Include="..\ElectronicObserverTypes\ElectronicObserverTypes.csproj" />
 		<ProjectReference Include="..\KancolleProgress\KancolleProgress.csproj" />
 	</ItemGroup>
@@ -549,8 +553,8 @@
 			<LastGenOutput>ResourceRecord.Designer.cs</LastGenOutput>
 		</EmbeddedResource>
 		<EmbeddedResource Update="Properties\Resources.resx">
-		  <Generator>PublicResXFileCodeGenerator</Generator>
-		  <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+			<Generator>PublicResXFileCodeGenerator</Generator>
+			<LastGenOutput>Resources.Designer.cs</LastGenOutput>
 		</EmbeddedResource>
 		<EmbeddedResource Update="Properties\Utility\SoftwareInformation.resx">
 			<Generator>PublicResXFileCodeGenerator</Generator>
@@ -749,7 +753,7 @@
 		</Page>
 	</ItemGroup>
 	<ItemGroup>
-	  <Folder Include="Common\" />
+		<Folder Include="Common\" />
 	</ItemGroup>
 </Project>
 

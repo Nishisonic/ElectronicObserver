@@ -180,12 +180,12 @@ public class ArsenalViewModel : AnchorableViewModel
 
 		APIObserver o = APIObserver.Instance;
 
-		o["api_req_kousyou/createship"].RequestReceived += Updated;
-		o["api_req_kousyou/createship_speedchange"].RequestReceived += Updated;
+		o.ApiReqKousyou_CreateShip.RequestReceived += Updated;
+		o.ApiReqKousyou_CreateShipSpeedChange.RequestReceived += Updated;
 
-		o["api_get_member/kdock"].ResponseReceived += Updated;
-		o["api_req_kousyou/getship"].ResponseReceived += Updated;
-		o["api_get_member/require_info"].ResponseReceived += Updated;
+		o.ApiGetMember_KDock.ResponseReceived += Updated;
+		o.ApiReqKousyou_GetShip.ResponseReceived += Updated;
+		o.ApiGetMember_RequireInfo.ResponseReceived += Updated;
 
 		Utility.Configuration.Instance.ConfigurationChanged += ConfigurationChanged;
 		Utility.SystemEvents.UpdateTimerTick += UpdateTimerTick;

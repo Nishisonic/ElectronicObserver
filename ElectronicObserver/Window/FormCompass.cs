@@ -638,28 +638,28 @@ public partial class FormCompass : DockContent
 
 		APIObserver o = APIObserver.Instance;
 
-		o["api_port/port"].ResponseReceived += Updated;
-		o["api_req_map/start"].ResponseReceived += Updated;
-		o["api_req_map/next"].ResponseReceived += Updated;
-		o["api_req_member/get_practice_enemyinfo"].ResponseReceived += Updated;
+		o.ApiPort_Port.ResponseReceived += Updated;
+		o.ApiReqMap_Start.ResponseReceived += Updated;
+		o.ApiReqMap_Next.ResponseReceived += Updated;
+		o.ApiReqMember_GetPracticeEnemyInfo.ResponseReceived += Updated;
 
-		o["api_req_sortie/battle"].ResponseReceived += BattleStarted;
-		o["api_req_battle_midnight/sp_midnight"].ResponseReceived += BattleStarted;
-		o["api_req_sortie/night_to_day"].ResponseReceived += BattleStarted;
-		o["api_req_sortie/airbattle"].ResponseReceived += BattleStarted;
-		o["api_req_sortie/ld_airbattle"].ResponseReceived += BattleStarted;
-		o["api_req_sortie/ld_shooting"].ResponseReceived += BattleStarted;
-		o["api_req_combined_battle/battle"].ResponseReceived += BattleStarted;
-		o["api_req_combined_battle/sp_midnight"].ResponseReceived += BattleStarted;
-		o["api_req_combined_battle/airbattle"].ResponseReceived += BattleStarted;
-		o["api_req_combined_battle/battle_water"].ResponseReceived += BattleStarted;
-		o["api_req_combined_battle/ld_airbattle"].ResponseReceived += BattleStarted;
-		o["api_req_combined_battle/ec_battle"].ResponseReceived += BattleStarted;
-		o["api_req_combined_battle/each_battle"].ResponseReceived += BattleStarted;
-		o["api_req_combined_battle/each_battle_water"].ResponseReceived += BattleStarted;
-		o["api_req_combined_battle/ec_night_to_day"].ResponseReceived += BattleStarted;
-		o["api_req_combined_battle/ld_shooting"].ResponseReceived += BattleStarted;
-		o["api_req_practice/battle"].ResponseReceived += BattleStarted;
+		o.ApiReqSortie_Battle.ResponseReceived += BattleStarted;
+		o.ApiReqBattleMidnight_SpMidnight.ResponseReceived += BattleStarted;
+		o.ApiReqSortie_NightToDay.ResponseReceived += BattleStarted;
+		o.ApiReqSortie_AirBattle.ResponseReceived += BattleStarted;
+		o.ApiReqSortie_LdAirBattle.ResponseReceived += BattleStarted;
+		o.ApiReqSortie_LdShooting.ResponseReceived += BattleStarted;
+		o.ApiReqCombinedBattle_Battle.ResponseReceived += BattleStarted;
+		o.ApiReqCombinedBattle_SpMidnight.ResponseReceived += BattleStarted;
+		o.ApiReqCombinedBattle_AirBattle.ResponseReceived += BattleStarted;
+		o.ApiReqCombinedBattle_BattleWater.ResponseReceived += BattleStarted;
+		o.ApiReqCombinedBattle_LdAirBattle.ResponseReceived += BattleStarted;
+		o.ApiReqCombinedBattle_EcBattle.ResponseReceived += BattleStarted;
+		o.ApiReqCombinedBattle_EachBattle.ResponseReceived += BattleStarted;
+		o.ApiReqCombinedBattle_EachBattleWater.ResponseReceived += BattleStarted;
+		o.ApiReqCombinedBattle_EcNightToDay.ResponseReceived += BattleStarted;
+		o.ApiReqCombinedBattle_LdShooting.ResponseReceived += BattleStarted;
+		o.ApiReqPractice_Battle.ResponseReceived += BattleStarted;
 
 
 		Utility.Configuration.Instance.ConfigurationChanged += ConfigurationChanged;

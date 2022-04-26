@@ -50,21 +50,21 @@ public partial class FormInformation : DockContent
 
 		APIObserver o = APIObserver.Instance;
 
-		o["api_port/port"].ResponseReceived += Updated;
-		o["api_req_member/get_practice_enemyinfo"].ResponseReceived += Updated;
-		o["api_get_member/picture_book"].ResponseReceived += Updated;
-		o["api_get_member/mapinfo"].ResponseReceived += Updated;
-		o["api_get_member/mission"].ResponseReceived += Updated;
-		o["api_req_mission/result"].ResponseReceived += Updated;
-		o["api_req_practice/battle_result"].ResponseReceived += Updated;
-		o["api_req_sortie/battleresult"].ResponseReceived += Updated;
-		o["api_req_combined_battle/battleresult"].ResponseReceived += Updated;
-		o["api_req_hokyu/charge"].ResponseReceived += Updated;
-		o["api_req_map/start"].ResponseReceived += Updated;
-		o["api_req_map/next"].ResponseReceived += Updated;
-		o["api_req_practice/battle"].ResponseReceived += Updated;
-		o["api_get_member/sortie_conditions"].ResponseReceived += Updated;
-		o["api_req_mission/start"].RequestReceived += Updated;
+		o.ApiPort_Port.ResponseReceived += Updated;
+		o.ApiReqMember_GetPracticeEnemyInfo.ResponseReceived += Updated;
+		o.ApiGetMember_PictureBook.ResponseReceived += Updated;
+		o.ApiGetMember_MapInfo.ResponseReceived += Updated;
+		o.ApiGetMember_Mission.ResponseReceived += Updated;
+		o.ApiReqMission_Result.ResponseReceived += Updated;
+		o.ApiReqPractice_BattleResult.ResponseReceived += Updated;
+		o.ApiReqSortie_BattleResult.ResponseReceived += Updated;
+		o.ApiReqCombinedBattle_BattleResult.ResponseReceived += Updated;
+		o.ApiReqHokyu_Charge.ResponseReceived += Updated;
+		o.ApiReqMap_Start.ResponseReceived += Updated;
+		o.ApiReqMap_Next.ResponseReceived += Updated;
+		o.ApiReqPractice_Battle.ResponseReceived += Updated;
+		o.ApiGetMember_SortieConditions.ResponseReceived += Updated;
+		o.ApiReqMission_Start.RequestReceived += Updated;
 
 		Utility.Configuration.Instance.ConfigurationChanged += ConfigurationChanged;
 	}

@@ -99,30 +99,30 @@ public partial class FormHeadquarters : DockContent
 
 		APIObserver o = APIObserver.Instance;
 
-		o.APIList["api_req_nyukyo/start"].RequestReceived += Updated;
-		o.APIList["api_req_nyukyo/speedchange"].RequestReceived += Updated;
-		o.APIList["api_req_kousyou/createship"].RequestReceived += Updated;
-		o.APIList["api_req_kousyou/createship_speedchange"].RequestReceived += Updated;
-		o.APIList["api_req_kousyou/destroyship"].RequestReceived += Updated;
-		o.APIList["api_req_kousyou/destroyitem2"].RequestReceived += Updated;
-		o.APIList["api_req_member/updatecomment"].RequestReceived += Updated;
+		o.ApiReqNyukyo_Start.RequestReceived += Updated;
+		o.ApiReqNyukyo_SpeedChange.RequestReceived += Updated;
+		o.ApiReqKousyou_CreateShip.RequestReceived += Updated;
+		o.ApiReqKousyou_CreateShipSpeedChange.RequestReceived += Updated;
+		o.ApiReqKousyou_DestroyShip.RequestReceived += Updated;
+		o.ApiReqKousyou_DestroyItem2.RequestReceived += Updated;
+		o.ApiReqMember_UpdateComment.RequestReceived += Updated;
 
-		o.APIList["api_get_member/basic"].ResponseReceived += Updated;
-		o.APIList["api_get_member/slot_item"].ResponseReceived += Updated;
-		o.APIList["api_port/port"].ResponseReceived += Updated;
-		o.APIList["api_get_member/ship2"].ResponseReceived += Updated;
-		o.APIList["api_req_kousyou/getship"].ResponseReceived += Updated;
-		o.APIList["api_req_hokyu/charge"].ResponseReceived += Updated;
-		o.APIList["api_req_kousyou/destroyship"].ResponseReceived += Updated;
-		o.APIList["api_req_kousyou/destroyitem2"].ResponseReceived += Updated;
-		o.APIList["api_req_kaisou/powerup"].ResponseReceived += Updated;
-		o.APIList["api_req_kousyou/createitem"].ResponseReceived += Updated;
-		o.APIList["api_req_kousyou/remodel_slot"].ResponseReceived += Updated;
-		o.APIList["api_get_member/material"].ResponseReceived += Updated;
-		o.APIList["api_get_member/ship_deck"].ResponseReceived += Updated;
-		o.APIList["api_req_air_corps/set_plane"].ResponseReceived += Updated;
-		o.APIList["api_req_air_corps/supply"].ResponseReceived += Updated;
-		o.APIList["api_get_member/useitem"].ResponseReceived += Updated;
+		o.ApiGetMember_Basic.ResponseReceived += Updated;
+		o.ApiGetMember_SlotItem.ResponseReceived += Updated;
+		o.ApiPort_Port.ResponseReceived += Updated;
+		o.ApiGetMember_Ship2.ResponseReceived += Updated;
+		o.ApiReqKousyou_GetShip.ResponseReceived += Updated;
+		o.ApiReqHokyu_Charge.ResponseReceived += Updated;
+		o.ApiReqKousyou_DestroyShip.ResponseReceived += Updated;
+		o.ApiReqKousyou_DestroyItem2.ResponseReceived += Updated;
+		o.ApiReqKaisou_PowerUp.ResponseReceived += Updated;
+		o.ApiReqKousyou_CreateItem.ResponseReceived += Updated;
+		o.ApiReqKousyou_RemodelSlot.ResponseReceived += Updated;
+		o.ApiGetMember_Material.ResponseReceived += Updated;
+		o.ApiGetMember_ShipDeck.ResponseReceived += Updated;
+		o.ApiReqAirCorps_SetPlane.ResponseReceived += Updated;
+		o.ApiReqAirCorps_Supply.ResponseReceived += Updated;
+		o.ApiGetMember_UseItem.ResponseReceived += Updated;
 
 
 		Utility.Configuration.Instance.ConfigurationChanged += ConfigurationChanged;

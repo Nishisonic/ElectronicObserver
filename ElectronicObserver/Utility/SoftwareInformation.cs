@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Globalization;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using DynaJson;
@@ -44,14 +42,13 @@ public static class SoftwareInformation
 	/// <summary>
 	/// 更新日時
 	/// </summary>
-	public static DateTime UpdateTime => typeof(App).Assembly.GetLinkerTime();
-
+	public static DateTime UpdateTime => new DateTime(Generated.BuildInfo.TimeStamp) + TimeSpan.FromHours(9);
 
 	private static System.Net.WebClient? Client { get; set; }
 
 	private static Uri Uri { get; } =
 		new Uri(
-			"http://raw.githubusercontent.com/gre4bee/ryuukitsune.github.io/master/Translations/en-US/update.json");
+			"https://raw.githubusercontent.com/ElectronicObserverEN/Data/master/update.json");
 
 	public static void CheckUpdate()
 	{
@@ -127,26 +124,5 @@ public static class SoftwareInformation
 		{
 			ErrorReporter.SendErrorReport(ex, Resources.UpdateConnectionFailed);
 		}
-	}
-
-	/// <summary>
-	/// Build time in JST
-	/// </summary>
-	/// <param name="assembly"></param>
-	/// <returns></returns>
-	private static DateTime GetLinkerTime(this Assembly assembly)
-	{
-		const string buildVersionMetadataPrefix = "+build";
-
-		AssemblyInformationalVersionAttribute? attribute = assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>();
-		string? value = attribute?.InformationalVersion;
-		int? index = value?.IndexOf(buildVersionMetadataPrefix);
-
-		if (index is not > 0) return default;
-		if (value is null) return default;
-
-		value = value[(index.Value + buildVersionMetadataPrefix.Length)..];
-		return DateTime.ParseExact(value, "yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture) + TimeSpan.FromHours(9);
-
 	}
 }

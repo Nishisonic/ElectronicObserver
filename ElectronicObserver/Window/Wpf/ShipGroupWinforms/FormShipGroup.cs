@@ -281,10 +281,13 @@ public partial class FormShipGroup : DockContent
 
 		APIObserver o = APIObserver.Instance;
 
-		o.APIList["api_port/port"].ResponseReceived += APIUpdated;
-		o.APIList["api_get_member/ship2"].ResponseReceived += APIUpdated;
-		o.APIList["api_get_member/ship_deck"].ResponseReceived += APIUpdated;
+		o.ApiPort_Port.ResponseReceived += APIUpdated;
+		o.ApiGetMember_Ship2.ResponseReceived += APIUpdated;
+		o.ApiGetMember_ShipDeck.ResponseReceived += APIUpdated;
 
+		// added later - might affect performance
+		o.ApiGetMember_NDock.ResponseReceived += APIUpdated;
+		o.ApiReqHensei_PresetSelect.ResponseReceived += APIUpdated;
 
 		Utility.Configuration.Instance.ConfigurationChanged += ConfigurationChanged;
 
