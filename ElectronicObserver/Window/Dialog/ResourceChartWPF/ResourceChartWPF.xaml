@@ -183,25 +183,25 @@
 				Margin="10"
 				IsChecked="{Binding ShowAmmo}"
 				Text="{Binding DialogResourceChart.Ammo}"
-				Color="Brown"
+				Color="Orange"
 				/>
 			<local:ChartItemToggle
 				Margin="10"
 				IsChecked="{Binding ShowSteel}"
 				Text="{Binding DialogResourceChart.Steel}"
-				Color="AliceBlue"
+				Color="Gray"
 				/>
 			<local:ChartItemToggle
 				Margin="10"
 				IsChecked="{Binding ShowBaux}"
 				Text="{Binding DialogResourceChart.Baux}"
-				Color="Orange"
+				Color="Red"
 				/>
 			<local:ChartItemToggle
 				Margin="10"
 				IsChecked="{Binding ShowInstantRepair}"
 				Text="{Binding DialogResourceChart.InstantRepair}"
-				Color="Green"
+				Color="DarkBlue"
 				/>
 		</StackPanel>
 		<StackPanel
@@ -214,7 +214,7 @@
 				Margin="10"
 				IsChecked="{Binding ShowInstantRepair}"
 				Text="{Binding DialogResourceChart.InstantRepair}"
-				Color="Green"
+				Color="CornflowerBlue"
 				/>
 			<local:ChartItemToggle
 				Margin="10"
@@ -226,13 +226,13 @@
 				Margin="10"
 				IsChecked="{Binding ShowDevelopmentMaterial}"
 				Text="{Binding DialogResourceChart.DevelopmentMaterial}"
-				Color="Beige"
+				Color="Blue"
 				/>
 			<local:ChartItemToggle
 				Margin="10"
 				IsChecked="{Binding ShowModdingMaterial}"
 				Text="{Binding DialogResourceChart.ModdingMaterial}"
-				Color="Blue"
+				Color="Beige"
 				/>
 		</StackPanel>
 		<StackPanel
@@ -244,7 +244,7 @@
 				Margin="10"
 				IsChecked="{Binding ShowExperience}"
 				Text="{Binding DialogResourceChart.Experience}"
-				Color="Gold"
+				Color="Blue"
 				/>
 		</StackPanel>
 		<WpfPlot

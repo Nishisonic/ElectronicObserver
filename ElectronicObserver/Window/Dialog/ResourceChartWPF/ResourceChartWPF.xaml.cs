@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -7,10 +8,7 @@ using System.Windows.Input;
 using ElectronicObserver.Data;
 using ElectronicObserver.Resource.Record;
 using ElectronicObserver.Utility;
-using ElectronicObserver.ViewModels.Translations;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Win32;
-using ScottPlot;
 using ScottPlot.Plottable;
 using Translation = ElectronicObserver.Properties.Window.Dialog.DialogResourceChart;
 
@@ -22,6 +20,30 @@ namespace ElectronicObserver.Window.Dialog.ResourceChartWPF;
 public partial class ResourceChartWPF
 {
 	public ResourceChartViewModel ViewModel { get; } = new();
+	private Color FuelColor => Color.FromArgb(0, 128, 0);
+	private Color AmmoColor => Color.FromArgb(255, 128, 0);
+	private Color BauxColor => Color.FromArgb(255, 0, 0);
+	private Color SteelColor => GetSteelColor();
+
+	private Color GetSteelColor()
+	{
+		Configuration.ConfigurationData c = Configuration.Config;
+		switch (c.UI.ThemeMode)
+		{
+			case 0:
+				return Color.FromArgb(255 - 64, 255 - 64, 255 - 64);
+				break;
+			default:
+				return Color.FromArgb(64, 64, 64);
+				break;
+		}
+	}
+
+	private Color InstantRepairColor => Color.FromArgb(32, 128, 255);
+	private Color InstantConstructionColor => Color.FromArgb(255, 128, 0);
+	private Color DevelopmentMaterialColor => Color.FromArgb(0, 0, 255);
+	private Color ModdingMaterialColor => Color.FromArgb(64, 64, 64);
+	private Color ExperienceColor => Color.FromArgb(0, 0, 255);
 	private enum ChartSpan
 	{
 		Day,
@@ -218,7 +240,7 @@ public partial class ResourceChartWPF
 				ExperienceSignalPlot.IsVisible = ViewModel.ShowExperience;
 				ChartArea.Refresh();
 			}
-		}; 
+		};
 		#endregion
 	}
 
@@ -252,7 +274,7 @@ public partial class ResourceChartWPF
 		ChartArea.ToolTip = toolTip;
 		SwitchMenuStrip(ChartSpanMenu, "2");
 		SwitchMenuStrip(ChartTypeMenu, "0");
-		
+
 		ChartArea.Configuration.Zoom = false;
 		ChartArea.Configuration.Pan = false;
 		ChartArea.RightClicked -= ChartArea.DefaultRightClickEvent;
@@ -287,7 +309,7 @@ public partial class ResourceChartWPF
 			(double bauxpointX, double bauxpointY, int bauxpointIndex) = BauxPlot.GetPointNearest(mouseCoordX, mouseCoordY, xyRatio);
 			(double instantrepairpointX, double instantrepairpointY, int instantrepairpointIndex) = InstantRepairPlot.GetPointNearest(mouseCoordX, mouseCoordY, xyRatio);
 			DateTime date = DateTime.FromOADate(fuelpointX);
-			toolTip.Content = string.Format("{0}\n{6}: {1}\n{7}:{2}\n{8}: {3}\n{9}: {4}\n{10}: {5}", date, fuelpointY, ammopointY, steelpointY, bauxpointY, instantrepairpointY, fuel,ammo,steel,baux,instant_repair);
+			toolTip.Content = string.Format("{0}\n{6}: {1}\n{7}:{2}\n{8}: {3}\n{9}: {4}\n{10}: {5}", date, fuelpointY, ammopointY, steelpointY, bauxpointY, instantrepairpointY, fuel, ammo, steel, baux, instant_repair);
 		}
 		else if (SelectedChartType == ChartType.ResourceDiff)
 		{
@@ -313,7 +335,7 @@ public partial class ResourceChartWPF
 			(double developmentmaterialpointX, double developmentmaterialpointY, int developmentmaterialpointIndex) = DevelopmentMaterialPlot.GetPointNearest(mouseCoordX, mouseCoordY, xyRatio);
 			(double instantrepairpointX, double instantrepairpointY, int instantrepairpointIndex) = InstantRepairPlot.GetPointNearest(mouseCoordX, mouseCoordY, xyRatio);
 			DateTime date = DateTime.FromOADate(instantconstructionpointX);
-			toolTip.Content = string.Format("{0}\n{5}: {1}\n{6}:{2}\n{7}: {3}\n{8}: {4}", date, developmentmaterialpointY, moddingmaterialpointY, instantconstructionpointY, instantrepairpointY,development_material,modding_material,instant_construction,instant_repair);
+			toolTip.Content = string.Format("{0}\n{5}: {1}\n{6}:{2}\n{7}: {3}\n{8}: {4}", date, developmentmaterialpointY, moddingmaterialpointY, instantconstructionpointY, instantrepairpointY, development_material, modding_material, instant_construction, instant_repair);
 		}
 		else if (SelectedChartType == ChartType.MaterialDiff)
 		{
@@ -343,11 +365,11 @@ public partial class ResourceChartWPF
 			DateTime date = DateTime.FromOADate(experiencepointX);
 			if (Menu_Option_DivideByDay.IsChecked)
 			{
-				toolTip.Content = string.Format("{0}\n{2}: {1:+0;-0;±0}", date, experiencepointY,experience);
+				toolTip.Content = string.Format("{0}\n{2}: {1:+0;-0;±0} /day", date, experiencepointY, experience);
 			}
 			else
 			{
-				toolTip.Content = string.Format("{0}\n{2}: {1:+0;-0;±0} /day", date, experiencepointY,experience);
+				toolTip.Content = string.Format("{0}\n{2}: {1:+0;-0;±0}", date, experiencepointY, experience);
 			}
 		}
 		else
@@ -414,11 +436,11 @@ public partial class ResourceChartWPF
 				}
 			}
 		}
-		FuelPlot = ChartArea.Plot.AddScatterLines(date_list.ToArray(), fuel_list.ToArray(), System.Drawing.Color.DarkGreen, label: "Fuel");
-		AmmoPlot = ChartArea.Plot.AddScatterLines(date_list.ToArray(), ammo_list.ToArray(), System.Drawing.Color.Brown, label: "Ammo");
-		BauxPlot = ChartArea.Plot.AddScatterLines(date_list.ToArray(), baux_list.ToArray(), System.Drawing.Color.Orange, label: "Bauxite");
-		SteelPlot = ChartArea.Plot.AddScatterLines(date_list.ToArray(), steel_list.ToArray(), System.Drawing.Color.AliceBlue, label: "Steel");
-		InstantRepairPlot = ChartArea.Plot.AddScatterLines(date_list.ToArray(), instant_repair_list.ToArray(), System.Drawing.Color.Green, label: "Instant Repair");
+		FuelPlot = ChartArea.Plot.AddScatterLines(date_list.ToArray(), fuel_list.ToArray(), FuelColor, label: "Fuel");
+		AmmoPlot = ChartArea.Plot.AddScatterLines(date_list.ToArray(), ammo_list.ToArray(), AmmoColor, label: "Ammo");
+		BauxPlot = ChartArea.Plot.AddScatterLines(date_list.ToArray(), baux_list.ToArray(), BauxColor, label: "Bauxite");
+		SteelPlot = ChartArea.Plot.AddScatterLines(date_list.ToArray(), steel_list.ToArray(), SteelColor, label: "Steel");
+		InstantRepairPlot = ChartArea.Plot.AddScatterLines(date_list.ToArray(), instant_repair_list.ToArray(), InstantRepairColor, label: "Instant Repair");
 		InstantRepairPlot.YAxisIndex = 1;
 		ChartArea.Refresh();
 	}
@@ -489,32 +511,32 @@ public partial class ResourceChartWPF
 		}
 		InstantRepairSignalPlot = ChartArea.Plot.AddSignalXY(date_list.ToArray(), instant_repair_list.ToArray());
 		InstantRepairSignalPlot.StepDisplay = true;
-		InstantRepairSignalPlot.FillAboveAndBelow(System.Drawing.Color.Green, System.Drawing.Color.Transparent, System.Drawing.Color.Transparent, System.Drawing.Color.Green, 1);
+		InstantRepairSignalPlot.FillAboveAndBelow(InstantRepairColor, Color.Transparent, Color.Transparent, InstantRepairColor, 1);
 		InstantRepairSignalPlot.Label = "Instant Repair";
 		InstantRepairSignalPlot.MarkerSize = 0;
 		InstantRepairSignalPlot.YAxisIndex = 1;
 
 		FuelSignalPlot = ChartArea.Plot.AddSignalXY(date_list.ToArray(), fuel_list.ToArray());
 		FuelSignalPlot.StepDisplay = true;
-		FuelSignalPlot.FillAboveAndBelow(System.Drawing.Color.LimeGreen, System.Drawing.Color.Transparent, System.Drawing.Color.Transparent, System.Drawing.Color.LimeGreen, 1);
+		FuelSignalPlot.FillAboveAndBelow(FuelColor, Color.Transparent, Color.Transparent, FuelColor, 1);
 		FuelSignalPlot.Label = "Fuel";
 		FuelSignalPlot.MarkerSize = 0;
 
 		AmmoSignalPlot = ChartArea.Plot.AddSignalXY(date_list.ToArray(), ammo_list.ToArray());
 		AmmoSignalPlot.StepDisplay = true;
-		AmmoSignalPlot.FillAboveAndBelow(System.Drawing.Color.Brown, System.Drawing.Color.Transparent, System.Drawing.Color.Transparent, System.Drawing.Color.Brown, 1);
+		AmmoSignalPlot.FillAboveAndBelow(AmmoColor, Color.Transparent, Color.Transparent, AmmoColor, 1);
 		AmmoSignalPlot.Label = "Ammo";
 		AmmoSignalPlot.MarkerSize = 0;
 
 		SteelSignalPlot = ChartArea.Plot.AddSignalXY(date_list.ToArray(), steel_list.ToArray());
 		SteelSignalPlot.StepDisplay = true;
-		SteelSignalPlot.FillAboveAndBelow(System.Drawing.Color.AliceBlue, System.Drawing.Color.Transparent, System.Drawing.Color.Transparent, System.Drawing.Color.AliceBlue, 1);
+		SteelSignalPlot.FillAboveAndBelow(SteelColor, Color.Transparent, Color.Transparent, SteelColor, 1);
 		SteelSignalPlot.Label = "Steel";
 		SteelSignalPlot.MarkerSize = 0;
 
 		BauxSignalPlot = ChartArea.Plot.AddSignalXY(date_list.ToArray(), baux_list.ToArray());
 		BauxSignalPlot.StepDisplay = true;
-		BauxSignalPlot.FillAboveAndBelow(System.Drawing.Color.Brown, System.Drawing.Color.Transparent, System.Drawing.Color.Transparent, System.Drawing.Color.Brown, 1);
+		BauxSignalPlot.FillAboveAndBelow(BauxColor, Color.Transparent, Color.Transparent, BauxColor, 1);
 		BauxSignalPlot.Label = "Bauxite";
 		BauxSignalPlot.MarkerSize = 0;
 
@@ -575,26 +597,26 @@ public partial class ResourceChartWPF
 		}
 		InstantRepairSignalPlot = ChartArea.Plot.AddSignalXY(date_list.ToArray(), instant_repair_list.ToArray());
 		InstantRepairSignalPlot.StepDisplay = true;
-		InstantRepairSignalPlot.FillAboveAndBelow(System.Drawing.Color.Green, System.Drawing.Color.Transparent, System.Drawing.Color.Transparent, System.Drawing.Color.Green, 1);
+		InstantRepairSignalPlot.FillAboveAndBelow(InstantRepairColor, Color.Transparent, Color.Transparent, InstantRepairColor, 1);
 		InstantRepairSignalPlot.Label = "Instant Repair";
 		InstantRepairSignalPlot.MarkerSize = 0;
 
 		ModdingMaterialSignalPlot = ChartArea.Plot.AddSignalXY(date_list.ToArray(), modding_material_list.ToArray());
 		ModdingMaterialSignalPlot.StepDisplay = true;
 		ModdingMaterialSignalPlot.Label = "Modding Material";
-		ModdingMaterialSignalPlot.FillAboveAndBelow(System.Drawing.Color.Gray, System.Drawing.Color.Transparent, System.Drawing.Color.Transparent, System.Drawing.Color.Gray, 1);
+		ModdingMaterialSignalPlot.FillAboveAndBelow(ModdingMaterialColor, Color.Transparent, Color.Transparent, ModdingMaterialColor, 1);
 		ModdingMaterialSignalPlot.MarkerSize = 0;
 
 		DevelopmentMaterialSignalPlot = ChartArea.Plot.AddSignalXY(date_list.ToArray(), development_material_list.ToArray());
 		DevelopmentMaterialSignalPlot.StepDisplay = true;
 		DevelopmentMaterialSignalPlot.Label = "Development Material";
-		DevelopmentMaterialSignalPlot.FillAboveAndBelow(System.Drawing.Color.SlateBlue, System.Drawing.Color.Transparent, System.Drawing.Color.Transparent, System.Drawing.Color.SlateBlue, 1);
+		DevelopmentMaterialSignalPlot.FillAboveAndBelow(DevelopmentMaterialColor, Color.Transparent, Color.Transparent,DevelopmentMaterialColor, 1);
 		DevelopmentMaterialSignalPlot.MarkerSize = 0;
 
 		InstantConstructionSignalPlot = ChartArea.Plot.AddSignalXY(date_list.ToArray(), instant_contruction_list.ToArray());
 		InstantConstructionSignalPlot.StepDisplay = true;
 		InstantConstructionSignalPlot.Label = "Instant Construction";
-		InstantConstructionSignalPlot.FillAboveAndBelow(System.Drawing.Color.Orange, System.Drawing.Color.Transparent, System.Drawing.Color.Transparent, System.Drawing.Color.Orange, 1);
+		InstantConstructionSignalPlot.FillAboveAndBelow(InstantConstructionColor, Color.Transparent, Color.Transparent, InstantConstructionColor, 1);
 		InstantConstructionSignalPlot.MarkerSize = 0;
 
 		ChartArea.Refresh();
@@ -708,10 +730,10 @@ public partial class ResourceChartWPF
 				}
 			}
 		}
-		InstantRepairPlot = ChartArea.Plot.AddScatterLines(date_list.ToArray(), instant_repair_list.ToArray(), System.Drawing.Color.Green, label: "Instant Repair");
-		DevelopmentMaterialPlot = ChartArea.Plot.AddScatterLines(date_list.ToArray(), development_material_list.ToArray(), System.Drawing.Color.Beige, label: "Development Material");
-		ModdingMaterialPlot = ChartArea.Plot.AddScatterLines(date_list.ToArray(), modding_material_list.ToArray(), System.Drawing.Color.Blue, label: "Modding Material");
-		InstantConstructionPlot = ChartArea.Plot.AddScatterLines(date_list.ToArray(), instant_contruction_list.ToArray(), System.Drawing.Color.Orange, label: "Instant Construction");
+		InstantRepairPlot = ChartArea.Plot.AddScatterLines(date_list.ToArray(), instant_repair_list.ToArray(), InstantRepairColor, label: "Instant Repair");
+		DevelopmentMaterialPlot = ChartArea.Plot.AddScatterLines(date_list.ToArray(), development_material_list.ToArray(), DevelopmentMaterialColor, label: "Development Material");
+		ModdingMaterialPlot = ChartArea.Plot.AddScatterLines(date_list.ToArray(), modding_material_list.ToArray(), ModdingMaterialColor, label: "Modding Material");
+		InstantConstructionPlot = ChartArea.Plot.AddScatterLines(date_list.ToArray(), instant_contruction_list.ToArray(), InstantConstructionColor, label: "Instant Construction");
 		ChartArea.Refresh();
 	}
 
@@ -748,7 +770,7 @@ public partial class ResourceChartWPF
 				}
 			}
 		}
-		ExperiencePlot = ChartArea.Plot.AddScatterLines(date_list.ToArray(), experience_list.ToArray(), System.Drawing.Color.Orange, label: "HQ Experience");
+		ExperiencePlot = ChartArea.Plot.AddScatterLines(date_list.ToArray(), experience_list.ToArray(), ExperienceColor, label: "HQ Experience");
 		ChartArea.Refresh();
 	}
 
@@ -871,7 +893,7 @@ public partial class ResourceChartWPF
 		}
 		ExperienceSignalPlot = ChartArea.Plot.AddSignalXY(date_list.ToArray(), experience_list.ToArray());
 		ExperienceSignalPlot.StepDisplay = true;
-		ExperienceSignalPlot.FillAboveAndBelow(System.Drawing.Color.Gold, System.Drawing.Color.Transparent, System.Drawing.Color.Transparent, System.Drawing.Color.Gold, 1);
+		ExperienceSignalPlot.FillAboveAndBelow(ExperienceColor, Color.Transparent, Color.Transparent, ExperienceColor, 1);
 		ExperienceSignalPlot.Label = "HQ Experience";
 		ExperienceSignalPlot.MarkerSize = 0;
 		ChartArea.Refresh();
