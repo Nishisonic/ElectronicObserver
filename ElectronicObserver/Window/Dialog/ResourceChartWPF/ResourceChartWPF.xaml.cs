@@ -42,7 +42,7 @@ public partial class ResourceChartWPF
 	private Color InstantRepairColor => Color.FromArgb(32, 128, 255);
 	private Color InstantConstructionColor => Color.FromArgb(255, 128, 0);
 	private Color DevelopmentMaterialColor => Color.FromArgb(0, 0, 255);
-	private Color ModdingMaterialColor => Color.FromArgb(64, 64, 64);
+	private Color ModdingMaterialColor => GetSteelColor(); //use steel color for modding material
 	private Color ExperienceColor => Color.FromArgb(0, 0, 255);
 	private enum ChartSpan
 	{
