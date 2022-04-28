@@ -31,10 +31,10 @@ public partial class ResourceChartWPF
 		switch (c.UI.ThemeMode)
 		{
 			case 0:
-				return Color.FromArgb(255 - 64, 255 - 64, 255 - 64);
+				return Color.FromArgb(64, 64, 64);
 				break;
 			default:
-				return Color.FromArgb(64, 64, 64);
+				return Color.FromArgb(255 - 64, 255 - 64, 255 - 64);
 				break;
 		}
 	}
