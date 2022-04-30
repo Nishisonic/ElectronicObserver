@@ -176,6 +176,10 @@ public partial class ResourceChartWPF
 			if (InstantRepairPlot is not null)
 			{
 				InstantRepairPlot.IsVisible = ViewModel.ShowInstantRepair;
+				if (SelectedChartType == ChartType.Resource)
+				{
+					ChartArea.Plot.YAxis2.IsVisible = ViewModel.ShowInstantRepair;
+				}
 				ChartArea.Plot.AxisAutoY();
 				ChartArea.Refresh();
 			}
@@ -458,8 +462,14 @@ public partial class ResourceChartWPF
 		SteelPlot = ChartArea.Plot.AddScatterLines(date_list.ToArray(), steel_list.ToArray(), SteelColor, label: "Steel");
 		InstantRepairPlot = ChartArea.Plot.AddScatterLines(date_list.ToArray(), instant_repair_list.ToArray(), InstantRepairColor, label: "Instant Repair");
 		InstantRepairPlot.YAxisIndex = 1;
-		ChartArea.Plot.SetAxisLimits(yMin: InstantRepairPlot.Ys.Min(), yMax: InstantRepairPlot.Ys.Max()+660, yAxisIndex: 1);
-		ChartArea.Plot.AxisAutoX();
+		if (SelectedChartSpan == ChartSpan.All) {
+			ChartArea.Plot.SetAxisLimits(yMax: InstantRepairPlot.Ys.Max() + 660, yAxisIndex: 1);
+			ChartArea.Plot.AxisAutoX();
+		}
+		else
+		{
+			ChartArea.Plot.AxisAuto();
+		}
 		ChartArea.Refresh();
 	}
 	private void SetResourceDiffChart()
