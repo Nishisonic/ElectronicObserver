@@ -98,21 +98,23 @@ public partial class ResourceChartWPF
 		Loaded += ChartArea_Loaded;
 		#region Chart Toggles
 		ViewModel.PropertyChanged += (sender, args) =>
-{
-	if (args.PropertyName is not nameof(ViewModel.ShowFuel)) return;
+		{
+			if (args.PropertyName is not nameof(ViewModel.ShowFuel)) return;
 
-	if (FuelPlot is not null)
-	{
-		FuelPlot.IsVisible = ViewModel.ShowFuel;
-		ChartArea.Refresh();
-	}
+			if (FuelPlot is not null)
+			{
+				FuelPlot.IsVisible = ViewModel.ShowFuel;
+				ChartArea.Plot.AxisAutoY();
+				ChartArea.Refresh();
+			}
 
-	if (FuelSignalPlot is not null)
-	{
-		FuelSignalPlot.IsVisible = ViewModel.ShowFuel;
-		ChartArea.Refresh();
-	}
-};
+			if (FuelSignalPlot is not null)
+			{
+				FuelSignalPlot.IsVisible = ViewModel.ShowFuel;
+				ChartArea.Plot.AxisAutoY();
+				ChartArea.Refresh();
+			}
+		};
 		ViewModel.PropertyChanged += (sender, args) =>
 		{
 			if (args.PropertyName is not nameof(ViewModel.ShowAmmo)) return;
@@ -120,12 +122,14 @@ public partial class ResourceChartWPF
 			if (AmmoPlot is not null)
 			{
 				AmmoPlot.IsVisible = ViewModel.ShowAmmo;
+				ChartArea.Plot.AxisAutoY();
 				ChartArea.Refresh();
 			}
 
 			if (AmmoSignalPlot is not null)
 			{
 				AmmoSignalPlot.IsVisible = ViewModel.ShowAmmo;
+				ChartArea.Plot.AxisAutoY();
 				ChartArea.Refresh();
 			}
 		};
@@ -136,12 +140,14 @@ public partial class ResourceChartWPF
 			if (SteelPlot is not null)
 			{
 				SteelPlot.IsVisible = ViewModel.ShowSteel;
+				ChartArea.Plot.AxisAutoY();
 				ChartArea.Refresh();
 			}
 
 			if (SteelSignalPlot is not null)
 			{
 				SteelSignalPlot.IsVisible = ViewModel.ShowSteel;
+				ChartArea.Plot.AxisAutoY();
 				ChartArea.Refresh();
 			}
 		};
@@ -152,12 +158,14 @@ public partial class ResourceChartWPF
 			if (BauxPlot is not null)
 			{
 				BauxPlot.IsVisible = ViewModel.ShowBaux;
+				ChartArea.Plot.AxisAutoY();
 				ChartArea.Refresh();
 			}
 
 			if (BauxSignalPlot is not null)
 			{
 				BauxSignalPlot.IsVisible = ViewModel.ShowBaux;
+				ChartArea.Plot.AxisAutoY();
 				ChartArea.Refresh();
 			}
 		};
@@ -168,12 +176,14 @@ public partial class ResourceChartWPF
 			if (InstantRepairPlot is not null)
 			{
 				InstantRepairPlot.IsVisible = ViewModel.ShowInstantRepair;
+				ChartArea.Plot.AxisAutoY();
 				ChartArea.Refresh();
 			}
 
 			if (InstantRepairSignalPlot is not null)
 			{
 				InstantRepairSignalPlot.IsVisible = ViewModel.ShowInstantRepair;
+				ChartArea.Plot.AxisAutoY();
 				ChartArea.Refresh();
 			}
 		};
@@ -184,12 +194,14 @@ public partial class ResourceChartWPF
 			if (InstantConstructionPlot is not null)
 			{
 				InstantConstructionPlot.IsVisible = ViewModel.ShowInstantConstruction;
+				ChartArea.Plot.AxisAutoY();
 				ChartArea.Refresh();
 			}
 
 			if (InstantConstructionSignalPlot is not null)
 			{
 				InstantConstructionSignalPlot.IsVisible = ViewModel.ShowInstantConstruction;
+				ChartArea.Plot.AxisAutoY();
 				ChartArea.Refresh();
 			}
 		};
@@ -200,14 +212,16 @@ public partial class ResourceChartWPF
 			if (DevelopmentMaterialPlot is not null)
 			{
 				DevelopmentMaterialPlot.IsVisible = ViewModel.ShowDevelopmentMaterial;
+				ChartArea.Plot.AxisAutoY();
 				ChartArea.Refresh();
 			}
 
 			if (DevelopmentMaterialSignalPlot is not null)
 			{
 				DevelopmentMaterialSignalPlot.IsVisible = ViewModel.ShowDevelopmentMaterial;
+				ChartArea.Plot.AxisAutoY();
 				ChartArea.Refresh();
-			}
+			};
 		};
 		ViewModel.PropertyChanged += (sender, args) =>
 		{
@@ -216,12 +230,14 @@ public partial class ResourceChartWPF
 			if (ModdingMaterialPlot is not null)
 			{
 				ModdingMaterialPlot.IsVisible = ViewModel.ShowModdingMaterial;
+				ChartArea.Plot.AxisAutoY();
 				ChartArea.Refresh();
 			}
 
 			if (ModdingMaterialSignalPlot is not null)
 			{
 				ModdingMaterialSignalPlot.IsVisible = ViewModel.ShowModdingMaterial;
+				ChartArea.Plot.AxisAutoY();
 				ChartArea.Refresh();
 			}
 		};
@@ -232,12 +248,14 @@ public partial class ResourceChartWPF
 			if (ExperiencePlot is not null)
 			{
 				ExperiencePlot.IsVisible = ViewModel.ShowExperience;
+				ChartArea.Plot.AxisAutoY();
 				ChartArea.Refresh();
 			}
 
 			if (ExperienceSignalPlot is not null)
 			{
 				ExperienceSignalPlot.IsVisible = ViewModel.ShowExperience;
+				ChartArea.Plot.AxisAutoY();
 				ChartArea.Refresh();
 			}
 		};
@@ -610,7 +628,7 @@ public partial class ResourceChartWPF
 		DevelopmentMaterialSignalPlot = ChartArea.Plot.AddSignalXY(date_list.ToArray(), development_material_list.ToArray());
 		DevelopmentMaterialSignalPlot.StepDisplay = true;
 		DevelopmentMaterialSignalPlot.Label = "Development Material";
-		DevelopmentMaterialSignalPlot.FillAboveAndBelow(DevelopmentMaterialColor, Color.Transparent, Color.Transparent,DevelopmentMaterialColor, 1);
+		DevelopmentMaterialSignalPlot.FillAboveAndBelow(DevelopmentMaterialColor, Color.Transparent, Color.Transparent, DevelopmentMaterialColor, 1);
 		DevelopmentMaterialSignalPlot.MarkerSize = 0;
 
 		InstantConstructionSignalPlot = ChartArea.Plot.AddSignalXY(date_list.ToArray(), instant_contruction_list.ToArray());
