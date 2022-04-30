@@ -33,10 +33,8 @@ public partial class ResourceChartWPF
 		{
 			case 0:
 				return Color.FromArgb(64, 64, 64);
-				break;
 			default:
 				return Color.FromArgb(255 - 64, 255 - 64, 255 - 64);
-				break;
 		}
 	}
 
@@ -407,9 +405,6 @@ public partial class ResourceChartWPF
 	private void SetResourceChart()
 	{
 		ChartArea.Plot.Clear();
-
-		ChartArea.Plot.XAxis.Label("Date");
-		ChartArea.Plot.YAxis.Label("Resource");
 		ChartArea.Plot.XAxis.DateTimeFormat(true);
 		AxisXIntervals(SelectedChartSpan);
 		ViewModel.ShowFuel = true;
@@ -468,9 +463,6 @@ public partial class ResourceChartWPF
 	private void SetResourceDiffChart()
 	{
 		ChartArea.Plot.Clear();
-
-		ChartArea.Plot.XAxis.Label("Date");
-		ChartArea.Plot.YAxis.Label("Resource");
 		ChartArea.Plot.XAxis.DateTimeFormat(true);
 		AxisXIntervals(SelectedChartSpan);
 		ViewModel.ShowFuel = true;
@@ -570,8 +562,6 @@ public partial class ResourceChartWPF
 		MaterialPanel.Visibility = Visibility.Visible;
 		ExperiencePanel.Visibility = Visibility.Collapsed;
 		ChartArea.Plot.YAxis2.IsVisible = false;
-		ChartArea.Plot.XAxis.Label("Date");
-		ChartArea.Plot.YAxis.Label("Material");
 		ChartArea.Plot.XAxis.DateTimeFormat(true);
 		AxisXIntervals(SelectedChartSpan);
 		ViewModel.ShowDevelopmentMaterial = true;
@@ -716,8 +706,6 @@ public partial class ResourceChartWPF
 		MaterialPanel.Visibility = Visibility.Visible;
 		ExperiencePanel.Visibility = Visibility.Collapsed;
 		ChartArea.Plot.YAxis2.IsVisible = false;
-		ChartArea.Plot.XAxis.Label("Date");
-		ChartArea.Plot.YAxis.Label("Material");
 		ChartArea.Plot.XAxis.DateTimeFormat(true);
 		AxisXIntervals(SelectedChartSpan);
 		ViewModel.ShowModdingMaterial = true;
@@ -767,8 +755,6 @@ public partial class ResourceChartWPF
 		ExperiencePanel.Visibility = Visibility.Visible;
 		AxisXIntervals(SelectedChartSpan);
 		ChartArea.Plot.YAxis2.IsVisible = false;
-		ChartArea.Plot.XAxis.Label("Date");
-		ChartArea.Plot.YAxis.Label("Experience");
 		ChartArea.Plot.XAxis.DateTimeFormat(true);
 		ViewModel.ShowExperience = true;
 		List<double>? experience_list = Array.Empty<double>().ToList();
@@ -886,8 +872,6 @@ public partial class ResourceChartWPF
 		ExperiencePanel.Visibility = Visibility.Visible;
 		AxisXIntervals(SelectedChartSpan);
 		ChartArea.Plot.YAxis2.IsVisible = false;
-		ChartArea.Plot.XAxis.Label("Date");
-		ChartArea.Plot.YAxis.Label("Experience");
 		ChartArea.Plot.XAxis.DateTimeFormat(true);
 		ViewModel.ShowExperience = true;
 		List<double>? experience_list = Array.Empty<double>().ToList();
