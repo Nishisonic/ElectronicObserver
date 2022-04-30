@@ -212,15 +212,15 @@
 			>
 			<local:ChartItemToggle
 				Margin="10"
-				IsChecked="{Binding ShowInstantRepair}"
-				Text="{Binding DialogResourceChart.InstantRepair}"
-				Color="Green"
-				/>
-			<local:ChartItemToggle
-				Margin="10"
 				IsChecked="{Binding ShowInstantConstruction}"
 				Text="{Binding DialogResourceChart.InstantConstruction}"
 				Color="Orange"
+				/>
+			<local:ChartItemToggle
+				Margin="10"
+				IsChecked="{Binding ShowInstantRepair}"
+				Text="{Binding DialogResourceChart.InstantRepair}"
+				Color="Green"
 				/>
 			<local:ChartItemToggle
 				Margin="10"

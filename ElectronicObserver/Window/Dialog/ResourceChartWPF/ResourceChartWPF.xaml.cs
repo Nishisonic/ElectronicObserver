@@ -461,6 +461,7 @@ public partial class ResourceChartWPF
 		SteelPlot = ChartArea.Plot.AddScatterLines(date_list.ToArray(), steel_list.ToArray(), SteelColor, label: "Steel");
 		InstantRepairPlot = ChartArea.Plot.AddScatterLines(date_list.ToArray(), instant_repair_list.ToArray(), InstantRepairColor, label: "Instant Repair");
 		InstantRepairPlot.YAxisIndex = 1;
+		ChartArea.Plot.AxisAuto();
 		ChartArea.Refresh();
 	}
 	private void SetResourceDiffChart()
@@ -558,7 +559,7 @@ public partial class ResourceChartWPF
 		BauxSignalPlot.FillAboveAndBelow(BauxColor, Color.Transparent, Color.Transparent, BauxColor, 1);
 		BauxSignalPlot.Label = "Bauxite";
 		BauxSignalPlot.MarkerSize = 0;
-
+		ChartArea.Plot.AxisAuto();
 		ChartArea.Refresh();
 	}
 	private void SetMaterialDiffChart()
@@ -637,7 +638,7 @@ public partial class ResourceChartWPF
 		InstantConstructionSignalPlot.Label = "Instant Construction";
 		InstantConstructionSignalPlot.FillAboveAndBelow(InstantConstructionColor, Color.Transparent, Color.Transparent, InstantConstructionColor, 1);
 		InstantConstructionSignalPlot.MarkerSize = 0;
-
+		ChartArea.Plot.AxisAuto();
 		ChartArea.Refresh();
 	}
 	private bool ShouldSkipRecord(TimeSpan span)
@@ -753,6 +754,7 @@ public partial class ResourceChartWPF
 		DevelopmentMaterialPlot = ChartArea.Plot.AddScatterLines(date_list.ToArray(), development_material_list.ToArray(), DevelopmentMaterialColor, label: "Development Material");
 		ModdingMaterialPlot = ChartArea.Plot.AddScatterLines(date_list.ToArray(), modding_material_list.ToArray(), ModdingMaterialColor, label: "Modding Material");
 		InstantConstructionPlot = ChartArea.Plot.AddScatterLines(date_list.ToArray(), instant_contruction_list.ToArray(), InstantConstructionColor, label: "Instant Construction");
+		ChartArea.Plot.AxisAuto();
 		ChartArea.Refresh();
 	}
 
@@ -790,6 +792,7 @@ public partial class ResourceChartWPF
 			}
 		}
 		ExperiencePlot = ChartArea.Plot.AddScatterLines(date_list.ToArray(), experience_list.ToArray(), ExperienceColor, label: "HQ Experience");
+		ChartArea.Plot.AxisAuto();
 		ChartArea.Refresh();
 	}
 
@@ -915,6 +918,7 @@ public partial class ResourceChartWPF
 		ExperienceSignalPlot.FillAboveAndBelow(ExperienceColor, Color.Transparent, Color.Transparent, ExperienceColor, 1);
 		ExperienceSignalPlot.Label = "HQ Experience";
 		ExperienceSignalPlot.MarkerSize = 0;
+		ChartArea.Plot.AxisAuto();
 		ChartArea.Refresh();
 	}
 
