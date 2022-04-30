@@ -424,6 +424,7 @@ public partial class ResourceChartWPF
 		List<double>? steel_list = Array.Empty<double>().ToList();
 
 		List<double>? instant_repair_list = Array.Empty<double>().ToList();
+		ChartArea.Plot.YAxis2.IsVisible = true;
 		ChartArea.Plot.YAxis2.Ticks(true);
 		ChartArea.Plot.YAxis2.MajorGrid(true);
 		List<double>? date_list = Array.Empty<double>().ToList();
@@ -457,7 +458,8 @@ public partial class ResourceChartWPF
 		SteelPlot = ChartArea.Plot.AddScatterLines(date_list.ToArray(), steel_list.ToArray(), SteelColor, label: "Steel");
 		InstantRepairPlot = ChartArea.Plot.AddScatterLines(date_list.ToArray(), instant_repair_list.ToArray(), InstantRepairColor, label: "Instant Repair");
 		InstantRepairPlot.YAxisIndex = 1;
-		ChartArea.Plot.AxisAuto();
+		ChartArea.Plot.SetAxisLimits(yMin: InstantRepairPlot.Ys.Min(), yMax: InstantRepairPlot.Ys.Max()+660, yAxisIndex: 1);
+		ChartArea.Plot.AxisAutoX();
 		ChartArea.Refresh();
 	}
 	private void SetResourceDiffChart()
@@ -482,6 +484,7 @@ public partial class ResourceChartWPF
 		List<double>? steel_list = Array.Empty<double>().ToList();
 
 		List<double>? instant_repair_list = Array.Empty<double>().ToList();
+		ChartArea.Plot.YAxis2.IsVisible = true;
 		ChartArea.Plot.YAxis2.Ticks(true);
 		ChartArea.Plot.YAxis2.MajorGrid(true);
 		List<double>? date_list = Array.Empty<double>().ToList();
