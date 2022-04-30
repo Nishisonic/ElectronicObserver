@@ -327,7 +327,7 @@ public partial class ResourceChartWPF
 			(double bauxpointX, double bauxpointY, int bauxpointIndex) = BauxPlot.GetPointNearest(mouseCoordX, mouseCoordY, xyRatio);
 			(double instantrepairpointX, double instantrepairpointY, int instantrepairpointIndex) = InstantRepairPlot.GetPointNearest(mouseCoordX, mouseCoordY, xyRatio);
 			string date = DateTimeHelper.TimeToCSVString(DateTime.FromOADate(fuelpointX));
-			toolTip.Content = string.Format("{0}\n{6}: {1}\n{7}:{2}\n{8}: {3}\n{9}: {4}\n{10}: {5}", date, fuelpointY, ammopointY, steelpointY, bauxpointY, instantrepairpointY, fuel, ammo, steel, baux, instant_repair);
+			toolTip.Content = string.Format("{0}\n{6}: {1}\n{7}: {2}\n{8}: {3}\n{9}: {4}\n{10}: {5}", date, fuelpointY, ammopointY, steelpointY, bauxpointY, instantrepairpointY, fuel, ammo, steel, baux, instant_repair);
 		}
 		else if (SelectedChartType == ChartType.ResourceDiff)
 		{

@@ -22,6 +22,58 @@
 					Header="{Binding DialogResourceChart.Menu_File_SaveImage}"
 					/>
 			</MenuItem>
+			<MenuItem Name="ChartTypeMenu" Header="{Binding DialogResourceChart.Menu_Graph}">
+				<MenuItem
+					Name="ResourceMenu"
+					Click="ResourceMenu_Click"
+					Header="{Binding DialogResourceChart.Menu_Graph_Resource}"
+					IsCheckable="True"
+					IsChecked="True"
+					Tag="0"
+					/>
+				<MenuItem
+					Name="ResourceDiffMenu"
+					Click="ResourceDiffMenu_Click"
+					Header="{Binding DialogResourceChart.Menu_Graph_ResourceDiff}"
+					IsCheckable="True"
+					IsChecked="False"
+					Tag="1"
+					/>
+				<Separator />
+				<MenuItem
+					Name="MaterialMenu"
+					Click="MaterialMenu_Click"
+					Header="{Binding DialogResourceChart.Menu_Graph_Material}"
+					IsCheckable="True"
+					IsChecked="False"
+					Tag="2"
+					/>
+				<MenuItem
+					Name="MaterialDiffMenu"
+					Click="MaterialDiffMenu_Click"
+					Header="{Binding DialogResourceChart.Menu_Graph_MaterialDiff}"
+					IsCheckable="True"
+					IsChecked="False"
+					Tag="3"
+					/>
+				<Separator />
+				<MenuItem
+					Name="ExperienceMenu"
+					Click="ExperienceMenu_Click"
+					Header="{Binding DialogResourceChart.Menu_Graph_Experience}"
+					IsCheckable="True"
+					IsChecked="False"
+					Tag="4"
+					/>
+				<MenuItem
+					Name="ExperienceDiffMenu"
+					Click="ExperienceDiffMenu_Click"
+					Header="{Binding DialogResourceChart.Menu_Graph_ExperienceDiff}"
+					IsCheckable="True"
+					IsChecked="False"
+					Tag="5"
+					/>
+			</MenuItem>
 			<MenuItem Name="ChartSpanMenu" Header="{Binding DialogResourceChart.Menu_Span}">
 				<MenuItem
 					Name="ChartMenuDay"
@@ -98,58 +150,6 @@
 					Header="{Binding DialogResourceChart.Menu_Span_YearFirst}"
 					IsCheckable="True"
 					Tag="9"
-					/>
-			</MenuItem>
-			<MenuItem Name="ChartTypeMenu" Header="{Binding DialogResourceChart.Menu_Graph}">
-				<MenuItem
-					Name="ResourceMenu"
-					Click="ResourceMenu_Click"
-					Header="{Binding DialogResourceChart.Menu_Graph_Resource}"
-					IsCheckable="True"
-					IsChecked="True"
-					Tag="0"
-					/>
-				<MenuItem
-					Name="ResourceDiffMenu"
-					Click="ResourceDiffMenu_Click"
-					Header="{Binding DialogResourceChart.Menu_Graph_ResourceDiff}"
-					IsCheckable="True"
-					IsChecked="False"
-					Tag="1"
-					/>
-				<Separator />
-				<MenuItem
-					Name="MaterialMenu"
-					Click="MaterialMenu_Click"
-					Header="{Binding DialogResourceChart.Menu_Graph_Material}"
-					IsCheckable="True"
-					IsChecked="False"
-					Tag="2"
-					/>
-				<MenuItem
-					Name="MaterialDiffMenu"
-					Click="MaterialDiffMenu_Click"
-					Header="{Binding DialogResourceChart.Menu_Graph_MaterialDiff}"
-					IsCheckable="True"
-					IsChecked="False"
-					Tag="3"
-					/>
-				<Separator />
-				<MenuItem
-					Name="ExperienceMenu"
-					Click="ExperienceMenu_Click"
-					Header="{Binding DialogResourceChart.Menu_Graph_Experience}"
-					IsCheckable="True"
-					IsChecked="False"
-					Tag="4"
-					/>
-				<MenuItem
-					Name="ExperienceDiffMenu"
-					Click="ExperienceDiffMenu_Click"
-					Header="{Binding DialogResourceChart.Menu_Graph_ExperienceDiff}"
-					IsCheckable="True"
-					IsChecked="False"
-					Tag="5"
 					/>
 			</MenuItem>
 			<MenuItem Name="OptionsMenu" Header="{Binding DialogResourceChart.OptionsMenu}">
