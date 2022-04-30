@@ -8,6 +8,7 @@ using ElectronicObserver.Window;
 namespace ElectronicObserver.ViewModels.Translations;
 public class DialogResourceChartTranslationViewModel : TranslationBaseViewModel
 {
+	public string Title => GeneralRes.ResourceChart.Replace("_", "__").Replace("&", "_");
 	public string Menu_File => Properties.Window.Dialog.DialogResourceChart.Menu_File.Replace("_", "__").Replace("&", "_");
 	public string Menu_File_SaveImage => Properties.Window.Dialog.DialogResourceChart.Menu_File_SaveImage.Replace("_", "__").Replace("&", "_");
 	public string Menu_Graph => Properties.Window.Dialog.DialogResourceChart.Menu_Graph.Replace("_", "__").Replace("&", "_");

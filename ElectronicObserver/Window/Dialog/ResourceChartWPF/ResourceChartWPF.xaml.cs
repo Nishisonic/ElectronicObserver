@@ -40,6 +40,7 @@ public partial class ResourceChartWPF
 	}
 
 	private Color InstantRepairColor => Color.FromArgb(32, 128, 255);
+	private Color InstantRepairMatColor => Color.FromArgb(0, 128, 0);
 	private Color InstantConstructionColor => Color.FromArgb(255, 128, 0);
 	private Color DevelopmentMaterialColor => Color.FromArgb(0, 0, 255);
 	private Color ModdingMaterialColor => GetSteelColor(); //use steel color for modding material
@@ -615,7 +616,7 @@ public partial class ResourceChartWPF
 		}
 		InstantRepairSignalPlot = ChartArea.Plot.AddSignalXY(date_list.ToArray(), instant_repair_list.ToArray());
 		InstantRepairSignalPlot.StepDisplay = true;
-		InstantRepairSignalPlot.FillAboveAndBelow(InstantRepairColor, Color.Transparent, Color.Transparent, InstantRepairColor, 1);
+		InstantRepairSignalPlot.FillAboveAndBelow(InstantRepairMatColor, Color.Transparent, Color.Transparent, InstantRepairMatColor, 1);
 		InstantRepairSignalPlot.Label = "Instant Repair";
 		InstantRepairSignalPlot.MarkerSize = 0;
 
@@ -748,7 +749,7 @@ public partial class ResourceChartWPF
 				}
 			}
 		}
-		InstantRepairPlot = ChartArea.Plot.AddScatterLines(date_list.ToArray(), instant_repair_list.ToArray(), InstantRepairColor, label: "Instant Repair");
+		InstantRepairPlot = ChartArea.Plot.AddScatterLines(date_list.ToArray(), instant_repair_list.ToArray(), InstantRepairMatColor, label: "Instant Repair");
 		DevelopmentMaterialPlot = ChartArea.Plot.AddScatterLines(date_list.ToArray(), development_material_list.ToArray(), DevelopmentMaterialColor, label: "Development Material");
 		ModdingMaterialPlot = ChartArea.Plot.AddScatterLines(date_list.ToArray(), modding_material_list.ToArray(), ModdingMaterialColor, label: "Modding Material");
 		InstantConstructionPlot = ChartArea.Plot.AddScatterLines(date_list.ToArray(), instant_contruction_list.ToArray(), InstantConstructionColor, label: "Instant Construction");

@@ -6,7 +6,7 @@
 	xmlns:local="clr-namespace:ElectronicObserver.Window.Dialog.ResourceChartWPF"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:ui="http://schemas.modernwpf.com/2019"
-	Title="ResourceChartWPF"
+	Title="{Binding DialogResourceChart.Title}"
 	Width="950"
 	Height="450"
 	d:DataContext="{d:DesignInstance local:ResourceChartViewModel}"
@@ -214,7 +214,7 @@
 				Margin="10"
 				IsChecked="{Binding ShowInstantRepair}"
 				Text="{Binding DialogResourceChart.InstantRepair}"
-				Color="CornflowerBlue"
+				Color="Green"
 				/>
 			<local:ChartItemToggle
 				Margin="10"
