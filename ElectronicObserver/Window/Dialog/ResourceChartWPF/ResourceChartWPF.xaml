@@ -201,7 +201,7 @@
 				Margin="10"
 				IsChecked="{Binding ShowInstantRepair}"
 				Text="{Binding DialogResourceChart.InstantRepair}"
-				Color="DarkBlue"
+				Color="#2080FF"
 				/>
 		</StackPanel>
 		<StackPanel
