@@ -462,14 +462,8 @@ public partial class ResourceChartWPF
 		SteelPlot = ChartArea.Plot.AddScatterLines(date_list.ToArray(), steel_list.ToArray(), SteelColor, label: "Steel");
 		InstantRepairPlot = ChartArea.Plot.AddScatterLines(date_list.ToArray(), instant_repair_list.ToArray(), InstantRepairColor, label: "Instant Repair");
 		InstantRepairPlot.YAxisIndex = 1;
-		if (SelectedChartSpan == ChartSpan.All) {
-			ChartArea.Plot.SetAxisLimits(yMax: InstantRepairPlot.Ys.Max() + 660, yAxisIndex: 1);
-			ChartArea.Plot.AxisAutoX();
-		}
-		else
-		{
-			ChartArea.Plot.AxisAuto();
-		}
+		ChartArea.Plot.SetAxisLimits(yMax: InstantRepairPlot.Ys.Max() + 660, yAxisIndex: 1);
+		ChartArea.Plot.AxisAutoX();
 		ChartArea.Refresh();
 	}
 	private void SetResourceDiffChart()
