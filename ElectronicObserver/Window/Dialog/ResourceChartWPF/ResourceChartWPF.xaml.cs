@@ -56,6 +56,7 @@ public partial class ResourceChartWPF
 		MonthFirst,
 		SeasonFirst,
 		YearFirst,
+		Custom,
 	}
 
 	private enum ChartType
@@ -87,6 +88,7 @@ public partial class ResourceChartWPF
 	private ToolTip? toolTip;
 	private ScatterPlot? ExperiencePlot;
 	private SignalPlotXY ExperienceSignalPlot;
+	private ResourceRecord _record;
 	private ChartType SelectedChartType => (ChartType)GetSelectedMenuStripIndex(ChartTypeMenu);
 	private ChartSpan SelectedChartSpan => (ChartSpan)GetSelectedMenuStripIndex(ChartSpanMenu);
 	public ResourceChartWPF()
@@ -288,7 +290,12 @@ public partial class ResourceChartWPF
 			Close();
 			return;
 		}
+		_record = RecordManager.Instance.Resource;
+		ViewModel.DateBegin = _record.Record.First().Date.Date;
+		ViewModel.MinDate = _record.Record.First().Date.Date;
 
+		ViewModel.DateEnd = DateTime.Now.AddDays(1).Date;
+		ViewModel.MaxDate = DateTime.Now.AddDays(1).Date;
 		toolTip = new ToolTip
 		{
 			Content = "ToolTip"
@@ -432,27 +439,51 @@ public partial class ResourceChartWPF
 		ChartArea.Plot.YAxis2.Ticks(true);
 		ChartArea.Plot.YAxis2.MajorGrid(true);
 		List<double>? date_list = Array.Empty<double>().ToList();
-
 		{
-			var record = GetRecords();
-
-			ResourceRecord.ResourceElement prev = null;
-			if (record.Any())
+			if (SelectedChartSpan != ChartSpan.Custom)
 			{
-				prev = record.First();
-				foreach (var r in record)
+				var record = GetRecords();
+				ResourceRecord.ResourceElement prev = null;
+				if (record.Any())
 				{
-					if (ShouldSkipRecord(r.Date - prev.Date))
-						continue;
+					prev = record.First();
+					foreach (var r in record)
+					{
+						if (ShouldSkipRecord(r.Date - prev.Date))
+							continue;
 
-					date_list.Add(r.Date.ToOADate());
-					fuel_list.Add(r.Fuel);
-					ammo_list.Add(r.Ammo);
-					baux_list.Add(r.Bauxite);
-					steel_list.Add(r.Steel);
-					instant_repair_list.Add(r.InstantRepair);
+						date_list.Add(r.Date.ToOADate());
+						fuel_list.Add(r.Fuel);
+						ammo_list.Add(r.Ammo);
+						baux_list.Add(r.Bauxite);
+						steel_list.Add(r.Steel);
+						instant_repair_list.Add(r.InstantRepair);
 
-					prev = r;
+						prev = r;
+					}
+				}
+			}
+			else
+			{
+				var record = GetRecordsCustom(ViewModel.DateBegin, ViewModel.DateEnd);
+				ResourceRecord.ResourceElement prev = null;
+				if (record.Any())
+				{
+					prev = record.First();
+					foreach (var r in record)
+					{
+						if (ShouldSkipRecord(r.Date - prev.Date))
+							continue;
+
+						date_list.Add(r.Date.ToOADate());
+						fuel_list.Add(r.Fuel);
+						ammo_list.Add(r.Ammo);
+						baux_list.Add(r.Bauxite);
+						steel_list.Add(r.Steel);
+						instant_repair_list.Add(r.InstantRepair);
+
+						prev = r;
+					}
 				}
 			}
 		}
@@ -462,8 +493,15 @@ public partial class ResourceChartWPF
 		SteelPlot = ChartArea.Plot.AddScatterLines(date_list.ToArray(), steel_list.ToArray(), SteelColor, label: "Steel");
 		InstantRepairPlot = ChartArea.Plot.AddScatterLines(date_list.ToArray(), instant_repair_list.ToArray(), InstantRepairColor, label: "Instant Repair");
 		InstantRepairPlot.YAxisIndex = 1;
-		ChartArea.Plot.SetAxisLimits(yMax: InstantRepairPlot.Ys.Max() + 660, yAxisIndex: 1);
-		ChartArea.Plot.AxisAutoX();
+		if (InstantRepairPlot.Ys.Max() == 3000)
+		{
+			ChartArea.Plot.SetAxisLimits(yMax: InstantRepairPlot.Ys.Max() + 660, yAxisIndex: 1);
+			ChartArea.Plot.AxisAutoX();
+		}
+		else
+		{
+			ChartArea.Plot.AxisAuto();
+		}
 		ChartArea.Refresh();
 	}
 	private void SetResourceDiffChart()
@@ -494,38 +532,78 @@ public partial class ResourceChartWPF
 		List<double>? date_list = Array.Empty<double>().ToList();
 
 		{
-			var record = GetRecords();
-
-			ResourceRecord.ResourceElement prev = null;
-			if (record.Any())
+			if (SelectedChartSpan != ChartSpan.Custom)
 			{
-				prev = record.First();
-				foreach (var r in record)
-				{
-					if (ShouldSkipRecord(r.Date - prev.Date))
-						continue;
+				var record = GetRecords();
 
-					double[] ys = new double[] {
+				ResourceRecord.ResourceElement prev = null;
+				if (record.Any())
+				{
+					prev = record.First();
+					foreach (var r in record)
+					{
+						if (ShouldSkipRecord(r.Date - prev.Date))
+							continue;
+
+						double[] ys = new double[] {
 						r.Fuel - prev.Fuel,
 						r.Ammo - prev.Ammo,
 						r.Steel - prev.Steel,
 						r.Bauxite - prev.Bauxite,
 						r.InstantRepair - prev.InstantRepair };
-					if (Menu_Option_DivideByDay.IsChecked)
-					{
-						for (int i = 0; i < 4; i++)
-							ys[i] /= Math.Max((r.Date - prev.Date).TotalDays, 1.0 / 1440.0);
+						if (Menu_Option_DivideByDay.IsChecked)
+						{
+							for (int i = 0; i < 4; i++)
+								ys[i] /= Math.Max((r.Date - prev.Date).TotalDays, 1.0 / 1440.0);
+						}
+
+						date_list.Add(r.Date.ToOADate());
+
+						fuel_list.Add(ys[0]);
+						ammo_list.Add(ys[1]);
+						steel_list.Add(ys[2]);
+						baux_list.Add(ys[3]);
+						instant_repair_list.Add(ys[4]);
+
+						prev = r;
 					}
+				}
+			}
+			else
+			{
+				var record = GetRecordsCustom(ViewModel.DateBegin, ViewModel.DateEnd);
 
-					date_list.Add(r.Date.ToOADate());
+				ResourceRecord.ResourceElement prev = null;
+				if (record.Any())
+				{
+					prev = record.First();
+					foreach (var r in record)
+					{
+						if (ShouldSkipRecord(r.Date - prev.Date))
+							continue;
 
-					fuel_list.Add(ys[0]);
-					ammo_list.Add(ys[1]);
-					steel_list.Add(ys[2]);
-					baux_list.Add(ys[3]);
-					instant_repair_list.Add(ys[4]);
+						double[] ys = new double[] {
+						r.Fuel - prev.Fuel,
+						r.Ammo - prev.Ammo,
+						r.Steel - prev.Steel,
+						r.Bauxite - prev.Bauxite,
+						r.InstantRepair - prev.InstantRepair };
+						if (Menu_Option_DivideByDay.IsChecked)
+						{
+							for (int i = 0; i < 4; i++)
+								ys[i] /= Math.Max((r.Date - prev.Date).TotalDays, 1.0 / 1440.0);
+						}
 
-					prev = r;
+						date_list.Add(r.Date.ToOADate());
+
+						fuel_list.Add(ys[0]);
+						ammo_list.Add(ys[1]);
+						steel_list.Add(ys[2]);
+						baux_list.Add(ys[3]);
+						instant_repair_list.Add(ys[4]);
+
+						prev = r;
+					}
 				}
 			}
 		}
@@ -582,34 +660,70 @@ public partial class ResourceChartWPF
 
 		List<double>? date_list = Array.Empty<double>().ToList();
 		{
-			var record = GetRecords();
-
-			ResourceRecord.ResourceElement prev = null;
-			if (record.Any())
+			if (SelectedChartSpan != ChartSpan.Custom)
 			{
-				prev = record.First();
-				foreach (var r in record)
+				var record = GetRecords();
+
+				ResourceRecord.ResourceElement prev = null;
+				if (record.Any())
 				{
-					if (ShouldSkipRecord(r.Date - prev.Date))
-						continue;
-					double[] ys = new double[] {
+					prev = record.First();
+					foreach (var r in record)
+					{
+						if (ShouldSkipRecord(r.Date - prev.Date))
+							continue;
+						double[] ys = new double[] {
 						r.InstantConstruction - prev.InstantConstruction ,
 						r.InstantRepair - prev.InstantRepair,
 						r.DevelopmentMaterial - prev.DevelopmentMaterial ,
 						r.ModdingMaterial - prev.ModdingMaterial };
 
-					if (Menu_Option_DivideByDay.IsChecked)
-					{
-						for (int i = 0; i < 4; i++)
-							ys[i] /= Math.Max((r.Date - prev.Date).TotalDays, 1.0 / 1440.0);
-					}
-					date_list.Add(r.Date.ToOADate());
-					instant_contruction_list.Add(ys[0]);
-					instant_repair_list.Add(ys[1]);
-					development_material_list.Add(ys[2]);
-					modding_material_list.Add(ys[3]);
+						if (Menu_Option_DivideByDay.IsChecked)
+						{
+							for (int i = 0; i < 4; i++)
+								ys[i] /= Math.Max((r.Date - prev.Date).TotalDays, 1.0 / 1440.0);
+						}
+						date_list.Add(r.Date.ToOADate());
+						instant_contruction_list.Add(ys[0]);
+						instant_repair_list.Add(ys[1]);
+						development_material_list.Add(ys[2]);
+						modding_material_list.Add(ys[3]);
 
-					prev = r;
+						prev = r;
+					}
+				}
+			}
+			else
+			{
+				var record = GetRecordsCustom(ViewModel.DateBegin, ViewModel.DateEnd);
+
+				ResourceRecord.ResourceElement prev = null;
+				if (record.Any())
+				{
+					prev = record.First();
+					foreach (var r in record)
+					{
+						if (ShouldSkipRecord(r.Date - prev.Date))
+							continue;
+						double[] ys = new double[] {
+						r.InstantConstruction - prev.InstantConstruction ,
+						r.InstantRepair - prev.InstantRepair,
+						r.DevelopmentMaterial - prev.DevelopmentMaterial ,
+						r.ModdingMaterial - prev.ModdingMaterial };
+
+						if (Menu_Option_DivideByDay.IsChecked)
+						{
+							for (int i = 0; i < 4; i++)
+								ys[i] /= Math.Max((r.Date - prev.Date).TotalDays, 1.0 / 1440.0);
+						}
+						date_list.Add(r.Date.ToOADate());
+						instant_contruction_list.Add(ys[0]);
+						instant_repair_list.Add(ys[1]);
+						development_material_list.Add(ys[2]);
+						modding_material_list.Add(ys[3]);
+
+						prev = r;
+					}
 				}
 			}
 		}
@@ -705,7 +819,25 @@ public partial class ResourceChartWPF
 		//	//ResourceChart.ChartAreas[0].AxisY2.Enabled = AxisEnabled.False;
 		//}
 	}
+	private IEnumerable<ResourceRecord.ResourceElement> GetRecordsCustom(DateTime start, DateTime end)
+	{
 
+		foreach (var r in RecordManager.Instance.Resource.Record)
+		{
+			if (r.Date > start && r.Date < end)
+				yield return r;
+		}
+
+		var material = KCDatabase.Instance.Material;
+		var admiral = KCDatabase.Instance.Admiral;
+		if (material.IsAvailable && admiral.IsAvailable)
+		{
+			yield return new ResourceRecord.ResourceElement(
+				material.Fuel, material.Ammo, material.Steel, material.Bauxite,
+				material.InstantConstruction, material.InstantRepair, material.DevelopmentMaterial, material.ModdingMaterial,
+				admiral.Level, admiral.Exp);
+		}
+	}
 	private void SetMaterialChart()
 	{
 		ChartArea.Plot.Clear();
@@ -726,23 +858,48 @@ public partial class ResourceChartWPF
 
 		List<double>? date_list = Array.Empty<double>().ToList();
 		{
-			var record = GetRecords();
-
-			ResourceRecord.ResourceElement prev = null;
-			if (record.Any())
+			if (SelectedChartSpan != ChartSpan.Custom)
 			{
-				prev = record.First();
-				foreach (var r in record)
-				{
-					if (ShouldSkipRecord(r.Date - prev.Date))
-						continue;
+				var record = GetRecords();
 
-					date_list.Add(r.Date.ToOADate());
-					instant_repair_list.Add(r.InstantRepair);
-					development_material_list.Add(r.DevelopmentMaterial);
-					modding_material_list.Add(r.ModdingMaterial);
-					instant_contruction_list.Add(r.InstantConstruction);
-					prev = r;
+				ResourceRecord.ResourceElement prev = null;
+				if (record.Any())
+				{
+					prev = record.First();
+					foreach (var r in record)
+					{
+						if (ShouldSkipRecord(r.Date - prev.Date))
+							continue;
+
+						date_list.Add(r.Date.ToOADate());
+						instant_repair_list.Add(r.InstantRepair);
+						development_material_list.Add(r.DevelopmentMaterial);
+						modding_material_list.Add(r.ModdingMaterial);
+						instant_contruction_list.Add(r.InstantConstruction);
+						prev = r;
+					}
+				}
+			}
+			else
+			{
+				var record = GetRecordsCustom(ViewModel.DateBegin, ViewModel.DateEnd);
+
+				ResourceRecord.ResourceElement prev = null;
+				if (record.Any())
+				{
+					prev = record.First();
+					foreach (var r in record)
+					{
+						if (ShouldSkipRecord(r.Date - prev.Date))
+							continue;
+
+						date_list.Add(r.Date.ToOADate());
+						instant_repair_list.Add(r.InstantRepair);
+						development_material_list.Add(r.DevelopmentMaterial);
+						modding_material_list.Add(r.ModdingMaterial);
+						instant_contruction_list.Add(r.InstantConstruction);
+						prev = r;
+					}
 				}
 			}
 		}
@@ -767,21 +924,39 @@ public partial class ResourceChartWPF
 		List<double>? experience_list = Array.Empty<double>().ToList();
 
 		List<double>? date_list = Array.Empty<double>().ToList();
-
 		{
-			var record = GetRecords();
-
-			if (record.Any())
+			if (SelectedChartSpan != ChartSpan.Custom)
 			{
-				var prev = record.First();
-				foreach (var r in record)
+				var record = GetRecords();
+				if (record.Any())
 				{
-					if (ShouldSkipRecord(r.Date - prev.Date))
-						continue;
+					var prev = record.First();
+					foreach (var r in record)
+					{
+						if (ShouldSkipRecord(r.Date - prev.Date))
+							continue;
 
-					experience_list.Add(r.HQExp);
-					date_list.Add(r.Date.ToOADate());
-					prev = r;
+						experience_list.Add(r.HQExp);
+						date_list.Add(r.Date.ToOADate());
+						prev = r;
+					}
+				}
+			}
+			else
+			{
+				var record = GetRecordsCustom(ViewModel.DateBegin, ViewModel.DateEnd);
+				if (record.Any())
+				{
+					var prev = record.First();
+					foreach (var r in record)
+					{
+						if (ShouldSkipRecord(r.Date - prev.Date))
+							continue;
+
+						experience_list.Add(r.HQExp);
+						date_list.Add(r.Date.ToOADate());
+						prev = r;
+					}
 				}
 			}
 		}
@@ -837,12 +1012,55 @@ public partial class ResourceChartWPF
 				axis.TickLabelStyle(rotation: 90);
 				axis.ManualTickSpacing(1, ScottPlot.Ticks.DateTimeUnit.Month);
 				break;
+			case ChartSpan.Custom:
+				double diffofdate = (ViewModel.DateEnd - ViewModel.DateBegin).TotalDays;
+				if (diffofdate == 1)
+				{
+					axis.TickLabelFormat("MM/dd HH:mm", true);
+					axis.ManualTickSpacing(2, ScottPlot.Ticks.DateTimeUnit.Hour);
+					axis.TickLabelStyle(rotation: 90);
+				}
+				else if (diffofdate <= 7 && diffofdate > 1)
+				{
+					axis.TickLabelFormat("MM/dd HH:mm", true);
+					axis.ManualTickSpacing(12, ScottPlot.Ticks.DateTimeUnit.Hour);
+					axis.TickLabelStyle(rotation: 90);
+				}
+				else if (diffofdate > 7 && diffofdate <= 31)
+				{
+					axis.TickLabelFormat("yyyy/MM/dd", true);
+					axis.ManualTickSpacing(2, ScottPlot.Ticks.DateTimeUnit.Day);
+					axis.TickLabelStyle(rotation: 90);
+				}
+				else if (diffofdate >= 32 && diffofdate <= 90)
+				{
+					axis.TickLabelFormat("yyyy/MM/dd", true);
+					axis.ManualTickSpacing(7, ScottPlot.Ticks.DateTimeUnit.Day);
+					axis.TickLabelStyle(rotation: 90);
+				}
+				else
+				{
+					axis.TickLabelFormat("yyyy/MM/dd", true);
+					axis.TickLabelStyle(rotation: 90);
+					axis.ManualTickSpacing(1, ScottPlot.Ticks.DateTimeUnit.Month);
+				}
+				break;
 		}
 	}
 
 	private void ChartSpan_Click(object sender, RoutedEventArgs e)
 	{
 		SwitchMenuStrip(ChartSpanMenu, ((MenuItem)sender).Tag);
+		if (SelectedChartSpan == ChartSpan.Custom)
+		{
+			DatePickerStart.IsEnabled = true;
+			DatePickerEnd.IsEnabled = true;
+		}
+		else
+		{
+			DatePickerStart.IsEnabled = false;
+			DatePickerEnd.IsEnabled = false;
+		}
 		UpdateChart();
 	}
 
@@ -886,22 +1104,45 @@ public partial class ResourceChartWPF
 		List<double>? date_list = Array.Empty<double>().ToList();
 
 		{
-			var record = GetRecords();
-
-			if (record.Any())
+			if (SelectedChartSpan != ChartSpan.Custom)
 			{
-				var prev = record.First();
-				foreach (var r in record)
-				{
-					if (ShouldSkipRecord(r.Date - prev.Date))
-						continue;
-					double ys = r.HQExp - prev.HQExp;
-					if (Menu_Option_DivideByDay.IsChecked)
-						ys /= Math.Max((r.Date - prev.Date).TotalDays, 1.0 / 1440.0);
+				var record = GetRecords();
 
-					experience_list.Add(ys);
-					date_list.Add(r.Date.ToOADate());
-					prev = r;
+				if (record.Any())
+				{
+					var prev = record.First();
+					foreach (var r in record)
+					{
+						if (ShouldSkipRecord(r.Date - prev.Date))
+							continue;
+						double ys = r.HQExp - prev.HQExp;
+						if (Menu_Option_DivideByDay.IsChecked)
+							ys /= Math.Max((r.Date - prev.Date).TotalDays, 1.0 / 1440.0);
+
+						experience_list.Add(ys);
+						date_list.Add(r.Date.ToOADate());
+						prev = r;
+					}
+				}
+			}
+			else
+			{
+				var record = GetRecordsCustom(ViewModel.DateBegin, ViewModel.DateEnd);
+				if (record.Any())
+				{
+					var prev = record.First();
+					foreach (var r in record)
+					{
+						if (ShouldSkipRecord(r.Date - prev.Date))
+							continue;
+						double ys = r.HQExp - prev.HQExp;
+						if (Menu_Option_DivideByDay.IsChecked)
+							ys /= Math.Max((r.Date - prev.Date).TotalDays, 1.0 / 1440.0);
+
+						experience_list.Add(ys);
+						date_list.Add(r.Date.ToOADate());
+						prev = r;
+					}
 				}
 			}
 		}
@@ -941,35 +1182,43 @@ public partial class ResourceChartWPF
 		switch (SelectedChartSpan)
 		{
 			case ChartSpan.Day:
+				now = DateTime.Now;
 				border = now.AddDays(-1);
 				break;
 
 			case ChartSpan.Week:
+				now = DateTime.Now;
 				border = now.AddDays(-7);
 				break;
 
 			case ChartSpan.Month:
+				now = DateTime.Now;
 				border = now.AddMonths(-1);
 				break;
 
 			case ChartSpan.Season:
+				now = DateTime.Now;
 				border = now.AddMonths(-3);
 				break;
 
 			case ChartSpan.Year:
+				now = DateTime.Now;
 				border = now.AddYears(-1);
 				break;
 
 			case ChartSpan.WeekFirst:
+				now = DateTime.Now;
 				border = now.AddDays(now.DayOfWeek == DayOfWeek.Sunday ? -6 : (1 - (int)now.DayOfWeek));
 				break;
 
 			case ChartSpan.MonthFirst:
+				now = DateTime.Now;
 				border = new DateTime(now.Year, now.Month, 1);
 				break;
 
 			case ChartSpan.SeasonFirst:
 			{
+				now = DateTime.Now;
 				int m = now.Month / 3 * 3;
 				if (m == 0)
 					m = 12;
@@ -978,12 +1227,14 @@ public partial class ResourceChartWPF
 			break;
 
 			case ChartSpan.YearFirst:
+				now = DateTime.Now;
 				border = new DateTime(now.Year, 1, 1);
 				break;
 		}
 
 		foreach (var r in RecordManager.Instance.Resource.Record)
 		{
+
 			if (r.Date >= border)
 				yield return r;
 		}
@@ -1058,5 +1309,11 @@ public partial class ResourceChartWPF
 
 		if (sfd.ShowDialog() is true)
 			ChartArea.Plot.SaveFig(sfd.FileName);
+	}
+
+	private void DatePicker_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
+	{
+		if (SelectedChartSpan != ChartSpan.Custom) return;
+		UpdateChart();
 	}
 }

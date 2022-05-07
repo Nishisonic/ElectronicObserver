@@ -151,6 +151,12 @@
 					IsCheckable="True"
 					Tag="9"
 					/>
+				<MenuItem
+					Click="ChartSpan_Click"
+					Header="{Binding DialogResourceChart.Menu_Span_Custom}"
+					IsCheckable="True"
+					Tag="10"
+					/>
 			</MenuItem>
 			<MenuItem Name="OptionsMenu" Header="{Binding DialogResourceChart.OptionsMenu}">
 				<MenuItem
@@ -247,6 +253,28 @@
 				Color="Blue"
 				/>
 		</StackPanel>
+		<DockPanel DockPanel.Dock="Top">
+			<Label Content="{Binding DialogResourceChart.Start}" />
+			<DatePicker
+				Name="DatePickerStart"
+				DisplayDateEnd="{Binding MaxDate}"
+				DisplayDateStart="{Binding MinDate}"
+				FirstDayOfWeek="Monday"
+				IsEnabled="False"
+				SelectedDate="{Binding DateBegin}"
+				SelectedDateChanged="DatePicker_SelectedDateChanged"
+				/>
+			<Label Content="{Binding DialogResourceChart.End}" />
+			<DatePicker
+				Name="DatePickerEnd"
+				DisplayDateEnd="{Binding MaxDate}"
+				DisplayDateStart="{Binding MinDate}"
+				FirstDayOfWeek="Monday"
+				IsEnabled="False"
+				SelectedDate="{Binding DateEnd}"
+				SelectedDateChanged="DatePicker_SelectedDateChanged"
+				/>
+		</DockPanel>
 		<WpfPlot
 			Name="ChartArea"
 			Margin="0 0 0 0"

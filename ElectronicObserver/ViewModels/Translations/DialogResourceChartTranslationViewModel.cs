@@ -9,6 +9,8 @@ namespace ElectronicObserver.ViewModels.Translations;
 public class DialogResourceChartTranslationViewModel : TranslationBaseViewModel
 {
 	public string Title => GeneralRes.ResourceChart.Replace("_", "__").Replace("&", "_");
+	public string Start => DialogDropRecordViewer.Start;
+	public string End => DialogDropRecordViewer.End;
 	public string Menu_File => Properties.Window.Dialog.DialogResourceChart.Menu_File.Replace("_", "__").Replace("&", "_");
 	public string Menu_File_SaveImage => Properties.Window.Dialog.DialogResourceChart.Menu_File_SaveImage.Replace("_", "__").Replace("&", "_");
 	public string Menu_Graph => Properties.Window.Dialog.DialogResourceChart.Menu_Graph.Replace("_", "__").Replace("&", "_");
@@ -25,6 +27,7 @@ public class DialogResourceChartTranslationViewModel : TranslationBaseViewModel
 	public string Menu_Span_MonthFirst => "MonthFirst";
 	public string Menu_Span_SeasonFirst => "SeasonFirst";
 	public string Menu_Span_YearFirst => "YearFirst";
+	public string Menu_Span_Custom => "Custom";
 	public string Menu_Span_Day => GeneralRes.Day.Replace("_", "__").Replace("&", "_");
 	public string Menu_Span_Month => GeneralRes.Month.Replace("_", "__").Replace("&", "_");
 	public string Menu_Span_Year => GeneralRes.Year.Replace("_", "__").Replace("&", "_");
