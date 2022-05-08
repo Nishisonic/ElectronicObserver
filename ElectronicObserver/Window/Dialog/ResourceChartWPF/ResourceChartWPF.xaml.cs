@@ -1127,8 +1127,4 @@ public partial class ResourceChartWPF
 		SwitchMenuStrip(ChartSpanMenu, "10");
 		UpdateChart();
 	}
-
-	private void DatePicker_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
-	{
-	}
 }

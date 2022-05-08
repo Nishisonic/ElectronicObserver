@@ -252,7 +252,6 @@
 				DisplayDateStart="{Binding MinDate}"
 				FirstDayOfWeek="Monday"
 				SelectedDate="{Binding DateBegin}"
-				SelectedDateChanged="DatePicker_SelectedDateChanged"
 				/>
 			<Label Content="{Binding DialogResourceChart.End}" />
 			<DatePicker
@@ -261,7 +260,6 @@
 				DisplayDateStart="{Binding MinDate}"
 				FirstDayOfWeek="Monday"
 				SelectedDate="{Binding DateEnd}"
-				SelectedDateChanged="DatePicker_SelectedDateChanged"
 				/>
 			<Button
 				Name="DateSearch"
