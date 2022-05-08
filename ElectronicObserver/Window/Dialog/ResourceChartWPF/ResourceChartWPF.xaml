@@ -95,7 +95,6 @@
 					Name="ChartMenuMonth"
 					Click="ChartSpan_Click"
 					Header="{Binding DialogResourceChart.Menu_Span_Month}"
-					IsCheckable="True"
 					IsChecked="False"
 					Tag="2"
 					/>
@@ -103,7 +102,6 @@
 					Name="ChartMenuSeason"
 					Click="ChartSpan_Click"
 					Header="{Binding DialogResourceChart.Menu_Span_Season}"
-					IsCheckable="True"
 					IsChecked="False"
 					Tag="3"
 					/>
@@ -111,7 +109,6 @@
 					Name="ChartMenuYear"
 					Click="ChartSpan_Click"
 					Header="{Binding DialogResourceChart.Menu_Span_Year}"
-					IsCheckable="True"
 					IsChecked="False"
 					Tag="4"
 					/>
@@ -119,43 +116,37 @@
 					Name="Menu_Span_All"
 					Click="ChartSpan_Click"
 					Header="{Binding DialogResourceChart.Menu_Span_All}"
-					IsCheckable="True"
-					IsChecked="True"
 					Tag="5"
 					/>
 				<Separator />
 				<MenuItem
 					Click="ChartSpan_Click"
 					Header="{Binding DialogResourceChart.Menu_Span_WeekFirst}"
-					IsCheckable="True"
 					IsChecked="False"
 					Tag="6"
 					/>
 				<MenuItem
 					Click="ChartSpan_Click"
 					Header="{Binding DialogResourceChart.Menu_Span_MonthFirst}"
-					IsCheckable="True"
 					IsChecked="False"
 					Tag="7"
 					/>
 				<MenuItem
 					Click="ChartSpan_Click"
 					Header="{Binding DialogResourceChart.Menu_Span_SeasonFirst}"
-					IsCheckable="True"
 					IsChecked="False"
 					Tag="8"
 					/>
 				<MenuItem
 					Click="ChartSpan_Click"
 					Header="{Binding DialogResourceChart.Menu_Span_YearFirst}"
-					IsCheckable="True"
 					Tag="9"
 					/>
 				<MenuItem
 					Click="ChartSpan_Click"
-					Header="{Binding DialogResourceChart.Menu_Span_Custom}"
-					IsCheckable="True"
+					Header=""
 					Tag="10"
+					Visibility="Collapsed"
 					/>
 			</MenuItem>
 			<MenuItem Name="OptionsMenu" Header="{Binding DialogResourceChart.OptionsMenu}">
@@ -260,7 +251,6 @@
 				DisplayDateEnd="{Binding MaxDate}"
 				DisplayDateStart="{Binding MinDate}"
 				FirstDayOfWeek="Monday"
-				IsEnabled="False"
 				SelectedDate="{Binding DateBegin}"
 				SelectedDateChanged="DatePicker_SelectedDateChanged"
 				/>
@@ -270,9 +260,13 @@
 				DisplayDateEnd="{Binding MaxDate}"
 				DisplayDateStart="{Binding MinDate}"
 				FirstDayOfWeek="Monday"
-				IsEnabled="False"
 				SelectedDate="{Binding DateEnd}"
 				SelectedDateChanged="DatePicker_SelectedDateChanged"
+				/>
+			<Button
+				Name="DateSearch"
+				Click="DateSearch_Click"
+				Content="{Binding DialogResourceChart.UpdateChart}"
 				/>
 		</DockPanel>
 		<WpfPlot

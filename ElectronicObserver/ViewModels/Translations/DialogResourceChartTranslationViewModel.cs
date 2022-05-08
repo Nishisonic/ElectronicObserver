@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ElectronicObserver.Window;
+using ElectronicObserver.Properties.Window.Dialog;
 
 namespace ElectronicObserver.ViewModels.Translations;
 public class DialogResourceChartTranslationViewModel : TranslationBaseViewModel
@@ -28,6 +29,7 @@ public class DialogResourceChartTranslationViewModel : TranslationBaseViewModel
 	public string Menu_Span_SeasonFirst => "SeasonFirst";
 	public string Menu_Span_YearFirst => "YearFirst";
 	public string Menu_Span_Custom => "Custom";
+	public string UpdateChart => "Update Chart";
 	public string Menu_Span_Day => GeneralRes.Day.Replace("_", "__").Replace("&", "_");
 	public string Menu_Span_Month => GeneralRes.Month.Replace("_", "__").Replace("&", "_");
 	public string Menu_Span_Year => GeneralRes.Year.Replace("_", "__").Replace("&", "_");

@@ -24,8 +24,8 @@ public class ResourceChartViewModel : ObservableObject
 	public bool ShowDevelopmentMaterial { get; set; } = true;
 	public bool ShowModdingMaterial { get; set; } = true;
 	public bool ShowExperience { get; set; } = true;
-	public DateTime DateBegin { get; set; } = DateTime.Now.AddYears(-1);
-	public DateTime DateEnd { get; set; } = DateTime.Now;
+	public DateTime DateBegin { get; set; }
+	public DateTime DateEnd { get; set; }
 	public DateTime MinDate { get; set; }
 	public DateTime MaxDate { get; set; }
 	public DialogResourceChartTranslationViewModel DialogResourceChart { get; }
