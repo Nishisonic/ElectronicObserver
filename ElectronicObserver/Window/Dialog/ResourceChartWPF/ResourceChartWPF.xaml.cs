@@ -641,6 +641,10 @@ public partial class ResourceChartWPF
 		InstantConstructionSignalPlot.Label = "Instant Construction";
 		InstantConstructionSignalPlot.FillAboveAndBelow(InstantConstructionColor, Color.Transparent, Color.Transparent, InstantConstructionColor, 1);
 		InstantConstructionSignalPlot.MarkerSize = 0;
+		if (InstantConstructionSignalPlot.Xs.Count() > 0)
+		{
+			ChartArea.Plot.SetAxisLimits(yMin: Math.Floor(ChartArea.Plot.GetDataLimits().YMin / 200) * 200, yMax: Math.Ceiling(ChartArea.Plot.GetDataLimits().YMax / 200) * 200);
+		}
 		ChartArea.Plot.AxisAuto();
 		ChartArea.Refresh();
 	}
@@ -755,7 +759,7 @@ public partial class ResourceChartWPF
 		DevelopmentMaterialPlot = ChartArea.Plot.AddScatterLines(date_list.ToArray(), development_material_list.ToArray(), DevelopmentMaterialColor, label: "Development Material");
 		ModdingMaterialPlot = ChartArea.Plot.AddScatterLines(date_list.ToArray(), modding_material_list.ToArray(), ModdingMaterialColor, label: "Modding Material");
 		InstantConstructionPlot = ChartArea.Plot.AddScatterLines(date_list.ToArray(), instant_contruction_list.ToArray(), InstantConstructionColor, label: "Instant Construction");
-		if (InstantConstructionPlot.Xs.Length > 0)
+		if (InstantConstructionPlot.Xs.Count() > 0)
 		{
 			ChartArea.Plot.SetAxisLimits(yMin: Math.Floor(ChartArea.Plot.GetDataLimits().YMin / 200) * 200, yMax: Math.Ceiling(ChartArea.Plot.GetDataLimits().YMax / 200) * 200);
 		}
@@ -846,32 +850,32 @@ public partial class ResourceChartWPF
 				axis.ManualTickSpacing(1, ScottPlot.Ticks.DateTimeUnit.Month);
 				break;
 			default:
-				double diffofdate = (ViewModel.DateEnd - ViewModel.DateBegin).TotalDays;
+				double diffofdate = Math.Floor((ViewModel.DateEnd - ViewModel.DateBegin).TotalDays);
 				if (diffofdate <= 1)
 				{
 					axis.TickLabelFormat("MM/dd HH:mm", true);
 					axis.ManualTickSpacing(2, ScottPlot.Ticks.DateTimeUnit.Hour);
 					axis.TickLabelStyle(rotation: 90);
 				}
-				else if (diffofdate > 1 && diffofdate <= 7)
+				else if (diffofdate <= 7 && diffofdate > 1)
 				{
 					axis.TickLabelFormat("MM/dd HH:mm", true);
 					axis.ManualTickSpacing(12, ScottPlot.Ticks.DateTimeUnit.Hour);
 					axis.TickLabelStyle(rotation: 90);
 				}
-				else if (diffofdate > 7 && diffofdate <= 31)
+				else if (diffofdate <= 31 && diffofdate > 7)
 				{
 					axis.TickLabelFormat("yyyy/MM/dd", true);
 					axis.ManualTickSpacing(2, ScottPlot.Ticks.DateTimeUnit.Day);
 					axis.TickLabelStyle(rotation: 90);
 				}
-				else if (diffofdate > 31 && diffofdate <= 90)
+				else if (diffofdate <= 93 && diffofdate > 31)
 				{
 					axis.TickLabelFormat("yyyy/MM/dd", true);
 					axis.ManualTickSpacing(7, ScottPlot.Ticks.DateTimeUnit.Day);
 					axis.TickLabelStyle(rotation: 90);
 				}
-				else if (diffofdate > 90)
+				else
 				{
 					axis.TickLabelFormat("yyyy/MM/dd", true);
 					axis.ManualTickSpacing(7, ScottPlot.Ticks.DateTimeUnit.Month);
