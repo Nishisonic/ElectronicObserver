@@ -61,6 +61,7 @@ using Microsoft.Extensions.DependencyInjection;
 using ModernWpf;
 using MessageBox = System.Windows.MessageBox;
 using Timer = System.Windows.Forms.Timer;
+using ElectronicObserver.Utility.Mathematics;
 #if DEBUG
 using System.Text.Encodings.Web;
 using ElectronicObserverTypes;
@@ -1977,5 +1978,29 @@ public partial class FormMainViewModel : ObservableObject
 
 		if (Configuration.Config.Log.SaveLogFlag)
 			Logger.Save();
+	}
+	private void AdjustRecordsConstruct(string apiname, dynamic data)
+	{
+		var constructionRecord = new ConstructionRecord();
+		string constructPath = RecordManager.Instance.MasterPath + "\\" + constructionRecord.FileName;
+		string backupDirectoryPath = RecordManager.Instance.MasterPath + "\\Backup_" + DateTimeHelper.GetTimeStamp();
+
+
+		Directory.CreateDirectory(backupDirectoryPath);
+		File.Copy(constructPath, backupDirectoryPath + "\\" + constructionRecord.FileName);
+		constructionRecord.Load(RecordManager.Instance.MasterPath);
+		KCDatabase db = KCDatabase.Instance;
+		if (KCDatabase.Instance.MasterShips != null)
+		{
+			foreach (var record in constructionRecord.Record)
+			{
+				var ship = db.MasterShips[record.ShipID];
+				var flagship = db.MasterShips[record.FlagshipID];
+				record.ShipName = ship?.NameWithClass;
+				record.FlagshipName = flagship?.NameWithClass;
+				//Logger.Add(2, ship?.ToString());
+			}
+			constructionRecord.SaveAll(RecordManager.Instance.MasterPath);
+		}
 	}
 }
