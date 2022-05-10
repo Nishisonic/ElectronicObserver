@@ -641,7 +641,7 @@ public partial class ResourceChartWPF
 		InstantConstructionSignalPlot.Label = "Instant Construction";
 		InstantConstructionSignalPlot.FillAboveAndBelow(InstantConstructionColor, Color.Transparent, Color.Transparent, InstantConstructionColor, 1);
 		InstantConstructionSignalPlot.MarkerSize = 0;
-		if (InstantConstructionSignalPlot.Xs.Count() > 0)
+		if (InstantConstructionSignalPlot.Xs.Length > 0)
 		{
 			ChartArea.Plot.SetAxisLimits(yMin: Math.Floor(ChartArea.Plot.GetDataLimits().YMin / 200) * 200, yMax: Math.Ceiling(ChartArea.Plot.GetDataLimits().YMax / 200) * 200);
 		}
@@ -759,7 +759,7 @@ public partial class ResourceChartWPF
 		DevelopmentMaterialPlot = ChartArea.Plot.AddScatterLines(date_list.ToArray(), development_material_list.ToArray(), DevelopmentMaterialColor, label: "Development Material");
 		ModdingMaterialPlot = ChartArea.Plot.AddScatterLines(date_list.ToArray(), modding_material_list.ToArray(), ModdingMaterialColor, label: "Modding Material");
 		InstantConstructionPlot = ChartArea.Plot.AddScatterLines(date_list.ToArray(), instant_contruction_list.ToArray(), InstantConstructionColor, label: "Instant Construction");
-		if (InstantConstructionPlot.Xs.Count() > 0)
+		if (InstantConstructionPlot.Xs.Length > 0)
 		{
 			ChartArea.Plot.SetAxisLimits(yMin: Math.Floor(ChartArea.Plot.GetDataLimits().YMin / 200) * 200, yMax: Math.Ceiling(ChartArea.Plot.GetDataLimits().YMax / 200) * 200);
 		}
