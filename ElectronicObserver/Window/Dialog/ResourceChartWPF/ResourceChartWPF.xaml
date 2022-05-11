@@ -27,6 +27,21 @@
 			<Setter Property="FontSize" Value="{Binding DataContext.FontSize, Source={StaticResource Proxy}}" />
 			<Setter Property="Foreground" Value="{Binding DataContext.FontBrush, Source={StaticResource Proxy}}" />
 		</Style>
+		<Style BasedOn="{StaticResource DefaultButtonStyle}" TargetType="Button">
+			<Setter Property="FontFamily" Value="{Binding DataContext.Font, Source={StaticResource Proxy}}" />
+			<Setter Property="FontSize" Value="{Binding DataContext.FontSize, Source={StaticResource Proxy}}" />
+			<Setter Property="Foreground" Value="{Binding DataContext.FontBrush, Source={StaticResource Proxy}}" />
+		</Style>
+		<Style BasedOn="{StaticResource DefaultToolTipStyleEO}" TargetType="ToolTip">
+			<Setter Property="FontFamily" Value="{Binding DataContext.Font, Source={StaticResource Proxy}}" />
+			<Setter Property="FontSize" Value="{Binding DataContext.FontSize, Source={StaticResource Proxy}}" />
+			<Setter Property="Foreground" Value="{Binding DataContext.FontBrush, Source={StaticResource Proxy}}" />
+		</Style>
+		<Style BasedOn="{StaticResource DefaultTextBoxStyle}" TargetType="TextBox">
+			<Setter Property="FontFamily" Value="{Binding DataContext.Font, Source={StaticResource Proxy}}" />
+			<Setter Property="FontSize" Value="{Binding DataContext.FontSize, Source={StaticResource Proxy}}" />
+			<Setter Property="Foreground" Value="{Binding DataContext.FontBrush, Source={StaticResource Proxy}}" />
+		</Style>
 	</Window.Resources>
 	<DockPanel>
 		<Menu DockPanel.Dock="Top">
@@ -260,7 +275,11 @@
 				/>
 		</StackPanel>
 		<DockPanel DockPanel.Dock="Top">
-			<Label Content="{Binding DialogResourceChart.Start}" />
+			<TextBlock
+				Margin="4 0"
+				VerticalAlignment="Center"
+				Text="{Binding DialogResourceChart.Start}"
+				/>
 			<DatePicker
 				Name="DatePickerStart"
 				DisplayDateEnd="{Binding MaxDate}"
@@ -268,7 +287,11 @@
 				FirstDayOfWeek="Monday"
 				SelectedDate="{Binding DateBegin}"
 				/>
-			<Label Content="{Binding DialogResourceChart.End}" />
+			<TextBlock
+				Margin="4 0"
+				VerticalAlignment="Center"
+				Text="{Binding DialogResourceChart.End}"
+				/>
 			<DatePicker
 				Name="DatePickerEnd"
 				DisplayDateEnd="{Binding MaxDate}"
@@ -278,6 +301,7 @@
 				/>
 			<Button
 				Name="DateSearch"
+				Margin="4 0"
 				Click="DateSearch_Click"
 				Content="{Binding DialogResourceChart.UpdateChart}"
 				/>

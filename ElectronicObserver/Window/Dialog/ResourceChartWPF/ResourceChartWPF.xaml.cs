@@ -96,8 +96,9 @@ public partial class ResourceChartWPF
 		InitializeComponent();
 		DataContext = ViewModel;
 		Configuration.Instance.ConfigurationChanged += ConfigurationChanged;
-		ConfigurationChanged();
+
 		Loaded += ChartArea_Loaded;
+		ConfigurationChanged();
 		#region Chart Toggles
 		ViewModel.PropertyChanged += (sender, args) =>
 		{
@@ -275,6 +276,9 @@ public partial class ResourceChartWPF
 				ChartArea.Plot.Style(ScottPlot.Style.Black);
 				break;
 		}
+		ChartArea.Plot.XAxis.TickLabelStyle(rotation: 90, fontName: c.UI.SubFont.FontData.Name, fontSize: c.UI.SubFont.FontData.Size);
+		ChartArea.Plot.YAxis.TickLabelStyle(fontName: c.UI.SubFont.FontData.Name, fontSize: c.UI.SubFont.FontData.Size);
+		ChartArea.Plot.YAxis2.TickLabelStyle(fontName: c.UI.SubFont.FontData.Name, fontSize: c.UI.SubFont.FontData.Size);
 	}
 
 	private void ChartArea_Loaded(object sender, RoutedEventArgs e)
@@ -411,7 +415,7 @@ public partial class ResourceChartWPF
 	private void SetResourceChart()
 	{
 		ChartArea.Plot.Clear();
-		ChartArea.Plot.XAxis.DateTimeFormat(true);
+
 		AxisXIntervals(SelectedChartSpan);
 		ViewModel.ShowFuel = true;
 		ViewModel.ShowAmmo = true;
@@ -477,7 +481,7 @@ public partial class ResourceChartWPF
 	private void SetResourceDiffChart()
 	{
 		ChartArea.Plot.Clear();
-		ChartArea.Plot.XAxis.DateTimeFormat(true);
+
 		AxisXIntervals(SelectedChartSpan);
 		ViewModel.ShowFuel = true;
 		ViewModel.ShowAmmo = true;
@@ -577,7 +581,7 @@ public partial class ResourceChartWPF
 		MaterialPanel.Visibility = Visibility.Visible;
 		ExperiencePanel.Visibility = Visibility.Collapsed;
 		ChartArea.Plot.YAxis2.IsVisible = false;
-		ChartArea.Plot.XAxis.DateTimeFormat(true);
+
 		AxisXIntervals(SelectedChartSpan);
 		ViewModel.ShowDevelopmentMaterial = true;
 		ViewModel.ShowModdingMaterial = true;
@@ -725,7 +729,7 @@ public partial class ResourceChartWPF
 		MaterialPanel.Visibility = Visibility.Visible;
 		ExperiencePanel.Visibility = Visibility.Collapsed;
 		ChartArea.Plot.YAxis2.IsVisible = false;
-		ChartArea.Plot.XAxis.DateTimeFormat(true);
+
 		AxisXIntervals(SelectedChartSpan);
 		ViewModel.ShowModdingMaterial = true;
 		ViewModel.ShowDevelopmentMaterial = true;
@@ -779,7 +783,7 @@ public partial class ResourceChartWPF
 		ExperiencePanel.Visibility = Visibility.Visible;
 		AxisXIntervals(SelectedChartSpan);
 		ChartArea.Plot.YAxis2.IsVisible = false;
-		ChartArea.Plot.XAxis.DateTimeFormat(true);
+
 		ViewModel.ShowExperience = true;
 		List<double>? experience_list = Array.Empty<double>().ToList();
 
@@ -815,41 +819,38 @@ public partial class ResourceChartWPF
 
 	private void AxisXIntervals(ChartSpan span)
 	{
+		Configuration.ConfigurationData c = Configuration.Config;
 		var axis = ChartArea.Plot.XAxis;
+		axis.DateTimeFormat(true);
 		switch (span)
 		{
 			case ChartSpan.Day:
 				axis.TickLabelFormat("MM/dd HH:mm", true);
 				axis.ManualTickSpacing(2, ScottPlot.Ticks.DateTimeUnit.Hour);
-				axis.TickLabelStyle(rotation: 90);
 				break;
 
 			case ChartSpan.Week:
 			case ChartSpan.WeekFirst:
 				axis.TickLabelFormat("MM/dd HH:mm", true);
 				axis.ManualTickSpacing(12, ScottPlot.Ticks.DateTimeUnit.Hour);
-				axis.TickLabelStyle(rotation: 90);
 				break;
 
 			case ChartSpan.Month:
 			case ChartSpan.MonthFirst:
 				axis.TickLabelFormat("yyyy/MM/dd", true);
 				axis.ManualTickSpacing(2, ScottPlot.Ticks.DateTimeUnit.Day);
-				axis.TickLabelStyle(rotation: 90);
 				break;
 
 			case ChartSpan.Season:
 			case ChartSpan.SeasonFirst:
 				axis.TickLabelFormat("yyyy/MM/dd", true);
 				axis.ManualTickSpacing(7, ScottPlot.Ticks.DateTimeUnit.Day);
-				axis.TickLabelStyle(rotation: 90);
 				break;
 
 			case ChartSpan.Year:
 			case ChartSpan.YearFirst:
 			case ChartSpan.All:
 				axis.TickLabelFormat("yyyy/MM/dd", true);
-				axis.TickLabelStyle(rotation: 90);
 				axis.ManualTickSpacing(1, ScottPlot.Ticks.DateTimeUnit.Month);
 				break;
 			default:
@@ -858,31 +859,26 @@ public partial class ResourceChartWPF
 				{
 					axis.TickLabelFormat("MM/dd HH:mm", true);
 					axis.ManualTickSpacing(2, ScottPlot.Ticks.DateTimeUnit.Hour);
-					axis.TickLabelStyle(rotation: 90);
 				}
 				else if (diffofdate <= 7 && diffofdate > 1)
 				{
 					axis.TickLabelFormat("MM/dd HH:mm", true);
 					axis.ManualTickSpacing(12, ScottPlot.Ticks.DateTimeUnit.Hour);
-					axis.TickLabelStyle(rotation: 90);
 				}
 				else if (diffofdate <= 31 && diffofdate > 7)
 				{
 					axis.TickLabelFormat("yyyy/MM/dd", true);
 					axis.ManualTickSpacing(2, ScottPlot.Ticks.DateTimeUnit.Day);
-					axis.TickLabelStyle(rotation: 90);
 				}
 				else if (diffofdate <= 93 && diffofdate > 31)
 				{
 					axis.TickLabelFormat("yyyy/MM/dd", true);
 					axis.ManualTickSpacing(7, ScottPlot.Ticks.DateTimeUnit.Day);
-					axis.TickLabelStyle(rotation: 90);
 				}
 				else
 				{
 					axis.TickLabelFormat("yyyy/MM/dd", true);
 					axis.ManualTickSpacing(7, ScottPlot.Ticks.DateTimeUnit.Month);
-					axis.TickLabelStyle(rotation: 90);
 				}
 				break;
 		}
@@ -927,7 +923,7 @@ public partial class ResourceChartWPF
 		ExperiencePanel.Visibility = Visibility.Visible;
 		AxisXIntervals(SelectedChartSpan);
 		ChartArea.Plot.YAxis2.IsVisible = false;
-		ChartArea.Plot.XAxis.DateTimeFormat(true);
+
 		ViewModel.ShowExperience = true;
 		List<double>? experience_list = Array.Empty<double>().ToList();
 
