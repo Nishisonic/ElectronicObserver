@@ -106,7 +106,6 @@ public partial class ResourceChartWPF
 			if (FuelPlot is not null)
 			{
 				FuelPlot.IsVisible = ViewModel.ShowFuel;
-				ChartArea.Plot.AxisAutoY();
 				ChartArea.Refresh();
 			}
 
@@ -124,7 +123,6 @@ public partial class ResourceChartWPF
 			if (AmmoPlot is not null)
 			{
 				AmmoPlot.IsVisible = ViewModel.ShowAmmo;
-				ChartArea.Plot.AxisAutoY();
 				ChartArea.Refresh();
 			}
 
@@ -142,7 +140,6 @@ public partial class ResourceChartWPF
 			if (SteelPlot is not null)
 			{
 				SteelPlot.IsVisible = ViewModel.ShowSteel;
-				ChartArea.Plot.AxisAutoY();
 				ChartArea.Refresh();
 			}
 
@@ -160,7 +157,6 @@ public partial class ResourceChartWPF
 			if (BauxPlot is not null)
 			{
 				BauxPlot.IsVisible = ViewModel.ShowBaux;
-				ChartArea.Plot.AxisAutoY();
 				ChartArea.Refresh();
 			}
 
@@ -182,7 +178,6 @@ public partial class ResourceChartWPF
 				{
 					ChartArea.Plot.YAxis2.IsVisible = ViewModel.ShowInstantRepair;
 				}
-				ChartArea.Plot.AxisAutoY();
 				ChartArea.Refresh();
 			}
 
@@ -467,8 +462,16 @@ public partial class ResourceChartWPF
 		SteelPlot = ChartArea.Plot.AddScatterLines(date_list.ToArray(), steel_list.ToArray(), SteelColor, label: "Steel");
 		InstantRepairPlot = ChartArea.Plot.AddScatterLines(date_list.ToArray(), instant_repair_list.ToArray(), InstantRepairColor, label: "Instant Repair");
 		InstantRepairPlot.YAxisIndex = 1;
-		ChartArea.Plot.SetAxisLimits(yMin: ChartArea.Plot.GetDataLimits().YMin / 100, yMax: ChartArea.Plot.GetDataLimits().YMax / 100, yAxisIndex: 1);
-		ChartArea.Plot.AxisAutoY(margin: 0);
+		ChartArea.Plot.SetAxisLimits(yMin: Math.Floor(ChartArea.Plot.GetDataLimits().YMin / 100), yMax: Math.Ceiling(ChartArea.Plot.GetDataLimits().YMax / 100), yAxisIndex: 1);
+		if (ChartArea.Plot.GetDataLimits().YMax > 5000)
+		{
+			ChartArea.Plot.AxisAutoY(margin: 0);
+		}
+		else
+		{
+			ChartArea.Plot.AxisAutoY(margin: 0.2);
+			ChartArea.Plot.AxisAutoY(margin: 0.2, 1);
+		}
 		ChartArea.Refresh();
 	}
 	private void SetResourceDiffChart()
