@@ -1,14 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CommunityToolkit.Mvvm.ComponentModel;
+using ElectronicObserver.Common;
 using ElectronicObserver.ViewModels.Translations;
+using ElectronicObserver.Window.Dialog;
 using Microsoft.Extensions.DependencyInjection;
-
 namespace ElectronicObserver.Window.Dialog.ResourceChartWPF;
-public class ResourceChartViewModel : ObservableObject
+public class ResourceChartViewModel : WindowViewModelBase
 {
 	public ResourceChartViewModel()
 	{
@@ -28,5 +24,6 @@ public class ResourceChartViewModel : ObservableObject
 	public DateTime DateEnd { get; set; }
 	public DateTime MinDate { get; set; }
 	public DateTime MaxDate { get; set; }
+	public string Today => $"Today : {DateTime.Now:yyyy/MM/dd}";
 	public DialogResourceChartTranslationViewModel DialogResourceChart { get; }
 }

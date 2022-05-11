@@ -91,7 +91,7 @@ public partial class ResourceChartWPF
 	private ResourceRecord _record;
 	private ChartType SelectedChartType => (ChartType)GetSelectedMenuStripIndex(ChartTypeMenu);
 	private ChartSpan SelectedChartSpan => (ChartSpan)GetSelectedMenuStripIndex(ChartSpanMenu);
-	public ResourceChartWPF()
+	public ResourceChartWPF() : base(new ResourceChartViewModel())
 	{
 		InitializeComponent();
 		DataContext = ViewModel;

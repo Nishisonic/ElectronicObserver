@@ -46,4 +46,5 @@ public class DialogResourceChartTranslationViewModel : TranslationBaseViewModel
 	public string DevelopmentMaterial => GeneralRes.DevMat.Replace("_", "__").Replace("&", "_");
 	public string InstantConstruction => GeneralRes.Flamethrower.Replace("_", "__").Replace("&", "_");
 	public string Experience => GeneralRes.Experience.Replace("_", "__").Replace("&", "_");
+	public string Today => DialogDropRecordViewer.Today;
 }
