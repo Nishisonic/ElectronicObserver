@@ -20,7 +20,6 @@ namespace ElectronicObserver.Window.Dialog.ResourceChartWPF;
 /// </summary>
 public partial class ResourceChartWPF
 {
-	public ResourceChartViewModel ViewModel { get; } = new();
 	private Color FuelColor => Color.FromArgb(0, 128, 0);
 	private Color AmmoColor => Color.FromArgb(255, 128, 0);
 	private Color BauxColor => Color.FromArgb(255, 0, 0);
@@ -94,7 +93,6 @@ public partial class ResourceChartWPF
 	public ResourceChartWPF() : base(new ResourceChartViewModel())
 	{
 		InitializeComponent();
-		DataContext = ViewModel;
 		Configuration.Instance.ConfigurationChanged += ConfigurationChanged;
 
 		Loaded += ChartArea_Loaded;
