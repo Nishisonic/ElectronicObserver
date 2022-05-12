@@ -84,7 +84,6 @@ public partial class ResourceChartWPF
 	private SignalPlotXY? InstantConstructionSignalPlot;
 	private SignalPlotXY? ModdingMaterialSignalPlot;
 	private SignalPlotXY? DevelopmentMaterialSignalPlot;
-	private ToolTip? toolTip;
 	private ScatterPlot? ExperiencePlot;
 	private SignalPlotXY ExperienceSignalPlot;
 	private ResourceRecord _record;
@@ -293,11 +292,6 @@ public partial class ResourceChartWPF
 
 		ViewModel.DateEnd = DateTime.Now.AddDays(1).Date;
 		ViewModel.MaxDate = DateTime.Now.AddDays(1).Date;
-		toolTip = new ToolTip
-		{
-			Content = "ToolTip"
-		};
-		ChartArea.ToolTip = toolTip;
 		SwitchMenuStrip(ChartSpanMenu, "2");
 		SwitchMenuStrip(ChartTypeMenu, "0");
 
@@ -335,7 +329,7 @@ public partial class ResourceChartWPF
 			(double bauxpointX, double bauxpointY, int bauxpointIndex) = BauxPlot.GetPointNearest(mouseCoordX, mouseCoordY, xyRatio);
 			(double instantrepairpointX, double instantrepairpointY, int instantrepairpointIndex) = InstantRepairPlot.GetPointNearest(mouseCoordX, mouseCoordY, xyRatio);
 			string date = DateTimeHelper.TimeToCSVString(DateTime.FromOADate(fuelpointX));
-			toolTip.Content = string.Format("{0}\n{6}: {1}\n{7}: {2}\n{8}: {3}\n{9}: {4}\n{10}: {5}", date, fuelpointY, ammopointY, steelpointY, bauxpointY, instantrepairpointY, fuel, ammo, steel, baux, instant_repair);
+			ViewModel.ToolTip = string.Format("{0}\n{6}: {1}\n{7}: {2}\n{8}: {3}\n{9}: {4}\n{10}: {5}", date, fuelpointY, ammopointY, steelpointY, bauxpointY, instantrepairpointY, fuel, ammo, steel, baux, instant_repair);
 		}
 		else if (SelectedChartType == ChartType.ResourceDiff)
 		{
@@ -347,11 +341,11 @@ public partial class ResourceChartWPF
 			string date = DateTimeHelper.TimeToCSVString(DateTime.FromOADate(fuelpointX));
 			if (Menu_Option_DivideByDay.IsChecked)
 			{
-				toolTip.Content = string.Format("{0}\n{6}: {1:+0;-0;±0} /day \n{7}:{2:+0;-0;±0} /day \n{8}: {3:+0;-0;±0}/day \n{9}: {4:+0;-0;±0} /day\n{10}: {5:+0;-0;±0} /day", date, fuelpointY, ammopointY, steelpointY, bauxpointY, instantrepairpointY, fuel, ammo, steel, baux, instant_repair);
+				ViewModel.ToolTip = string.Format("{0}\n{6}: {1:+0;-0;±0} /day \n{7}:{2:+0;-0;±0} /day \n{8}: {3:+0;-0;±0}/day \n{9}: {4:+0;-0;±0} /day\n{10}: {5:+0;-0;±0} /day", date, fuelpointY, ammopointY, steelpointY, bauxpointY, instantrepairpointY, fuel, ammo, steel, baux, instant_repair);
 			}
 			else
 			{
-				toolTip.Content = string.Format("{0}\n{6}: {1}\n{7}:{2}\n{8}: {3}\n{9}: {4}\n{10}: {5}", date, fuelpointY, ammopointY, steelpointY, bauxpointY, instantrepairpointY, fuel, ammo, steel, baux, instant_repair);
+				ViewModel.ToolTip = string.Format("{0}\n{6}: {1}\n{7}:{2}\n{8}: {3}\n{9}: {4}\n{10}: {5}", date, fuelpointY, ammopointY, steelpointY, bauxpointY, instantrepairpointY, fuel, ammo, steel, baux, instant_repair);
 			}
 		}
 		else if (SelectedChartType == ChartType.Material)
@@ -361,7 +355,7 @@ public partial class ResourceChartWPF
 			(double developmentmaterialpointX, double developmentmaterialpointY, int developmentmaterialpointIndex) = DevelopmentMaterialPlot.GetPointNearest(mouseCoordX, mouseCoordY, xyRatio);
 			(double instantrepairpointX, double instantrepairpointY, int instantrepairpointIndex) = InstantRepairPlot.GetPointNearest(mouseCoordX, mouseCoordY, xyRatio);
 			string date = DateTimeHelper.TimeToCSVString(DateTime.FromOADate(instantconstructionpointX));
-			toolTip.Content = string.Format("{0}\n{5}: {1}\n{6}: {2}\n{7}: {3}\n{8}: {4}", date, developmentmaterialpointY, moddingmaterialpointY, instantconstructionpointY, instantrepairpointY, development_material, modding_material, instant_construction, instant_repair);
+			ViewModel.ToolTip = string.Format("{0}\n{5}: {1}\n{6}: {2}\n{7}: {3}\n{8}: {4}", date, developmentmaterialpointY, moddingmaterialpointY, instantconstructionpointY, instantrepairpointY, development_material, modding_material, instant_construction, instant_repair);
 		}
 		else if (SelectedChartType == ChartType.MaterialDiff)
 		{
@@ -372,18 +366,18 @@ public partial class ResourceChartWPF
 			string date = DateTimeHelper.TimeToCSVString(DateTime.FromOADate(instantconstructionpointX));
 			if (Menu_Option_DivideByDay.IsChecked)
 			{
-				toolTip.Content = string.Format("{0}\n{5}: {1:+0;-0;±0} /day\n{6}:{2:+0;-0;±0} /day\n{7}: {3:+0;-0;±0} /day\n{8}: {4:+0;-0;±0} /day", date, developmentmaterialpointY, moddingmaterialpointY, instantconstructionpointY, instantrepairpointY, development_material, modding_material, instant_construction, instant_repair);
+				ViewModel.ToolTip = string.Format("{0}\n{5}: {1:+0;-0;±0} /day\n{6}:{2:+0;-0;±0} /day\n{7}: {3:+0;-0;±0} /day\n{8}: {4:+0;-0;±0} /day", date, developmentmaterialpointY, moddingmaterialpointY, instantconstructionpointY, instantrepairpointY, development_material, modding_material, instant_construction, instant_repair);
 			}
 			else
 			{
-				toolTip.Content = string.Format("{0}\n{5}: {1}\n{6}:{2}\n{7}: {3}\n{8}: {4}", date, developmentmaterialpointY, moddingmaterialpointY, instantconstructionpointY, instantrepairpointY, development_material, modding_material, instant_construction, instant_repair);
+				ViewModel.ToolTip = string.Format("{0}\n{5}: {1}\n{6}:{2}\n{7}: {3}\n{8}: {4}", date, developmentmaterialpointY, moddingmaterialpointY, instantconstructionpointY, instantrepairpointY, development_material, modding_material, instant_construction, instant_repair);
 			}
 		}
 		else if (SelectedChartType == ChartType.Experience)
 		{
 			(double experiencepointX, double experiencepointY, int experiencepointIndex) = ExperiencePlot.GetPointNearest(mouseCoordX, mouseCoordY, xyRatio);
 			string date = DateTimeHelper.TimeToCSVString(DateTime.FromOADate(experiencepointX));
-			toolTip.Content = string.Format("{0}\n{1}: {2}", date, experience, experiencepointY);
+			ViewModel.ToolTip = string.Format("{0}\n{1}: {2}", date, experience, experiencepointY);
 		}
 		else if (SelectedChartType == ChartType.ExperienceDiff)
 		{
@@ -391,23 +385,21 @@ public partial class ResourceChartWPF
 			string date = DateTimeHelper.TimeToCSVString(DateTime.FromOADate(experiencepointX));
 			if (Menu_Option_DivideByDay.IsChecked)
 			{
-				toolTip.Content = string.Format("{0}\n{2}: {1:+0;-0;±0} /day", date, experiencepointY, experience);
+				ViewModel.ToolTip = string.Format("{0}\n{2}: {1:+0;-0;±0} /day", date, experiencepointY, experience);
 			}
 			else
 			{
-				toolTip.Content = string.Format("{0}\n{2}: {1:+0;-0;±0}", date, experiencepointY, experience);
+				ViewModel.ToolTip = string.Format("{0}\n{2}: {1:+0;-0;±0}", date, experiencepointY, experience);
 			}
 		}
 		else
 		{
-			toolTip = null;
+			ViewModel.ToolTip = null;
 		}
-		// update the GUI to describe the highlighted point
-		double mouseX = e.GetPosition(this).X;
-		double mouseY = e.GetPosition(this).Y;
 
-		toolTip.HorizontalOffset = mouseX;
-		toolTip.VerticalOffset = mouseY - 20;
+		// update the GUI to describe the highlighted point
+		ViewModel.ToolTipHorizontalOffset = e.GetPosition((IInputElement)sender).X + 16;
+		ViewModel.ToolTipVerticalOffset = e.GetPosition((IInputElement)sender).Y + 16;
 	}
 
 	private void SetResourceChart()

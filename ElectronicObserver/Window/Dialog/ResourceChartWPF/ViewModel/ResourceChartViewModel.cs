@@ -26,4 +26,8 @@ public class ResourceChartViewModel : WindowViewModelBase
 	public DateTime MaxDate { get; set; }
 	public string Today => $"Today : {DateTime.Now:yyyy/MM/dd}";
 	public DialogResourceChartTranslationViewModel DialogResourceChart { get; }
+
+	public string? ToolTip { get; set; }
+	public double ToolTipHorizontalOffset { get; set; }
+	public double ToolTipVerticalOffset { get; set; }
 }
