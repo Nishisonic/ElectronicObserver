@@ -170,9 +170,9 @@ public partial class ResourceChartWPF
 			if (FuelSignalPlot is not null)
 			{
 				FuelSignalPlot.IsVisible = ViewModel.ShowFuel;
-				//ChartArea.Plot.AxisAutoY();
 				ChartArea.Refresh();
 			}
+			CheckChartVisiblity(); 
 		};
 		ViewModel.PropertyChanged += (sender, args) =>
 		{
@@ -187,9 +187,9 @@ public partial class ResourceChartWPF
 			if (AmmoSignalPlot is not null)
 			{
 				AmmoSignalPlot.IsVisible = ViewModel.ShowAmmo;
-				//ChartArea.Plot.AxisAutoY();
 				ChartArea.Refresh();
 			}
+			CheckChartVisiblity();
 		};
 		ViewModel.PropertyChanged += (sender, args) =>
 		{
@@ -204,9 +204,9 @@ public partial class ResourceChartWPF
 			if (SteelSignalPlot is not null)
 			{
 				SteelSignalPlot.IsVisible = ViewModel.ShowSteel;
-				//ChartArea.Plot.AxisAutoY();
 				ChartArea.Refresh();
 			}
+			CheckChartVisiblity();
 		};
 		ViewModel.PropertyChanged += (sender, args) =>
 		{
@@ -223,6 +223,7 @@ public partial class ResourceChartWPF
 				BauxSignalPlot.IsVisible = ViewModel.ShowBaux;
 				ChartArea.Refresh();
 			}
+			CheckChartVisiblity();
 		};
 		ViewModel.PropertyChanged += (sender, args) =>
 		{
@@ -243,6 +244,7 @@ public partial class ResourceChartWPF
 				InstantRepairSignalPlot.IsVisible = ViewModel.ShowInstantRepair;
 				ChartArea.Refresh();
 			}
+			CheckChartVisiblity();
 		};
 		ViewModel.PropertyChanged += (sender, args) =>
 		{
@@ -261,6 +263,7 @@ public partial class ResourceChartWPF
 				ChartArea.Plot.AxisAutoY();
 				ChartArea.Refresh();
 			}
+			CheckChartVisiblity();
 		};
 		ViewModel.PropertyChanged += (sender, args) =>
 		{
@@ -279,6 +282,7 @@ public partial class ResourceChartWPF
 				ChartArea.Plot.AxisAutoY();
 				ChartArea.Refresh();
 			}
+			CheckChartVisiblity();
 		};
 		ViewModel.PropertyChanged += (sender, args) =>
 		{
@@ -297,6 +301,7 @@ public partial class ResourceChartWPF
 				ChartArea.Plot.AxisAutoY();
 				ChartArea.Refresh();
 			}
+			CheckChartVisiblity();
 		};
 		ViewModel.PropertyChanged += (sender, args) =>
 		{
@@ -315,6 +320,7 @@ public partial class ResourceChartWPF
 				ChartArea.Plot.AxisAutoY();
 				ChartArea.Refresh();
 			}
+			CheckChartVisiblity();
 		};
 		#endregion
 
@@ -1002,7 +1008,10 @@ public partial class ResourceChartWPF
 				break;
 		}
 	}
-
+	private void CheckChartVisiblity()
+	{
+		ChartArea.Visibility = ChartArea.Plot.GetPlottables().Any(p => p.IsVisible) ? Visibility.Visible : Visibility.Collapsed;
+	}
 	private void ChartSpan_Click(object sender, RoutedEventArgs e)
 	{
 		SwitchMenuStrip(ChartSpanMenu, ((MenuItem)sender).Tag);
@@ -1017,7 +1026,6 @@ public partial class ResourceChartWPF
 			ChartArea.Visibility = Visibility.Collapsed;
 			return;
 		}
-
 		ChartArea.Visibility = Visibility.Visible;
 
 		switch (SelectedChartType)
