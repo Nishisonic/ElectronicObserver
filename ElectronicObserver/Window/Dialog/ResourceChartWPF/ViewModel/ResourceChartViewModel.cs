@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Windows.Controls;
+using CommunityToolkit.Mvvm.Input;
 using ElectronicObserver.Common;
 using ElectronicObserver.ViewModels.Translations;
 using ElectronicObserver.Window.Dialog;
 using Microsoft.Extensions.DependencyInjection;
 namespace ElectronicObserver.Window.Dialog.ResourceChartWPF;
-public class ResourceChartViewModel : WindowViewModelBase
+public partial class ResourceChartViewModel : WindowViewModelBase
 {
 	public ResourceChartViewModel()
 	{
@@ -30,4 +32,12 @@ public class ResourceChartViewModel : WindowViewModelBase
 	public string? ToolTip { get; set; }
 	public double ToolTipHorizontalOffset { get; set; }
 	public double ToolTipVerticalOffset { get; set; }
+
+	[ICommand]
+	private void SelectToday(Calendar? calendar)
+	{
+		if (calendar is null) return;
+
+		calendar.SelectedDate = DateTime.Now.Date;
+	}
 }
