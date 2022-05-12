@@ -89,6 +89,66 @@ public partial class ResourceChartWPF
 	private ResourceRecord _record;
 	private ChartType SelectedChartType => (ChartType)GetSelectedMenuStripIndex(ChartTypeMenu);
 	private ChartSpan SelectedChartSpan => (ChartSpan)GetSelectedMenuStripIndex(ChartSpanMenu);
+
+	private List<ScatterPlot?> ResourcePlots => new()
+	{
+		FuelPlot,
+		AmmoPlot,
+		SteelPlot,
+		BauxPlot,
+		InstantRepairPlot,
+	};
+
+	private List<SignalPlotXY?> ResourceDiffPlots => new()
+	{
+		FuelSignalPlot,
+		AmmoSignalPlot,
+		SteelSignalPlot,
+		BauxSignalPlot,
+		InstantRepairSignalPlot,
+	};
+
+	private List<ScatterPlot?> MaterialPlots => new()
+	{
+		InstantConstructionPlot,
+		InstantRepairPlot,
+		DevelopmentMaterialPlot,
+		ModdingMaterialPlot,
+	};
+
+	private List<SignalPlotXY?> MaterialDiffPlots => new()
+	{
+		InstantConstructionSignalPlot,
+		InstantRepairSignalPlot,
+		DevelopmentMaterialSignalPlot,
+		ModdingMaterialSignalPlot,
+	};
+
+	private List<ScatterPlot?> ExperiencePlots => new()
+	{
+		ExperiencePlot,
+	};
+	private List<SignalPlotXY?> ExperienceDiffPlots => new()
+	{
+		ExperienceSignalPlot,
+	};
+
+	private List<ScatterPlot?> CurrentScatterPlots => SelectedChartType switch
+	{
+		ChartType.Resource => ResourcePlots,
+		ChartType.Material => MaterialPlots,
+		ChartType.Experience => ExperiencePlots,
+		_ => new()
+	};
+
+	private List<SignalPlotXY?> CurrentSignalPlots => SelectedChartType switch
+	{
+		ChartType.ResourceDiff => ResourceDiffPlots,
+		ChartType.MaterialDiff => MaterialDiffPlots,
+		ChartType.ExperienceDiff => ExperienceDiffPlots,
+		_ => new()
+	};
+
 	public ResourceChartWPF() : base(new ResourceChartViewModel())
 	{
 		InitializeComponent();
@@ -331,73 +391,135 @@ public partial class ResourceChartWPF
 		string experience = GeneralRes.Experience;
 		if (SelectedChartType == ChartType.Resource)
 		{
-			(double fuelpointX, double fuelpointY, int fuelpointIndex) = FuelPlot.GetPointNearest(mouseCoordX, mouseCoordY, xyRatio);
-			(double ammopointX, double ammopointY, int ammopointIndex) = AmmoPlot.GetPointNearest(mouseCoordX, mouseCoordY, xyRatio);
-			(double steelpointX, double steelpointY, int steelpointIndex) = SteelPlot.GetPointNearest(mouseCoordX, mouseCoordY, xyRatio);
-			(double bauxpointX, double bauxpointY, int bauxpointIndex) = BauxPlot.GetPointNearest(mouseCoordX, mouseCoordY, xyRatio);
-			(double instantrepairpointX, double instantrepairpointY, int instantrepairpointIndex) = InstantRepairPlot.GetPointNearest(mouseCoordX, mouseCoordY, xyRatio);
-			string date = DateTimeHelper.TimeToCSVString(DateTime.FromOADate(fuelpointX));
-			ViewModel.ToolTip = string.Format("{0}\n{6}: {1}\n{7}: {2}\n{8}: {3}\n{9}: {4}\n{10}: {5}", date, fuelpointY, ammopointY, steelpointY, bauxpointY, instantrepairpointY, fuel, ammo, steel, baux, instant_repair);
-		}
-		else if (SelectedChartType == ChartType.ResourceDiff)
-		{
-			(double fuelpointX, double fuelpointY, int fuelpointIndex) = FuelSignalPlot.GetPointNearestX(mouseCoordX);
-			(double ammopointX, double ammopointY, int ammopointIndex) = AmmoSignalPlot.GetPointNearestX(mouseCoordX);
-			(double steelpointX, double steelpointY, int steelpointIndex) = SteelSignalPlot.GetPointNearestX(mouseCoordX);
-			(double bauxpointX, double bauxpointY, int bauxpointIndex) = BauxSignalPlot.GetPointNearestX(mouseCoordX);
-			(double instantrepairpointX, double instantrepairpointY, int instantrepairpointIndex) = InstantRepairSignalPlot.GetPointNearestX(mouseCoordX);
-			string date = DateTimeHelper.TimeToCSVString(DateTime.FromOADate(fuelpointX));
-			if (Menu_Option_DivideByDay.IsChecked)
+			(_, double fuelpointY, _) = FuelPlot.GetPointNearest(mouseCoordX, mouseCoordY, xyRatio);
+			(_, double ammopointY, _) = AmmoPlot.GetPointNearest(mouseCoordX, mouseCoordY, xyRatio);
+			(_, double steelpointY, _) = SteelPlot.GetPointNearest(mouseCoordX, mouseCoordY, xyRatio);
+			(_, double bauxpointY, _) = BauxPlot.GetPointNearest(mouseCoordX, mouseCoordY, xyRatio);
+			(_, double instantrepairpointY, _) = InstantRepairPlot.GetPointNearest(mouseCoordX, mouseCoordY, xyRatio);
+
+			double? datePointX = CurrentScatterPlots.FirstOrDefault(c => c?.IsVisible ?? false)?.GetPointNearest(mouseCoordX, mouseCoordY, xyRatio).x;
+			if (datePointX is null)
 			{
-				ViewModel.ToolTip = string.Format("{0}\n{6}: {1:+0;-0;±0} /day \n{7}:{2:+0;-0;±0} /day \n{8}: {3:+0;-0;±0}/day \n{9}: {4:+0;-0;±0} /day\n{10}: {5:+0;-0;±0} /day", date, fuelpointY, ammopointY, steelpointY, bauxpointY, instantrepairpointY, fuel, ammo, steel, baux, instant_repair);
+				ViewModel.ToolTip = null;
 			}
 			else
 			{
-				ViewModel.ToolTip = string.Format("{0}\n{6}: {1}\n{7}:{2}\n{8}: {3}\n{9}: {4}\n{10}: {5}", date, fuelpointY, ammopointY, steelpointY, bauxpointY, instantrepairpointY, fuel, ammo, steel, baux, instant_repair);
+				string date = DateTimeHelper.TimeToCSVString(DateTime.FromOADate(datePointX.Value));
+				ViewModel.ToolTip = string.Format("{0}\n{6}: {1}\n{7}: {2}\n{8}: {3}\n{9}: {4}\n{10}: {5}", date, fuelpointY, ammopointY, steelpointY, bauxpointY, instantrepairpointY, fuel, ammo, steel, baux, instant_repair);
+			}
+		}
+		else if (SelectedChartType == ChartType.ResourceDiff)
+		{
+			(_, double fuelpointY, _) = FuelSignalPlot.GetPointNearestX(mouseCoordX);
+			(_, double ammopointY, _) = AmmoSignalPlot.GetPointNearestX(mouseCoordX);
+			(_, double steelpointY, _) = SteelSignalPlot.GetPointNearestX(mouseCoordX);
+			(_, double bauxpointY, _) = BauxSignalPlot.GetPointNearestX(mouseCoordX);
+			(_, double instantrepairpointY, _) = InstantRepairSignalPlot.GetPointNearestX(mouseCoordX);
+
+			double? datePointX = CurrentSignalPlots.FirstOrDefault(c => c?.IsVisible ?? false)?.GetPointNearestX(mouseCoordX).x;
+
+			if (datePointX is null)
+			{
+				ViewModel.ToolTip = null;
+			}
+			else
+			{
+				string date = DateTimeHelper.TimeToCSVString(DateTime.FromOADate(datePointX.Value));
+
+				if (Menu_Option_DivideByDay.IsChecked)
+				{
+					ViewModel.ToolTip = string.Format("{0}\n{6}: {1:+0;-0;±0} /day \n{7}:{2:+0;-0;±0} /day \n{8}: {3:+0;-0;±0}/day \n{9}: {4:+0;-0;±0} /day\n{10}: {5:+0;-0;±0} /day", date, fuelpointY, ammopointY, steelpointY, bauxpointY, instantrepairpointY, fuel, ammo, steel, baux, instant_repair);
+				}
+				else
+				{
+					ViewModel.ToolTip = string.Format("{0}\n{6}: {1}\n{7}:{2}\n{8}: {3}\n{9}: {4}\n{10}: {5}", date, fuelpointY, ammopointY, steelpointY, bauxpointY, instantrepairpointY, fuel, ammo, steel, baux, instant_repair);
+				}
 			}
 		}
 		else if (SelectedChartType == ChartType.Material)
 		{
-			(double instantconstructionpointX, double instantconstructionpointY, int instantconstructionpointpointIndex) = InstantConstructionPlot.GetPointNearest(mouseCoordX, mouseCoordY, xyRatio);
-			(double moddingmaterialpointX, double moddingmaterialpointY, int moddingmaterialpointIndex) = ModdingMaterialPlot.GetPointNearest(mouseCoordX, mouseCoordY, xyRatio);
-			(double developmentmaterialpointX, double developmentmaterialpointY, int developmentmaterialpointIndex) = DevelopmentMaterialPlot.GetPointNearest(mouseCoordX, mouseCoordY, xyRatio);
-			(double instantrepairpointX, double instantrepairpointY, int instantrepairpointIndex) = InstantRepairPlot.GetPointNearest(mouseCoordX, mouseCoordY, xyRatio);
-			string date = DateTimeHelper.TimeToCSVString(DateTime.FromOADate(instantconstructionpointX));
-			ViewModel.ToolTip = string.Format("{0}\n{5}: {1}\n{6}: {2}\n{7}: {3}\n{8}: {4}", date, developmentmaterialpointY, moddingmaterialpointY, instantconstructionpointY, instantrepairpointY, development_material, modding_material, instant_construction, instant_repair);
-		}
-		else if (SelectedChartType == ChartType.MaterialDiff)
-		{
-			(double instantconstructionpointX, double instantconstructionpointY, int instantconstructionpointpointIndex) = InstantConstructionSignalPlot.GetPointNearestX(mouseCoordX);
-			(double moddingmaterialpointX, double moddingmaterialpointY, int moddingmaterialpointIndex) = ModdingMaterialSignalPlot.GetPointNearestX(mouseCoordX);
-			(double developmentmaterialpointX, double developmentmaterialpointY, int developmentmaterialpointIndex) = DevelopmentMaterialSignalPlot.GetPointNearestX(mouseCoordX);
-			(double instantrepairpointX, double instantrepairpointY, int instantrepairpointIndex) = InstantRepairSignalPlot.GetPointNearestX(mouseCoordX);
-			string date = DateTimeHelper.TimeToCSVString(DateTime.FromOADate(instantconstructionpointX));
-			if (Menu_Option_DivideByDay.IsChecked)
+			(_, double instantconstructionpointY, _) = InstantConstructionPlot.GetPointNearest(mouseCoordX, mouseCoordY, xyRatio);
+			(_, double moddingmaterialpointY, _) = ModdingMaterialPlot.GetPointNearest(mouseCoordX, mouseCoordY, xyRatio);
+			(_, double developmentmaterialpointY, _) = DevelopmentMaterialPlot.GetPointNearest(mouseCoordX, mouseCoordY, xyRatio);
+			(_, double instantrepairpointY, _) = InstantRepairPlot.GetPointNearest(mouseCoordX, mouseCoordY, xyRatio);
+
+			double? datePointX = CurrentScatterPlots.FirstOrDefault(c => c?.IsVisible ?? false)?.GetPointNearest(mouseCoordX, mouseCoordY, xyRatio).x;
+
+			if (datePointX is null)
 			{
-				ViewModel.ToolTip = string.Format("{0}\n{5}: {1:+0;-0;±0} /day\n{6}:{2:+0;-0;±0} /day\n{7}: {3:+0;-0;±0} /day\n{8}: {4:+0;-0;±0} /day", date, developmentmaterialpointY, moddingmaterialpointY, instantconstructionpointY, instantrepairpointY, development_material, modding_material, instant_construction, instant_repair);
+				ViewModel.ToolTip = null;
 			}
 			else
 			{
-				ViewModel.ToolTip = string.Format("{0}\n{5}: {1}\n{6}:{2}\n{7}: {3}\n{8}: {4}", date, developmentmaterialpointY, moddingmaterialpointY, instantconstructionpointY, instantrepairpointY, development_material, modding_material, instant_construction, instant_repair);
+				string date = DateTimeHelper.TimeToCSVString(DateTime.FromOADate(datePointX.Value));
+				ViewModel.ToolTip = string.Format("{0}\n{5}: {1}\n{6}: {2}\n{7}: {3}\n{8}: {4}", date, developmentmaterialpointY, moddingmaterialpointY, instantconstructionpointY, instantrepairpointY, development_material, modding_material, instant_construction, instant_repair);
+			}
+		}
+		else if (SelectedChartType == ChartType.MaterialDiff)
+		{
+			(_, double instantconstructionpointY, _) = InstantConstructionSignalPlot.GetPointNearestX(mouseCoordX);
+			(_, double moddingmaterialpointY, _) = ModdingMaterialSignalPlot.GetPointNearestX(mouseCoordX);
+			(_, double developmentmaterialpointY, _) = DevelopmentMaterialSignalPlot.GetPointNearestX(mouseCoordX);
+			(_, double instantrepairpointY, _) = InstantRepairSignalPlot.GetPointNearestX(mouseCoordX);
+
+			double? datePointX = CurrentSignalPlots.FirstOrDefault(c => c?.IsVisible ?? false)?.GetPointNearestX(mouseCoordX).x;
+
+			if (datePointX is null)
+			{
+				ViewModel.ToolTip = null;
+			}
+			else
+			{
+				string date = DateTimeHelper.TimeToCSVString(DateTime.FromOADate(datePointX.Value));
+
+				if (Menu_Option_DivideByDay.IsChecked)
+				{
+					ViewModel.ToolTip = string.Format("{0}\n{5}: {1:+0;-0;±0} /day\n{6}:{2:+0;-0;±0} /day\n{7}: {3:+0;-0;±0} /day\n{8}: {4:+0;-0;±0} /day", date, developmentmaterialpointY, moddingmaterialpointY, instantconstructionpointY, instantrepairpointY, development_material, modding_material, instant_construction, instant_repair);
+				}
+				else
+				{
+					ViewModel.ToolTip = string.Format("{0}\n{5}: {1}\n{6}:{2}\n{7}: {3}\n{8}: {4}", date, developmentmaterialpointY, moddingmaterialpointY, instantconstructionpointY, instantrepairpointY, development_material, modding_material, instant_construction, instant_repair);
+				}
 			}
 		}
 		else if (SelectedChartType == ChartType.Experience)
 		{
-			(double experiencepointX, double experiencepointY, int experiencepointIndex) = ExperiencePlot.GetPointNearest(mouseCoordX, mouseCoordY, xyRatio);
-			string date = DateTimeHelper.TimeToCSVString(DateTime.FromOADate(experiencepointX));
-			ViewModel.ToolTip = string.Format("{0}\n{1}: {2}", date, experience, experiencepointY);
-		}
-		else if (SelectedChartType == ChartType.ExperienceDiff)
-		{
-			(double experiencepointX, double experiencepointY, int experiencepointIndex) = ExperienceSignalPlot.GetPointNearestX(mouseCoordX);
-			string date = DateTimeHelper.TimeToCSVString(DateTime.FromOADate(experiencepointX));
-			if (Menu_Option_DivideByDay.IsChecked)
+			(_, double experiencepointY, _) = ExperiencePlot.GetPointNearest(mouseCoordX, mouseCoordY, xyRatio);
+
+			double? datePointX = CurrentScatterPlots.FirstOrDefault(c => c?.IsVisible ?? false)?.GetPointNearest(mouseCoordX, mouseCoordY, xyRatio).x;
+
+			if (datePointX is null)
 			{
-				ViewModel.ToolTip = string.Format("{0}\n{2}: {1:+0;-0;±0} /day", date, experiencepointY, experience);
+				ViewModel.ToolTip = null;
 			}
 			else
 			{
-				ViewModel.ToolTip = string.Format("{0}\n{2}: {1:+0;-0;±0}", date, experiencepointY, experience);
+				string date = DateTimeHelper.TimeToCSVString(DateTime.FromOADate(datePointX.Value));
+				ViewModel.ToolTip = string.Format("{0}\n{1}: {2}", date, experience, experiencepointY);
+			}
+		}
+		else if (SelectedChartType == ChartType.ExperienceDiff)
+		{
+			(_, double experiencepointY, _) = ExperienceSignalPlot.GetPointNearestX(mouseCoordX);
+
+			double? datePointX = CurrentSignalPlots.FirstOrDefault(c => c?.IsVisible ?? false)?.GetPointNearestX(mouseCoordX).x;
+
+			if (datePointX is null)
+			{
+				ViewModel.ToolTip = null;
+			}
+			else
+			{
+				string date = DateTimeHelper.TimeToCSVString(DateTime.FromOADate(datePointX ?? 0));
+
+				if (Menu_Option_DivideByDay.IsChecked)
+				{
+					ViewModel.ToolTip = string.Format("{0}\n{2}: {1:+0;-0;±0} /day", date, experiencepointY, experience);
+				}
+				else
+				{
+					ViewModel.ToolTip = string.Format("{0}\n{2}: {1:+0;-0;±0}", date, experiencepointY, experience);
+				}
 			}
 		}
 		else
