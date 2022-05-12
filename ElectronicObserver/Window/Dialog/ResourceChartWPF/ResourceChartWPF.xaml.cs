@@ -891,6 +891,14 @@ public partial class ResourceChartWPF
 
 	private void UpdateChart()
 	{
+		if (ViewModel.DateEnd <= ViewModel.DateBegin)
+		{
+			ChartArea.Visibility = Visibility.Collapsed;
+			return;
+		}
+
+		ChartArea.Visibility = Visibility.Visible;
+
 		switch (SelectedChartType)
 		{
 			case ChartType.Resource:
