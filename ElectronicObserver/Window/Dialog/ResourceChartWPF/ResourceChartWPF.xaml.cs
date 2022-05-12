@@ -878,7 +878,7 @@ public partial class ResourceChartWPF
 				else
 				{
 					axis.TickLabelFormat("yyyy/MM/dd", true);
-					axis.ManualTickSpacing(7, ScottPlot.Ticks.DateTimeUnit.Month);
+					axis.ManualTickSpacing(1, ScottPlot.Ticks.DateTimeUnit.Month);
 				}
 				break;
 		}
