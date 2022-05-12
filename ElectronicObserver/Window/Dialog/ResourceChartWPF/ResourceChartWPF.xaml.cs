@@ -984,6 +984,8 @@ public partial class ResourceChartWPF
 				yield return r;
 		}
 
+		if (DateTime.Now >= ViewModel.DateEnd) yield break;
+
 		var material = KCDatabase.Instance.Material;
 		var admiral = KCDatabase.Instance.Admiral;
 		if (material.IsAvailable && admiral.IsAvailable)
@@ -1066,37 +1068,37 @@ public partial class ResourceChartWPF
 		{
 			case ChartSpan.Day:
 				ViewModel.DateBegin = DateTime.Now - TimeSpan.FromDays(1);
-				ViewModel.DateEnd = DateTime.Now;
+				ViewModel.DateEnd = DateTime.Now.AddDays(1).Date;
 				break;
 
 			case ChartSpan.Week:
 				ViewModel.DateBegin = DateTime.Now - TimeSpan.FromDays(7);
-				ViewModel.DateEnd = DateTime.Now;
+				ViewModel.DateEnd = DateTime.Now.AddDays(1).Date;
 				break;
 
 			case ChartSpan.Month:
 				ViewModel.DateBegin = DateTime.Now.AddMonths(-1);
-				ViewModel.DateEnd = DateTime.Now;
+				ViewModel.DateEnd = DateTime.Now.AddDays(1).Date;
 				break;
 
 			case ChartSpan.Season:
 				ViewModel.DateBegin = DateTime.Now.AddMonths(-3);
-				ViewModel.DateEnd = DateTime.Now;
+				ViewModel.DateEnd = DateTime.Now.AddDays(1).Date;
 				break;
 
 			case ChartSpan.Year:
 				ViewModel.DateBegin = DateTime.Now.AddYears(-1);
-				ViewModel.DateEnd = DateTime.Now;
+				ViewModel.DateEnd = DateTime.Now.AddDays(1).Date;
 				break;
 
 			case ChartSpan.WeekFirst:
 				ViewModel.DateBegin = DateTime.Now.AddDays(now.DayOfWeek == DayOfWeek.Sunday ? -6 : (1 - (int)now.DayOfWeek));
-				ViewModel.DateEnd = DateTime.Now;
+				ViewModel.DateEnd = DateTime.Now.AddDays(1).Date;
 				break;
 
 			case ChartSpan.MonthFirst:
 				ViewModel.DateBegin = new DateTime(now.Year, now.Month, 1);
-				ViewModel.DateEnd = DateTime.Now;
+				ViewModel.DateEnd = DateTime.Now.AddDays(1).Date;
 				break;
 
 			case ChartSpan.SeasonFirst:
@@ -1105,18 +1107,18 @@ public partial class ResourceChartWPF
 				if (m == 0)
 					m = 12;
 				ViewModel.DateBegin = new DateTime(now.Year - (now.Month < 3 ? 1 : 0), m, 1);
-				ViewModel.DateEnd = DateTime.Now;
+				ViewModel.DateEnd = DateTime.Now.AddDays(1).Date;
 			}
 			break;
 
 			case ChartSpan.YearFirst:
 				ViewModel.DateBegin = new DateTime(now.Year, 1, 1);
-				ViewModel.DateEnd = DateTime.Now;
+				ViewModel.DateEnd = DateTime.Now.AddDays(1).Date;
 				break;
 			case ChartSpan.All:
 				_record = RecordManager.Instance.Resource;
 				ViewModel.DateBegin = _record.Record.First().Date;
-				ViewModel.DateEnd = DateTime.Now;
+				ViewModel.DateEnd = DateTime.Now.AddDays(1).Date;
 				break;
 		}
 	}
