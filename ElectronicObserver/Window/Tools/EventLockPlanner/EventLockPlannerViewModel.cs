@@ -1,142 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Linq;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Data;
 using System.Windows.Media;
-using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.Input;
 using ElectronicObserver.Common;
-using ElectronicObserver.Data;
 using ElectronicObserver.Database;
 using ElectronicObserverTypes;
-using ElectronicObserverTypes.Extensions;
-using GongSolutions.Wpf.DragDrop;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace ElectronicObserver.Window.Tools.EventLockPlanner;
-
-public class ShipLockViewModel : ObservableObject
-{
-	public IShipData Ship { get; }
-
-	public int PlannedLock { get; set; }
-	public int ActualLock => Ship.SallyArea;
-
-	public string Display => ActualLock switch
-	{
-		< 1 => Ship.Name,
-		_ => $"[{ActualLock}] {Ship.Name}"
-	};
-
-	public int NightPowerBase => Ship.FirepowerBase + Ship.TorpedoBase;
-	public bool CanUseDaihatsu => Ship.MasterShip.EquippableCategoriesTyped.Contains(EquipmentTypes.LandingCraft);
-	public bool CanUseTank => Ship.MasterShip.EquippableCategoriesTyped.Contains(EquipmentTypes.SpecialAmphibiousTank);
-
-	public ShipLockViewModel(IShipData ship)
-	{
-		Ship = ship;
-	}
-}
-
-public class LockGroupViewModel : ObservableObject, IDropTarget
-{
-	public int Id { get; }
-	public Color Color { get; set; }
-	public SolidColorBrush Background => new(Color);
-	public string Name { get; set; } = "";
-	public ObservableCollection<ShipLockViewModel> Ships { get; } = new();
-
-	public LockGroupViewModel(int id)
-	{
-		Id = id;
-		Color = Color.FromRgb((byte)Random.Shared.Next(256), (byte)Random.Shared.Next(256), (byte)Random.Shared.Next(256));
-	}
-
-	public bool CanAdd(ShipLockViewModel shipLock) => Id switch
-	{
-		0 => shipLock.ActualLock <= 0,
-		{ } => shipLock.ActualLock <= 0 || shipLock.ActualLock == Id
-	};
-
-	private void Insert(int index, ShipLockViewModel shipLock)
-	{
-		shipLock.PlannedLock = Id;
-		Ships.Insert(index, shipLock);
-	}
-
-	public void DragOver(IDropInfo dropInfo)
-	{
-		if (dropInfo.Data is not ShipLockViewModel shipLock) return;
-
-		if (CanAdd(shipLock))
-		{
-			dropInfo.DropTargetAdorner = DropTargetAdorners.Insert;
-			dropInfo.Effects = DragDropEffects.Move;
-		}
-		else
-		{
-			dropInfo.Effects = DragDropEffects.None;
-		}
-	}
-
-	public void Drop(IDropInfo dropInfo)
-	{
-		if (dropInfo.Data is not ShipLockViewModel shipLock) return;
-		if (dropInfo.DragInfo.SourceCollection is not ObservableCollection<ShipLockViewModel> source) return;
-
-		Insert(dropInfo.InsertIndex, shipLock, source);
-	}
-
-	public void Move(ShipLockViewModel shipLock, ObservableCollection<ShipLockViewModel> source) =>
-		Insert(Ships.Count, shipLock, source);
-
-	private void Insert(int index, ShipLockViewModel shipLock, ObservableCollection<ShipLockViewModel> source)
-	{
-		if (!CanAdd(shipLock)) return;
-
-		// index needs to be adjusted for moves within a group
-		if (source == Ships)
-		{
-			int oldIndex = Ships.IndexOf(shipLock);
-			if (oldIndex < index)
-			{
-				index--;
-			}
-		}
-
-		source.Remove(shipLock);
-		Insert(index, shipLock);
-	}
-}
-
-public class ShipLockModel
-{
-	public int Id { get; set; }
-	public int PlannedLock { get; set; }
-}
-
-public class EventLockModel
-{
-	public int Id { get; set; }
-	public byte A { get; set; }
-	public byte R { get; set; }
-	public byte G { get; set; }
-	public byte B { get; set; }
-	public string Name { get; set; } = "";
-}
-
-public class EventLockPlanModel
-{
-	public int Id { get; set; }
-	public List<EventLockModel> Locks { get; set; } = new();
-	public List<ShipLockModel> ShipLocks { get; set; } = new();
-}
 
 public partial class EventLockPlannerViewModel : WindowViewModelBase
 {
@@ -144,9 +16,10 @@ public partial class EventLockPlannerViewModel : WindowViewModelBase
 
 	private List<ShipLockViewModel> AllShipLocks { get; }
 
-	public LockGroupViewModel NoLockGroup { get; } = new(0);
+	public LockGroupViewModel NoLockGroup { get; } = new(0) { Name = "0", Color = Colors.Transparent };
 	public ObservableCollection<LockGroupViewModel> LockGroups { get; } = new();
-	
+	public ObservableCollection<EventPhaseViewModel> EventPhases { get; } = new();
+
 	public EventLockPlannerViewModel(IEnumerable<IShipData> allShips)
 	{
 		EventLockPlanner = Ioc.Default.GetService<EventLockPlannerTranslationViewModel>()!;
@@ -179,7 +52,7 @@ public partial class EventLockPlannerViewModel : WindowViewModelBase
 
 		foreach (ShipLockViewModel ship in unlockedShips)
 		{
-			NoLockGroup.Ships.Add(ship);
+			NoLockGroup.Add(ship);
 		}
 	}
 
@@ -192,7 +65,7 @@ public partial class EventLockPlannerViewModel : WindowViewModelBase
 				AddLock();
 			}
 
-			LockGroups[shipLock.ActualLock - 1].Move(shipLock, NoLockGroup.Ships);
+			LockGroups[shipLock.ActualLock - 1].Move(shipLock, NoLockGroup);
 		}
 	}
 
@@ -212,16 +85,30 @@ public partial class EventLockPlannerViewModel : WindowViewModelBase
 
 		foreach (ShipLockViewModel ship in group.Ships.ToList())
 		{
-			NoLockGroup.Move(ship, group.Ships);
+			NoLockGroup.Move(ship, group);
 		}
 
 		LockGroups.Remove(group);
 	}
 
+	[ICommand]
+	private void AddPhase()
+	{
+		EventPhases.Add(new(LockGroups));
+	}
+
+	[ICommand]
+	private void RemovePhase()
+	{
+		if (EventPhases.Count is 0) return;
+
+		EventPhases.Remove(EventPhases[^1]);
+	}
+
 	private void Save()
 	{
 		using ElectronicObserverContext db = new();
-		EventLockPlanModel? model = db.EventLockPlans.FirstOrDefault();
+		EventLockPlannerModel? model = db.EventLockPlans.FirstOrDefault();
 
 		if (model is null)
 		{
@@ -245,20 +132,27 @@ public partial class EventLockPlannerViewModel : WindowViewModelBase
 			PlannedLock = s.PlannedLock,
 		})).ToList();
 
+		model.Phases = EventPhases.Select(p => new EventPhaseModel
+		{
+			Name = p.Name,
+			PhaseLockGroups = p.PhaseLockGroups.Select(g => g.Id).ToList(),
+			PhaseShips = p.Ships.Select(s => s.Ship.MasterID).ToList(),
+		}).ToList();
+
 		db.SaveChanges();
 	}
 
 	private void Load()
 	{
 		using ElectronicObserverContext db = new();
-		EventLockPlanModel model = db.EventLockPlans.FirstOrDefault() ?? new();
+		EventLockPlannerModel model = db.EventLockPlans.FirstOrDefault() ?? new();
 
 		LoadModel(model);
 	}
 
-	private void LoadModel(EventLockPlanModel model)
+	private void LoadModel(EventLockPlannerModel model)
 	{
-		NoLockGroup.Ships.Clear();
+		NoLockGroup.Clear();
 		LockGroups.Clear();
 
 		GenerateUnlockedShips();
@@ -281,7 +175,37 @@ public partial class EventLockPlannerViewModel : WindowViewModelBase
 			if (shipLock is null) continue;
 			if (!lockGroup.CanAdd(shipLock)) continue;
 
-			lockGroup.Move(shipLock, NoLockGroup.Ships);
+			lockGroup.Move(shipLock, NoLockGroup);
+		}
+
+		foreach (EventPhaseModel eventPhaseModel in model.Phases)
+		{
+			EventPhaseViewModel phase = new(LockGroups)
+			{
+				Name = eventPhaseModel.Name,
+			};
+
+			EventPhases.Add(phase);
+
+			foreach (int lockGroupId in eventPhaseModel.PhaseLockGroups)
+			{
+				LockGroupViewModel? group = LockGroups.Skip(lockGroupId - 1).FirstOrDefault();
+
+				if(group is null) continue;
+
+				phase.PhaseLockGroups.Add(group);
+			}
+
+			foreach (int phaseShipId in eventPhaseModel.PhaseShips)
+			{
+				ShipLockViewModel? shipLock = NoLockGroup.Ships
+					.Concat(LockGroups.SelectMany(g => g.Ships))
+					.FirstOrDefault(l => l.Ship.ID == phaseShipId);
+
+				if (shipLock is null) continue;
+				
+				phase.Add(shipLock);
+			}
 		}
 	}
 }

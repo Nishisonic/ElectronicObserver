@@ -9,7 +9,7 @@ namespace ElectronicObserver.Database;
 
 public class ElectronicObserverContext : DbContext
 {
-	public DbSet<EventLockPlanModel> EventLockPlans { get; set; } = null!;
+	public DbSet<EventLockPlannerModel> EventLockPlans { get; set; } = null!;
 
 	private string DbPath { get; }
 
@@ -23,28 +23,31 @@ public class ElectronicObserverContext : DbContext
 
 	protected override void OnModelCreating(ModelBuilder builder)
 	{
-		builder.Entity<EventLockPlanModel>()
+		builder.Entity<EventLockPlannerModel>()
 			.HasKey(s => s.Id);
 
-		builder.Entity<EventLockPlanModel>()
+		builder.Entity<EventLockPlannerModel>()
 			.Property(s => s.Locks)
-			.HasConversion(EventLockListToStringConverter());
+			.HasConversion(JsonConverter<List<EventLockModel>>());
 
-		builder.Entity<EventLockPlanModel>()
+		builder.Entity<EventLockPlannerModel>()
 			.Property(s => s.ShipLocks)
-			.HasConversion(ShipLockListToStringConverter());
+			.HasConversion(JsonConverter<List<ShipLockModel>>());
+
+		builder.Entity<EventLockPlannerModel>()
+			.Property(s => s.Phases)
+			.HasConversion(JsonConverter<List<EventPhaseModel>>());
 	}
 
-	private static ValueConverter<List<EventLockModel>, string> EventLockListToStringConverter() => new
+	private static ValueConverter<T, string> JsonConverter<T>() where T : new() => new
 	(
 		list => JsonSerializer.Serialize(list, (JsonSerializerOptions?)null),
-		s => JsonSerializer.Deserialize<List<EventLockModel>>(s, (JsonSerializerOptions?)null)!
+		s => FromJson<T>(s)
 	);
 
-	private static ValueConverter<List<ShipLockModel>, string> ShipLockListToStringConverter() => new
-	(
-		list => JsonSerializer.Serialize(list, (JsonSerializerOptions?)null),
-		s => JsonSerializer.Deserialize<List<ShipLockModel>>(s, (JsonSerializerOptions?)null)!
-	);
-
+	private static T FromJson<T>(string s) where T : new() => s switch
+	{
+		null or "" => new T(),
+		_ => JsonSerializer.Deserialize<T>(s)!
+	};
 }
