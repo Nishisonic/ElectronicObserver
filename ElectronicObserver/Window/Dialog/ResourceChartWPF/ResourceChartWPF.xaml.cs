@@ -170,7 +170,7 @@ public partial class ResourceChartWPF
 			if (FuelSignalPlot is not null)
 			{
 				FuelSignalPlot.IsVisible = ViewModel.ShowFuel;
-				ChartArea.Plot.AxisAutoY();
+				//ChartArea.Plot.AxisAutoY();
 				ChartArea.Refresh();
 			}
 		};
@@ -187,7 +187,7 @@ public partial class ResourceChartWPF
 			if (AmmoSignalPlot is not null)
 			{
 				AmmoSignalPlot.IsVisible = ViewModel.ShowAmmo;
-				ChartArea.Plot.AxisAutoY();
+				//ChartArea.Plot.AxisAutoY();
 				ChartArea.Refresh();
 			}
 		};
@@ -204,7 +204,7 @@ public partial class ResourceChartWPF
 			if (SteelSignalPlot is not null)
 			{
 				SteelSignalPlot.IsVisible = ViewModel.ShowSteel;
-				ChartArea.Plot.AxisAutoY();
+				//ChartArea.Plot.AxisAutoY();
 				ChartArea.Refresh();
 			}
 		};
@@ -221,7 +221,6 @@ public partial class ResourceChartWPF
 			if (BauxSignalPlot is not null)
 			{
 				BauxSignalPlot.IsVisible = ViewModel.ShowBaux;
-				ChartArea.Plot.AxisAutoY();
 				ChartArea.Refresh();
 			}
 		};
@@ -242,7 +241,6 @@ public partial class ResourceChartWPF
 			if (InstantRepairSignalPlot is not null)
 			{
 				InstantRepairSignalPlot.IsVisible = ViewModel.ShowInstantRepair;
-				ChartArea.Plot.AxisAutoY();
 				ChartArea.Refresh();
 			}
 		};
@@ -691,7 +689,8 @@ public partial class ResourceChartWPF
 		BauxSignalPlot.FillAboveAndBelow(BauxColor, Color.Transparent, Color.Transparent, BauxColor, 1);
 		BauxSignalPlot.Label = "Bauxite";
 		BauxSignalPlot.MarkerSize = 0;
-		ChartArea.Plot.AxisAuto();
+		ChartArea.Plot.SetAxisLimits(yMin: Math.Floor(ChartArea.Plot.GetDataLimits().YMin / 100), yMax: Math.Ceiling(ChartArea.Plot.GetDataLimits().YMax / 100), yAxisIndex: 1);
+		ChartArea.Plot.AxisAutoY();
 		ChartArea.Refresh();
 	}
 	private void SetMaterialDiffChart()
