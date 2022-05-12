@@ -299,12 +299,6 @@
 				FirstDayOfWeek="Monday"
 				SelectedDate="{Binding DateEnd}"
 				/>
-			<Button
-				Name="DateSearch"
-				Margin="4 0"
-				Click="DateSearch_Click"
-				Content="{Binding DialogResourceChart.UpdateChart}"
-				/>
 		</DockPanel>
 		<WpfPlot
 			Name="ChartArea"

@@ -259,6 +259,13 @@ public partial class ResourceChartWPF
 			}
 		};
 		#endregion
+
+		ViewModel.PropertyChanged += (sender, args) =>
+		{
+			if (args.PropertyName is not (nameof(ViewModel.DateBegin) or nameof(ViewModel.DateEnd))) return;
+
+			UpdateChart();
+		};
 	}
 
 	private void ConfigurationChanged()
@@ -299,6 +306,7 @@ public partial class ResourceChartWPF
 		ChartArea.Configuration.Pan = false;
 		ChartArea.RightClicked -= ChartArea.DefaultRightClickEvent;
 		ChartArea.Configuration.DoubleClickBenchmark = false;
+		SetDateRange();
 		UpdateChart();
 	}
 
@@ -877,6 +885,7 @@ public partial class ResourceChartWPF
 	private void ChartSpan_Click(object sender, RoutedEventArgs e)
 	{
 		SwitchMenuStrip(ChartSpanMenu, ((MenuItem)sender).Tag);
+		SetDateRange();
 		UpdateChart();
 	}
 
@@ -969,74 +978,6 @@ public partial class ResourceChartWPF
 
 	private IEnumerable<ResourceRecord.ResourceElement> GetRecords()
 	{
-		var border = DateTime.MinValue;
-		var now = DateTime.Now;
-
-		switch (SelectedChartSpan)
-		{
-			case ChartSpan.Day:
-				ViewModel.DateBegin = DateTime.Now - TimeSpan.FromDays(1);
-				ViewModel.DateEnd = DateTime.Now;
-				break;
-
-			case ChartSpan.Week:
-				ViewModel.DateBegin = DateTime.Now - TimeSpan.FromDays(7);
-				ViewModel.DateEnd = DateTime.Now;
-				border = now.AddDays(-7);
-				break;
-
-			case ChartSpan.Month:
-				ViewModel.DateBegin = DateTime.Now.AddMonths(-1);
-				ViewModel.DateEnd = DateTime.Now;
-				border = now.AddMonths(-1);
-				break;
-
-			case ChartSpan.Season:
-				ViewModel.DateBegin = DateTime.Now.AddMonths(-3);
-				ViewModel.DateEnd = DateTime.Now;
-				border = now.AddMonths(-3);
-				break;
-
-			case ChartSpan.Year:
-				ViewModel.DateBegin = DateTime.Now.AddYears(-1);
-				ViewModel.DateEnd = DateTime.Now;
-				border = now.AddYears(-1);
-				break;
-
-			case ChartSpan.WeekFirst:
-				ViewModel.DateBegin = DateTime.Now.AddDays(now.DayOfWeek == DayOfWeek.Sunday ? -6 : (1 - (int)now.DayOfWeek));
-				ViewModel.DateEnd = DateTime.Now;
-				border = now.AddDays(now.DayOfWeek == DayOfWeek.Sunday ? -6 : (1 - (int)now.DayOfWeek));
-				break;
-
-			case ChartSpan.MonthFirst:
-				ViewModel.DateBegin = new DateTime(now.Year, now.Month, 1);
-				ViewModel.DateEnd = DateTime.Now;
-				border = new DateTime(now.Year, now.Month, 1);
-				break;
-
-			case ChartSpan.SeasonFirst:
-			{
-				int m = now.Month / 3 * 3;
-				if (m == 0)
-					m = 12;
-				border = new DateTime(now.Year - (now.Month < 3 ? 1 : 0), m, 1);
-				ViewModel.DateBegin = new DateTime(now.Year - (now.Month < 3 ? 1 : 0), m, 1);
-				ViewModel.DateEnd = DateTime.Now;
-			}
-			break;
-
-			case ChartSpan.YearFirst:
-				ViewModel.DateBegin = new DateTime(now.Year, 1, 1);
-				ViewModel.DateEnd = DateTime.Now;
-				border = new DateTime(now.Year, 1, 1);
-				break;
-			case ChartSpan.All:
-				_record = RecordManager.Instance.Resource;
-				ViewModel.DateBegin = _record.Record.First().Date;
-				ViewModel.DateEnd = DateTime.Now;
-				break;
-		}
 		foreach (var r in RecordManager.Instance.Resource.Record)
 		{
 			if (r.Date > ViewModel.DateBegin && r.Date < ViewModel.DateEnd)
@@ -1092,11 +1033,13 @@ public partial class ResourceChartWPF
 
 	private void Menu_Option_ShowAllData_Click(object sender, RoutedEventArgs e)
 	{
+		SetDateRange();
 		UpdateChart();
 	}
 
 	private void Menu_Option_DivideByDay_Click(object sender, RoutedEventArgs e)
 	{
+		SetDateRange();
 		UpdateChart();
 	}
 
@@ -1115,9 +1058,66 @@ public partial class ResourceChartWPF
 			ChartArea.Plot.SaveFig(sfd.FileName);
 	}
 
-	private void DateSearch_Click(object sender, RoutedEventArgs e)
+	private void SetDateRange()
 	{
-		SwitchMenuStrip(ChartSpanMenu, "10");
-		UpdateChart();
+		DateTime now = DateTime.Now;
+
+		switch (SelectedChartSpan)
+		{
+			case ChartSpan.Day:
+				ViewModel.DateBegin = DateTime.Now - TimeSpan.FromDays(1);
+				ViewModel.DateEnd = DateTime.Now;
+				break;
+
+			case ChartSpan.Week:
+				ViewModel.DateBegin = DateTime.Now - TimeSpan.FromDays(7);
+				ViewModel.DateEnd = DateTime.Now;
+				break;
+
+			case ChartSpan.Month:
+				ViewModel.DateBegin = DateTime.Now.AddMonths(-1);
+				ViewModel.DateEnd = DateTime.Now;
+				break;
+
+			case ChartSpan.Season:
+				ViewModel.DateBegin = DateTime.Now.AddMonths(-3);
+				ViewModel.DateEnd = DateTime.Now;
+				break;
+
+			case ChartSpan.Year:
+				ViewModel.DateBegin = DateTime.Now.AddYears(-1);
+				ViewModel.DateEnd = DateTime.Now;
+				break;
+
+			case ChartSpan.WeekFirst:
+				ViewModel.DateBegin = DateTime.Now.AddDays(now.DayOfWeek == DayOfWeek.Sunday ? -6 : (1 - (int)now.DayOfWeek));
+				ViewModel.DateEnd = DateTime.Now;
+				break;
+
+			case ChartSpan.MonthFirst:
+				ViewModel.DateBegin = new DateTime(now.Year, now.Month, 1);
+				ViewModel.DateEnd = DateTime.Now;
+				break;
+
+			case ChartSpan.SeasonFirst:
+			{
+				int m = now.Month / 3 * 3;
+				if (m == 0)
+					m = 12;
+				ViewModel.DateBegin = new DateTime(now.Year - (now.Month < 3 ? 1 : 0), m, 1);
+				ViewModel.DateEnd = DateTime.Now;
+			}
+			break;
+
+			case ChartSpan.YearFirst:
+				ViewModel.DateBegin = new DateTime(now.Year, 1, 1);
+				ViewModel.DateEnd = DateTime.Now;
+				break;
+			case ChartSpan.All:
+				_record = RecordManager.Instance.Resource;
+				ViewModel.DateBegin = _record.Record.First().Date;
+				ViewModel.DateEnd = DateTime.Now;
+				break;
+		}
 	}
 }
