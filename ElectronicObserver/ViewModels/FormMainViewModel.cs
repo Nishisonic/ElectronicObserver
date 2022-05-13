@@ -786,13 +786,16 @@ public partial class FormMainViewModel : ObservableObject
 	}
 
 	[ICommand]
-	private void OpenResourceChart()
+	private void OpenResourceChart(bool useNewVersion)
 	{
-		//DialogResourceChart resourceChart = new();
-		RefreshTopMost();
-		//resourceChart.Show(Window);
-		ResourceChartWPF resourceChart = new();
-		resourceChart.Show(Window);
+		if (useNewVersion)
+		{
+			new ResourceChartWPF().Show(Window);
+		}
+		else
+		{
+			new DialogResourceChart().Show(Window);
+		}
 	}
 
 	[ICommand]

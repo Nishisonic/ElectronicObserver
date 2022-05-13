@@ -14,6 +14,7 @@ using ElectronicObserver.Resource.Record;
 using ElectronicObserver.Utility.Data;
 using ElectronicObserver.ViewModels;
 using ElectronicObserver.ViewModels.Translations;
+using ElectronicObserver.Window.Dialog.ResourceChartWPF;
 using ElectronicObserverTypes;
 using ElectronicObserverTypes.Extensions;
 using Microsoft.Extensions.DependencyInjection;
@@ -624,7 +625,7 @@ public partial class HeadquartersViewModel : AnchorableViewModel
 	[ICommand]
 	private void ShowResourceChart()
 	{
-		new Dialog.DialogResourceChart().Show(App.Current.MainWindow);
+		new ResourceChartWPF().Show(App.Current.MainWindow);
 	}
 
 	[ICommand]
