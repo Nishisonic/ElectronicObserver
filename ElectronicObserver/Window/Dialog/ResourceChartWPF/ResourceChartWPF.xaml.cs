@@ -395,13 +395,13 @@ public partial class ResourceChartWPF
 		string experience = GeneralRes.Experience;
 		if (SelectedChartType == ChartType.Resource)
 		{
-			(_, double fuelpointY, _) = FuelPlot.GetPointNearest(mouseCoordX, mouseCoordY, xyRatio);
-			(_, double ammopointY, _) = AmmoPlot.GetPointNearest(mouseCoordX, mouseCoordY, xyRatio);
-			(_, double steelpointY, _) = SteelPlot.GetPointNearest(mouseCoordX, mouseCoordY, xyRatio);
-			(_, double bauxpointY, _) = BauxPlot.GetPointNearest(mouseCoordX, mouseCoordY, xyRatio);
-			(_, double instantrepairpointY, _) = InstantRepairPlot.GetPointNearest(mouseCoordX, mouseCoordY, xyRatio);
+			double fuelpointY = FuelPlot.GetPointNearestX(mouseCoordX).y;
+			double ammopointY = AmmoPlot.GetPointNearestX(mouseCoordX).y;
+			double steelpointY = SteelPlot.GetPointNearestX(mouseCoordX).y;
+			double bauxpointY = BauxPlot.GetPointNearestX(mouseCoordX).y;
+			double instantrepairpointY = InstantRepairPlot.GetPointNearestX(mouseCoordX).y;
 
-			double? datePointX = CurrentScatterPlots.FirstOrDefault(c => c?.IsVisible ?? false)?.GetPointNearest(mouseCoordX, mouseCoordY, xyRatio).x;
+			double? datePointX = CurrentScatterPlots.FirstOrDefault(c => c?.IsVisible ?? false)?.GetPointNearestX(mouseCoordX).x;
 			if (datePointX is null)
 			{
 				ViewModel.ToolTip = null;
@@ -414,11 +414,11 @@ public partial class ResourceChartWPF
 		}
 		else if (SelectedChartType == ChartType.ResourceDiff)
 		{
-			(_, double fuelpointY, _) = FuelSignalPlot.GetPointNearestX(mouseCoordX);
-			(_, double ammopointY, _) = AmmoSignalPlot.GetPointNearestX(mouseCoordX);
-			(_, double steelpointY, _) = SteelSignalPlot.GetPointNearestX(mouseCoordX);
-			(_, double bauxpointY, _) = BauxSignalPlot.GetPointNearestX(mouseCoordX);
-			(_, double instantrepairpointY, _) = InstantRepairSignalPlot.GetPointNearestX(mouseCoordX);
+			double fuelpointY = FuelSignalPlot.GetPointNearestX(mouseCoordX).y;
+			double ammopointY = AmmoSignalPlot.GetPointNearestX(mouseCoordX).y;
+			double steelpointY = SteelSignalPlot.GetPointNearestX(mouseCoordX).y;
+			double bauxpointY = BauxSignalPlot.GetPointNearestX(mouseCoordX).y;
+			double instantrepairpointY = InstantRepairSignalPlot.GetPointNearestX(mouseCoordX).y;
 
 			double? datePointX = CurrentSignalPlots.FirstOrDefault(c => c?.IsVisible ?? false)?.GetPointNearestX(mouseCoordX).x;
 
@@ -442,12 +442,12 @@ public partial class ResourceChartWPF
 		}
 		else if (SelectedChartType == ChartType.Material)
 		{
-			(_, double instantconstructionpointY, _) = InstantConstructionPlot.GetPointNearest(mouseCoordX, mouseCoordY, xyRatio);
-			(_, double moddingmaterialpointY, _) = ModdingMaterialPlot.GetPointNearest(mouseCoordX, mouseCoordY, xyRatio);
-			(_, double developmentmaterialpointY, _) = DevelopmentMaterialPlot.GetPointNearest(mouseCoordX, mouseCoordY, xyRatio);
-			(_, double instantrepairpointY, _) = InstantRepairPlot.GetPointNearest(mouseCoordX, mouseCoordY, xyRatio);
+			double instantconstructionpointY = InstantConstructionPlot.GetPointNearestX(mouseCoordX).y;
+			double moddingmaterialpointY = ModdingMaterialPlot.GetPointNearestX(mouseCoordX).y;
+			double developmentmaterialpointY = DevelopmentMaterialPlot.GetPointNearestX(mouseCoordX).y;
+			double instantrepairpointY = InstantRepairPlot.GetPointNearestX(mouseCoordX).y;
 
-			double? datePointX = CurrentScatterPlots.FirstOrDefault(c => c?.IsVisible ?? false)?.GetPointNearest(mouseCoordX, mouseCoordY, xyRatio).x;
+			double? datePointX = CurrentScatterPlots.FirstOrDefault(c => c?.IsVisible ?? false)?.GetPointNearestX(mouseCoordX).x;
 
 			if (datePointX is null)
 			{
@@ -461,10 +461,10 @@ public partial class ResourceChartWPF
 		}
 		else if (SelectedChartType == ChartType.MaterialDiff)
 		{
-			(_, double instantconstructionpointY, _) = InstantConstructionSignalPlot.GetPointNearestX(mouseCoordX);
-			(_, double moddingmaterialpointY, _) = ModdingMaterialSignalPlot.GetPointNearestX(mouseCoordX);
-			(_, double developmentmaterialpointY, _) = DevelopmentMaterialSignalPlot.GetPointNearestX(mouseCoordX);
-			(_, double instantrepairpointY, _) = InstantRepairSignalPlot.GetPointNearestX(mouseCoordX);
+			double instantconstructionpointY = InstantConstructionSignalPlot.GetPointNearestX(mouseCoordX).y;
+			double moddingmaterialpointY = ModdingMaterialSignalPlot.GetPointNearestX(mouseCoordX).y;
+			double developmentmaterialpointY = DevelopmentMaterialSignalPlot.GetPointNearestX(mouseCoordX).y;
+			double instantrepairpointY = InstantRepairSignalPlot.GetPointNearestX(mouseCoordX).y;
 
 			double? datePointX = CurrentSignalPlots.FirstOrDefault(c => c?.IsVisible ?? false)?.GetPointNearestX(mouseCoordX).x;
 
@@ -488,9 +488,9 @@ public partial class ResourceChartWPF
 		}
 		else if (SelectedChartType == ChartType.Experience)
 		{
-			(_, double experiencepointY, _) = ExperiencePlot.GetPointNearest(mouseCoordX, mouseCoordY, xyRatio);
+			double experiencepointY = ExperiencePlot.GetPointNearestX(mouseCoordX).y;
 
-			double? datePointX = CurrentScatterPlots.FirstOrDefault(c => c?.IsVisible ?? false)?.GetPointNearest(mouseCoordX, mouseCoordY, xyRatio).x;
+			double? datePointX = CurrentScatterPlots.FirstOrDefault(c => c?.IsVisible ?? false)?.GetPointNearestX(mouseCoordX).x;
 
 			if (datePointX is null)
 			{
@@ -504,7 +504,7 @@ public partial class ResourceChartWPF
 		}
 		else if (SelectedChartType == ChartType.ExperienceDiff)
 		{
-			(_, double experiencepointY, _) = ExperienceSignalPlot.GetPointNearestX(mouseCoordX);
+			double experiencepointY = ExperienceSignalPlot.GetPointNearestX(mouseCoordX).y;
 
 			double? datePointX = CurrentSignalPlots.FirstOrDefault(c => c?.IsVisible ?? false)?.GetPointNearestX(mouseCoordX).x;
 
