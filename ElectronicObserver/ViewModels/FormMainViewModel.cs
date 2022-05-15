@@ -28,12 +28,14 @@ using ElectronicObserver.Observer;
 using ElectronicObserver.Properties;
 using ElectronicObserver.Resource;
 using ElectronicObserver.Resource.Record;
+using ElectronicObserver.Services;
 using ElectronicObserver.Utility;
 using ElectronicObserver.ViewModels.Translations;
 using ElectronicObserver.Window;
 using ElectronicObserver.Window.Dialog;
 using ElectronicObserver.Window.Dialog.QuestTrackerManager;
 using ElectronicObserver.Window.Dialog.VersionInformation;
+using ElectronicObserver.Window.Dialog.ResourceChartWPF;
 using ElectronicObserver.Window.Integrate;
 using ElectronicObserver.Window.Tools.ConstructionRecordViewer;
 using ElectronicObserver.Window.Tools.DevelopmentRecordViewer;
@@ -56,10 +58,12 @@ using ElectronicObserver.Window.Wpf.Quest;
 using ElectronicObserver.Window.Wpf.ShipGroup.ViewModels;
 using ElectronicObserver.Window.Wpf.ShipGroupWinforms;
 using ElectronicObserver.Window.Wpf.WinformsWrappers;
+using ElectronicObserverTypes.Serialization;
 using MessagePack;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using ModernWpf;
+using ModernWpf.Controls;
 using MessageBox = System.Windows.MessageBox;
 using Timer = System.Windows.Forms.Timer;
 using ElectronicObserver.Utility.Mathematics;
@@ -76,6 +80,7 @@ public partial class FormMainViewModel : ObservableObject
 	private DockingManager DockingManager { get; }
 	private Configuration.ConfigurationData Config { get; }
 	public FormMainTranslationViewModel FormMain { get; }
+	private ToolService ToolService { get; }
 	private System.Windows.Forms.Timer UIUpdateTimer { get; }
 	public bool Topmost { get; set; }
 	public int GridSplitterSize { get; set; } = 1;
@@ -195,6 +200,7 @@ public partial class FormMainViewModel : ObservableObject
 
 		Config = Configuration.Config;
 		FormMain = Ioc.Default.GetService<FormMainTranslationViewModel>()!;
+		ToolService = Ioc.Default.GetService<ToolService>()!;
 
 		CultureInfo cultureInfo = new(Configuration.Config.UI.Culture);
 
@@ -490,7 +496,7 @@ public partial class FormMainViewModel : ObservableObject
 
 		File.WriteAllText(IntegratePath, MessagePackSerializer.ConvertToJson(data));
 	}
-	
+
 	[ICommand]
 	public void LoadLayout(object? sender)
 	{
@@ -792,11 +798,16 @@ public partial class FormMainViewModel : ObservableObject
 	}
 
 	[ICommand]
-	private void OpenResourceChart()
+	private void OpenResourceChart(bool useNewVersion)
 	{
-		DialogResourceChart resourceChart = new();
-		RefreshTopMost();
-		resourceChart.Show(Window);
+		if (useNewVersion)
+		{
+			new ResourceChartWPF().Show(Window);
+		}
+		else
+		{
+			new DialogResourceChart().Show(Window);
+		}
 	}
 
 	[ICommand]
@@ -844,9 +855,16 @@ public partial class FormMainViewModel : ObservableObject
 	}
 
 	[ICommand]
-	private void OpenBaseAirCorpsSimulation()
+	private void OpenBaseAirCorpsSimulation(bool useNewVersion)
 	{
-		new DialogBaseAirCorpsSimulation().Show(Window);
+		if (useNewVersion)
+		{
+			ToolService.AirControlSimulator();
+		}
+		else
+		{
+			new DialogBaseAirCorpsSimulation().Show(Window);
+		}
 	}
 
 	[ICommand]
