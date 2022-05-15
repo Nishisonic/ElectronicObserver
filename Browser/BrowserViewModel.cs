@@ -16,9 +16,11 @@ using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using Browser.AirControlSimulator;
 using Browser.ExtraBrowser;
 using BrowserLibCore;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.Input;
 using Grpc.Core;
 using MagicOnion.Client;
@@ -65,7 +67,7 @@ public partial class BrowserViewModel : ObservableObject, BrowserLibCore.IBrowse
 	private string Host { get; }
 	private int Port { get; }
 	private string Culture { get; }
-	private BrowserLibCore.IBrowserHost BrowserHost { get; set; }
+	public static BrowserLibCore.IBrowserHost BrowserHost { get; private set; }
 	public string? ProxySettings { get; set; }
 
 	public ImageProvider? Icons { get; set; }
@@ -127,7 +129,7 @@ public partial class BrowserViewModel : ObservableObject, BrowserLibCore.IBrowse
 	{
 		// System.Diagnostics.Debugger.Launch();
 
-		FormBrowser = App.Current.Services.GetService<FormBrowserTranslationViewModel>()!;
+		FormBrowser = Ioc.Default.GetService<FormBrowserTranslationViewModel>()!;
 
 		Host = host;
 		Port = port;
@@ -1114,6 +1116,15 @@ public partial class BrowserViewModel : ObservableObject, BrowserLibCore.IBrowse
 	public void OpenExtraBrowser()
 	{
 		new ExtraBrowserWindow().Show();
+	}
+
+	[ICommand]
+	public void OpenAirControlSimulator(string url)
+	{
+		new AirControlSimulatorWindow(url)
+		{
+			Owner = App.Current.MainWindow,
+		}.Show();
 	}
 
 	/*

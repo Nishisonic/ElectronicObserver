@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.Input;
 using ElectronicObserver.Data;
 using ElectronicObserver.Observer;
@@ -47,6 +48,10 @@ public partial class HeadquartersViewModel : AnchorableViewModel
 	public FormHeadquartersTranslationViewModel FormHeadquarters { get; }
 
 	public Visibility Visible { get; set; } = Visibility.Collapsed;
+	// WPF is failing to calculate item size in WrapPanel correctly
+	// adding an extra offset to ammo and baux to make them bigger fixes it
+	public Thickness WorkaroundOffset => new(0, 0, 0, WorkaroundOffsetBottom);
+	public int WorkaroundOffsetBottom { get; set; }
 
 	public FontFamily MainFont { get; set; }
 	public float MainFontSize { get; set; }
@@ -76,7 +81,7 @@ public partial class HeadquartersViewModel : AnchorableViewModel
 	public HeadquartersViewModel() : base("HQ", "Headquarters",
 		ImageSourceIcons.GetIcon(IconContent.FormHeadQuarters))
 	{
-		FormHeadquarters = App.Current.Services.GetService<FormHeadquartersTranslationViewModel>()!;
+		FormHeadquarters = Ioc.Default.GetService<FormHeadquartersTranslationViewModel>()!;
 
 		Title = FormHeadquarters.Title;
 		FormHeadquarters.PropertyChanged += (_, _) => Title = FormHeadquarters.Title;
@@ -116,10 +121,10 @@ public partial class HeadquartersViewModel : AnchorableViewModel
 		APIObserver o = APIObserver.Instance;
 
 		o.ApiReqNyukyo_Start.RequestReceived += Updated;
-		o.ApiReqNyukyo_Speedchange.RequestReceived += Updated;
+		o.ApiReqNyukyo_SpeedChange.RequestReceived += Updated;
 		o.ApiReqKousyou_CreateShip.RequestReceived += Updated;
 		o.ApiReqKousyou_CreateShipSpeedChange.RequestReceived += Updated;
-		o.ApiReqKousyou_Destroyship.RequestReceived += Updated;
+		o.ApiReqKousyou_DestroyShip.RequestReceived += Updated;
 		o.ApiReqKousyou_DestroyItem2.RequestReceived += Updated;
 		o.ApiReqMember_UpdateComment.RequestReceived += Updated;
 
@@ -127,24 +132,31 @@ public partial class HeadquartersViewModel : AnchorableViewModel
 		o.ApiGetMember_SlotItem.ResponseReceived += Updated;
 		o.ApiPort_Port.ResponseReceived += Updated;
 		o.ApiGetMember_Ship2.ResponseReceived += Updated;
-		o.ApiReqKousyou_Getship.ResponseReceived += Updated;
+		o.ApiReqKousyou_GetShip.ResponseReceived += Updated;
 		o.ApiReqHokyu_Charge.ResponseReceived += Updated;
-		o.ApiReqKousyou_Destroyship.ResponseReceived += Updated;
+		o.ApiReqKousyou_DestroyShip.ResponseReceived += Updated;
 		o.ApiReqKousyou_DestroyItem2.ResponseReceived += Updated;
-		o.ApiReqKaisou_Powerup.ResponseReceived += Updated;
+		o.ApiReqKaisou_PowerUp.ResponseReceived += Updated;
 		o.ApiReqKousyou_CreateItem.ResponseReceived += Updated;
 		o.ApiReqKousyou_RemodelSlot.ResponseReceived += Updated;
 		o.ApiGetMember_Material.ResponseReceived += Updated;
 		o.ApiGetMember_ShipDeck.ResponseReceived += Updated;
-		o.APIList["api_req_air_corps/set_plane"].ResponseReceived += Updated;
-		o.APIList["api_req_air_corps/supply"].ResponseReceived += Updated;
-		o.APIList["api_get_member/useitem"].ResponseReceived += Updated;
+		o.ApiReqAirCorps_SetPlane.ResponseReceived += Updated;
+		o.ApiReqAirCorps_Supply.ResponseReceived += Updated;
+		o.ApiGetMember_UseItem.ResponseReceived += Updated;
 
 
 		Utility.Configuration.Instance.ConfigurationChanged += ConfigurationChanged;
 		Utility.SystemEvents.UpdateTimerTick += SystemEvents_UpdateTimerTick;
 
 		ConfigurationChanged();
+
+		PropertyChanged += (sender, args) =>
+		{
+			if (args.PropertyName is not nameof(WorkaroundOffsetBottom)) return;
+
+			Utility.Configuration.Config.FormHeadquarters.WrappingOffset = WorkaroundOffsetBottom;
+		};
 	}
 
 	void ConfigurationChanged()
@@ -155,6 +167,8 @@ public partial class HeadquartersViewModel : AnchorableViewModel
 		SubFontSize = Utility.Configuration.Config.UI.SubFont.FontData.ToSize();
 		MainFontColor = Utility.Configuration.Config.UI.ForeColor.ToBrush();
 		SubFontColor = Utility.Configuration.Config.UI.SubForeColor.ToBrush();
+
+		WorkaroundOffsetBottom = Utility.Configuration.Config.FormHeadquarters.WrappingOffset;
 
 		foreach (HeadquarterItemViewModel item in Items)
 		{
@@ -232,7 +246,7 @@ public partial class HeadquartersViewModel : AnchorableViewModel
 	/// </summary>
 	public static IEnumerable<string> GetItemNames()
 	{
-		var formHeadquarters = App.Current.Services.GetService<FormHeadquartersTranslationViewModel>()!;
+		var formHeadquarters = Ioc.Default.GetService<FormHeadquartersTranslationViewModel>()!;
 
 		yield return formHeadquarters.ItemNameName;
 		yield return formHeadquarters.ItemNameComment;

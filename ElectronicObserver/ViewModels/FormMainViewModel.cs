@@ -18,14 +18,17 @@ using AvalonDock.Layout;
 using AvalonDock.Layout.Serialization;
 using AvalonDock.Themes;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.Input;
 using DynaJson;
 using ElectronicObserver.Data;
+using ElectronicObserver.Database;
 using ElectronicObserver.Notifier;
 using ElectronicObserver.Observer;
 using ElectronicObserver.Properties;
 using ElectronicObserver.Resource;
 using ElectronicObserver.Resource.Record;
+using ElectronicObserver.Services;
 using ElectronicObserver.Utility;
 using ElectronicObserver.ViewModels.Translations;
 using ElectronicObserver.Window;
@@ -40,6 +43,7 @@ using ElectronicObserver.Window.Tools.DialogAlbumMasterEquipment;
 using ElectronicObserver.Window.Tools.DialogAlbumMasterShip;
 using ElectronicObserver.Window.Tools.DropRecordViewer;
 using ElectronicObserver.Window.Tools.EquipmentList;
+using ElectronicObserver.Window.Tools.EventLockPlanner;
 using ElectronicObserver.Window.Wpf;
 using ElectronicObserver.Window.Wpf.Arsenal;
 using ElectronicObserver.Window.Wpf.BaseAirCorps;
@@ -54,15 +58,17 @@ using ElectronicObserver.Window.Wpf.Quest;
 using ElectronicObserver.Window.Wpf.ShipGroup.ViewModels;
 using ElectronicObserver.Window.Wpf.ShipGroupWinforms;
 using ElectronicObserver.Window.Wpf.WinformsWrappers;
+using ElectronicObserverTypes.Serialization;
 using MessagePack;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using ModernWpf;
+using ModernWpf.Controls;
 using MessageBox = System.Windows.MessageBox;
 using Timer = System.Windows.Forms.Timer;
 #if DEBUG
 using System.Text.Encodings.Web;
 using ElectronicObserverTypes;
-using Microsoft.EntityFrameworkCore;
 #endif
 
 namespace ElectronicObserver.ViewModels;
@@ -73,6 +79,7 @@ public partial class FormMainViewModel : ObservableObject
 	private DockingManager DockingManager { get; }
 	private Configuration.ConfigurationData Config { get; }
 	public FormMainTranslationViewModel FormMain { get; }
+	private ToolService ToolService { get; }
 	private System.Windows.Forms.Timer UIUpdateTimer { get; }
 	public bool Topmost { get; set; }
 	public int GridSplitterSize { get; set; } = 1;
@@ -191,7 +198,8 @@ public partial class FormMainViewModel : ObservableObject
 		DockingManager = dockingManager;
 
 		Config = Configuration.Config;
-		FormMain = App.Current.Services.GetService<FormMainTranslationViewModel>()!;
+		FormMain = Ioc.Default.GetService<FormMainTranslationViewModel>()!;
+		ToolService = Ioc.Default.GetService<ToolService>()!;
 
 		CultureInfo cultureInfo = new(Configuration.Config.UI.Culture);
 
@@ -228,6 +236,9 @@ public partial class FormMainViewModel : ObservableObject
 		KCDatabase.Instance.Load();
 		NotifierManager.Instance.Initialize(Window);
 		SyncBGMPlayer.Instance.ConfigurationChanged();
+
+		using ElectronicObserverContext db = new();
+		db.Database.Migrate();
 
 		UIUpdateTimer = new Timer() { Interval = 1000 };
 		UIUpdateTimer.Tick += UIUpdateTimer_Tick;
@@ -484,7 +495,7 @@ public partial class FormMainViewModel : ObservableObject
 
 		File.WriteAllText(IntegratePath, MessagePackSerializer.ConvertToJson(data));
 	}
-	
+
 	[ICommand]
 	public void LoadLayout(object? sender)
 	{
@@ -843,9 +854,16 @@ public partial class FormMainViewModel : ObservableObject
 	}
 
 	[ICommand]
-	private void OpenBaseAirCorpsSimulation()
+	private void OpenBaseAirCorpsSimulation(bool useNewVersion)
 	{
-		new DialogBaseAirCorpsSimulation().Show(Window);
+		if (useNewVersion)
+		{
+			ToolService.AirControlSimulator();
+		}
+		else
+		{
+			new DialogBaseAirCorpsSimulation().Show(Window);
+		}
 	}
 
 	[ICommand]
@@ -883,6 +901,13 @@ public partial class FormMainViewModel : ObservableObject
 		}
 
 		new QuestTrackerManagerWindow().Show(Window);
+	}
+
+	[ICommand]
+	private void OpenEventLockPlanner()
+	{
+		EventLockPlannerViewModel viewModel = new(KCDatabase.Instance.Ships.Values);
+		new EventLockPlannerWindow(viewModel).Show(Window);
 	}
 
 	#endregion

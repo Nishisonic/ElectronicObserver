@@ -6,10 +6,14 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
+using CommunityToolkit.Mvvm.DependencyInjection;
+using ElectronicObserver.Services;
 using ElectronicObserver.Utility;
 using ElectronicObserver.ViewModels.Translations;
 using ElectronicObserver.Window;
 using ElectronicObserver.Window.Dialog.ShipPicker;
+using ElectronicObserver.Window.Tools.AirControlSimulator;
+using ElectronicObserver.Window.Tools.EventLockPlanner;
 using Microsoft.AppCenter;
 using Microsoft.AppCenter.Analytics;
 using Microsoft.AppCenter.Crashes;
@@ -23,7 +27,6 @@ namespace ElectronicObserver;
 public partial class App : Application
 {
 	public new static App Current => (App)Application.Current;
-	public IServiceProvider Services { get; set; } = default!;
 
 	public App()
 	{
@@ -121,7 +124,7 @@ public partial class App : Application
 
 				Configuration.Instance.Load();
 
-				Services = ConfigureServices();
+				ConfigureServices();
 
 				ToolTipService.ShowDurationProperty.OverrideMetadata(
 					typeof(DependencyObject), new FrameworkPropertyMetadata(int.MaxValue));
@@ -153,39 +156,48 @@ public partial class App : Application
 		}
 	}
 
-	private IServiceProvider ConfigureServices()
+	private void ConfigureServices()
 	{
-		ServiceCollection services = new();
 
-		services.AddSingleton<FormArsenalTranslationViewModel>();
-		services.AddSingleton<FormBaseAirCorpsTranslationViewModel>();
-		services.AddSingleton<FormBattleTranslationViewModel>();
-		services.AddSingleton<FormBrowserHostTranslationViewModel>();
-		services.AddSingleton<FormCompassTranslationViewModel>();
-		services.AddSingleton<FormDockTranslationViewModel>();
-		services.AddSingleton<FormFleetTranslationViewModel>();
-		services.AddSingleton<FormFleetOverviewTranslationViewModel>();
-		services.AddSingleton<FormFleetPresetTranslationViewModel>();
-		services.AddSingleton<FormHeadquartersTranslationViewModel>();
-		services.AddSingleton<FormInformationTranslationViewModel>();
-		services.AddSingleton<FormJsonTranslationViewModel>();
-		services.AddSingleton<FormLogTranslationViewModel>();
-		services.AddSingleton<FormMainTranslationViewModel>();
-		services.AddSingleton<FormQuestTranslationViewModel>();
-		services.AddSingleton<FormShipGroupTranslationViewModel>();
-		services.AddSingleton<FormWindowCaptureTranslationViewModel>();
+		ServiceProvider services = new ServiceCollection()
+			// view translations
+			.AddSingleton<FormArsenalTranslationViewModel>()
+			.AddSingleton<FormBaseAirCorpsTranslationViewModel>()
+			.AddSingleton<FormBattleTranslationViewModel>()
+			.AddSingleton<FormBrowserHostTranslationViewModel>()
+			.AddSingleton<FormCompassTranslationViewModel>()
+			.AddSingleton<FormDockTranslationViewModel>()
+			.AddSingleton<FormFleetTranslationViewModel>()
+			.AddSingleton<FormFleetOverviewTranslationViewModel>()
+			.AddSingleton<FormFleetPresetTranslationViewModel>()
+			.AddSingleton<FormHeadquartersTranslationViewModel>()
+			.AddSingleton<FormInformationTranslationViewModel>()
+			.AddSingleton<FormJsonTranslationViewModel>()
+			.AddSingleton<FormLogTranslationViewModel>()
+			.AddSingleton<FormMainTranslationViewModel>()
+			.AddSingleton<FormQuestTranslationViewModel>()
+			.AddSingleton<FormShipGroupTranslationViewModel>()
+			.AddSingleton<FormWindowCaptureTranslationViewModel>()
+			// tool translations
+			.AddSingleton<DialogAlbumMasterShipTranslationViewModel>()
+			.AddSingleton<DialogAlbumMasterEquipmentTranslationViewModel>()
+			.AddSingleton<DialogDevelopmentRecordViewerTranslationViewModel>()
+			.AddSingleton<DialogDropRecordViewerTranslationViewModel>()
+			.AddSingleton<DialogConstructionRecordViewerTranslationViewModel>()
+      .AddSingleton<DialogResourceChartTranslationViewModel>()
+			.AddSingleton<DialogEquipmentListTranslationViewModel>()
+			.AddSingleton<QuestTrackerManagerTranslationViewModel>()
+			.AddSingleton<EventLockPlannerTranslationViewModel>()
+			.AddSingleton<ShipFilterTranslationViewModel>()
+			.AddSingleton<AirControlSimulatorTranslationViewModel>()
+			// tools
+			.AddSingleton<ShipPickerViewModel>()
+			// services
+			.AddSingleton<DataSerializationService>()
+			.AddSingleton<ToolService>()
 
-		services.AddSingleton<DialogAlbumMasterShipTranslationViewModel>();
-		services.AddSingleton<DialogAlbumMasterEquipmentTranslationViewModel>();
-		services.AddSingleton<DialogDevelopmentRecordViewerTranslationViewModel>();
-		services.AddSingleton<DialogDropRecordViewerTranslationViewModel>();
-		services.AddSingleton<DialogConstructionRecordViewerTranslationViewModel>();
-		services.AddSingleton<DialogEquipmentListTranslationViewModel>();
-		services.AddSingleton<QuestTrackerManagerTranslationViewModel>();
-		services.AddSingleton<DialogResourceChartTranslationViewModel>();
+			.BuildServiceProvider();
 
-		services.AddSingleton<ShipPickerViewModel>();
-
-		return services.BuildServiceProvider();
+		Ioc.Default.ConfigureServices(services);
 	}
 }

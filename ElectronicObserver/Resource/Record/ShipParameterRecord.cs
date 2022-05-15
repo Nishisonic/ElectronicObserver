@@ -618,25 +618,25 @@ public class ShipParameterRecord : RecordBase
 
 		ao.ApiGetMember_Ship3.ResponseReceived += EquipmentChanged;
 
-		ao["api_get_member/picture_book"].ResponseReceived += AlbumOpened;
+		ao.ApiGetMember_PictureBook.ResponseReceived += AlbumOpened;
 
 		//戦闘系：最初のフェーズのみ要るから夜戦(≠開幕)は不要
-		ao["api_req_sortie/battle"].ResponseReceived += BattleStart;
-		ao["api_req_battle_midnight/sp_midnight"].ResponseReceived += BattleStart;
-		ao["api_req_sortie/airbattle"].ResponseReceived += BattleStart;
-		ao["api_req_sortie/ld_airbattle"].ResponseReceived += BattleStart;
-		ao["api_req_sortie/night_to_day"].ResponseReceived += BattleStart;
-		ao["api_req_sortie/ld_shooting"].ResponseReceived += BattleStart;
-		ao["api_req_combined_battle/battle"].ResponseReceived += BattleStart;
-		ao["api_req_combined_battle/sp_midnight"].ResponseReceived += BattleStart;
-		ao["api_req_combined_battle/airbattle"].ResponseReceived += BattleStart;
-		ao["api_req_combined_battle/battle_water"].ResponseReceived += BattleStart;
-		ao["api_req_combined_battle/ld_airbattle"].ResponseReceived += BattleStart;
-		ao["api_req_combined_battle/ec_battle"].ResponseReceived += BattleStart;
-		ao["api_req_combined_battle/ec_night_to_day"].ResponseReceived += BattleStart;
-		ao["api_req_combined_battle/each_battle"].ResponseReceived += BattleStart;
-		ao["api_req_combined_battle/each_battle_water"].ResponseReceived += BattleStart;
-		ao["api_req_combined_battle/ld_shooting"].ResponseReceived += BattleStart;
+		ao.ApiReqSortie_Battle.ResponseReceived += BattleStart;
+		ao.ApiReqBattleMidnight_SpMidnight.ResponseReceived += BattleStart;
+		ao.ApiReqSortie_AirBattle.ResponseReceived += BattleStart;
+		ao.ApiReqSortie_LdAirBattle.ResponseReceived += BattleStart;
+		ao.ApiReqSortie_NightToDay.ResponseReceived += BattleStart;
+		ao.ApiReqSortie_LdShooting.ResponseReceived += BattleStart;
+		ao.ApiReqCombinedBattle_Battle.ResponseReceived += BattleStart;
+		ao.ApiReqCombinedBattle_SpMidnight.ResponseReceived += BattleStart;
+		ao.ApiReqCombinedBattle_AirBattle.ResponseReceived += BattleStart;
+		ao.ApiReqCombinedBattle_BattleWater.ResponseReceived += BattleStart;
+		ao.ApiReqCombinedBattle_LdAirBattle.ResponseReceived += BattleStart;
+		ao.ApiReqCombinedBattle_EcBattle.ResponseReceived += BattleStart;
+		ao.ApiReqCombinedBattle_EcNightToDay.ResponseReceived += BattleStart;
+		ao.ApiReqCombinedBattle_EachBattle.ResponseReceived += BattleStart;
+		ao.ApiReqCombinedBattle_EachBattleWater.ResponseReceived += BattleStart;
+		ao.ApiReqCombinedBattle_LdShooting.ResponseReceived += BattleStart;
 
 		ao.ApiReqMap_Next.ResponseReceived += SortieNext;
 
@@ -645,12 +645,12 @@ public class ShipParameterRecord : RecordBase
 		ao.ApiReqMap_Start.ResponseReceived += SortieStart;
 		ao.ApiGetMember_SlotItem.ResponseReceived += SortieEnd;
 
-		ao.ApiReqKousyou_Getship.ResponseReceived += ConstructionReceived;
+		ao.ApiReqKousyou_GetShip.ResponseReceived += ConstructionReceived;
 
 		ao.ApiReqKaisou_Remodeling.RequestReceived += RemodelingStart;
 		ao.ApiGetMember_SlotItem.ResponseReceived += RemodelingEnd;
 
-		ao["api_req_quest/clearitemget"].ResponseReceived += QuestRewardReceived;
+		ao.ApiReqQuest_ClearItemGet.ResponseReceived += QuestRewardReceived;
 		ao.ApiGetMember_Ship2.ResponseReceived += QuestRewardReceivedEnd;
 	}
 

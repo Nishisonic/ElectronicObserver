@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Media;
+using CommunityToolkit.Mvvm.DependencyInjection;
 using ElectronicObserver.Data;
 using ElectronicObserver.Data.Battle;
 using ElectronicObserver.Observer;
@@ -64,7 +65,7 @@ public class CompassViewModel : AnchorableViewModel
 		ImageSourceIcons.GetIcon(IconContent.FormCompass))
 	{
 		Db = KCDatabase.Instance;
-		FormCompass = App.Current.Services.GetService<FormCompassTranslationViewModel>()!;
+		FormCompass = Ioc.Default.GetService<FormCompassTranslationViewModel>()!;
 
 		Title = FormCompass.Title;
 		FormCompass.PropertyChanged += (_, _) => Title = FormCompass.Title;
@@ -74,26 +75,26 @@ public class CompassViewModel : AnchorableViewModel
 		o.ApiPort_Port.ResponseReceived += Updated;
 		o.ApiReqMap_Start.ResponseReceived += Updated;
 		o.ApiReqMap_Next.ResponseReceived += Updated;
-		o["api_req_map/air_raid"].ResponseReceived += Updated;
-		o["api_req_member/get_practice_enemyinfo"].ResponseReceived += Updated;
+		o.ApiReqMap_AirRaid.ResponseReceived += Updated;
+		o.ApiReqMember_GetPracticeEnemyInfo.ResponseReceived += Updated;
 
-		o["api_req_sortie/battle"].ResponseReceived += BattleStarted;
-		o["api_req_battle_midnight/sp_midnight"].ResponseReceived += BattleStarted;
-		o["api_req_sortie/night_to_day"].ResponseReceived += BattleStarted;
-		o["api_req_sortie/airbattle"].ResponseReceived += BattleStarted;
-		o["api_req_sortie/ld_airbattle"].ResponseReceived += BattleStarted;
-		o["api_req_sortie/ld_shooting"].ResponseReceived += BattleStarted;
-		o["api_req_combined_battle/battle"].ResponseReceived += BattleStarted;
-		o["api_req_combined_battle/sp_midnight"].ResponseReceived += BattleStarted;
-		o["api_req_combined_battle/airbattle"].ResponseReceived += BattleStarted;
-		o["api_req_combined_battle/battle_water"].ResponseReceived += BattleStarted;
-		o["api_req_combined_battle/ld_airbattle"].ResponseReceived += BattleStarted;
-		o["api_req_combined_battle/ec_battle"].ResponseReceived += BattleStarted;
-		o["api_req_combined_battle/each_battle"].ResponseReceived += BattleStarted;
-		o["api_req_combined_battle/each_battle_water"].ResponseReceived += BattleStarted;
-		o["api_req_combined_battle/ec_night_to_day"].ResponseReceived += BattleStarted;
-		o["api_req_combined_battle/ld_shooting"].ResponseReceived += BattleStarted;
-		o["api_req_practice/battle"].ResponseReceived += BattleStarted;
+		o.ApiReqSortie_Battle.ResponseReceived += BattleStarted;
+		o.ApiReqBattleMidnight_SpMidnight.ResponseReceived += BattleStarted;
+		o.ApiReqSortie_NightToDay.ResponseReceived += BattleStarted;
+		o.ApiReqSortie_AirBattle.ResponseReceived += BattleStarted;
+		o.ApiReqSortie_LdAirBattle.ResponseReceived += BattleStarted;
+		o.ApiReqSortie_LdShooting.ResponseReceived += BattleStarted;
+		o.ApiReqCombinedBattle_Battle.ResponseReceived += BattleStarted;
+		o.ApiReqCombinedBattle_SpMidnight.ResponseReceived += BattleStarted;
+		o.ApiReqCombinedBattle_AirBattle.ResponseReceived += BattleStarted;
+		o.ApiReqCombinedBattle_BattleWater.ResponseReceived += BattleStarted;
+		o.ApiReqCombinedBattle_LdAirBattle.ResponseReceived += BattleStarted;
+		o.ApiReqCombinedBattle_EcBattle.ResponseReceived += BattleStarted;
+		o.ApiReqCombinedBattle_EachBattle.ResponseReceived += BattleStarted;
+		o.ApiReqCombinedBattle_EachBattleWater.ResponseReceived += BattleStarted;
+		o.ApiReqCombinedBattle_EcNightToDay.ResponseReceived += BattleStarted;
+		o.ApiReqCombinedBattle_LdShooting.ResponseReceived += BattleStarted;
+		o.ApiReqPractice_Battle.ResponseReceived += BattleStarted;
 
 		Utility.Configuration.Instance.ConfigurationChanged += ConfigurationChanged;
 	}
@@ -575,15 +576,13 @@ public class CompassViewModel : AnchorableViewModel
 			strs.AddLast(itemName + " x " + item.Amount);
 		}
 
-		if (!strs.Any())
-		{
-			return FormCompass.None;
+		if (!strs.Any()) return FormCompass.None;
 
-		}
-		else
-		{
-			return string.Join(", ", strs);
-		}
+		string materialInfo = string.Join(", ", strs);
+
+		Utility.Logger.Add(2, $"{compass.MapAreaID}-{compass.MapInfoID}-{compass.DestinationID} {materialInfo}");
+
+		return materialInfo;
 	}
 
 	private void BattleStarted(string apiname, dynamic data)

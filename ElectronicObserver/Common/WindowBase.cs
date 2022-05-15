@@ -6,7 +6,7 @@ public class WindowBase<TViewModel> : System.Windows.Window where TViewModel : W
 {
 	public TViewModel ViewModel { get; }
 
-	[Obsolete("This is only needed so WPF doesn't complain, don't use this.")]
+	[Obsolete("This is only needed so WPF doesn't complain, don't use this.", true)]
 #pragma warning disable CS8618
 	public WindowBase()
 #pragma warning restore CS8618
@@ -22,5 +22,8 @@ public class WindowBase<TViewModel> : System.Windows.Window where TViewModel : W
 		SetBinding(FontSizeProperty, nameof(WindowViewModelBase.FontSize));
 		SetBinding(FontFamilyProperty, nameof(WindowViewModelBase.Font));
 		SetBinding(ForegroundProperty, nameof(WindowViewModelBase.FontBrush));
+
+		Loaded += (_, _) => ViewModel.Loaded();
+		Closed += (_, _) => ViewModel.Closed();
 	}
 }

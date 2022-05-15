@@ -31,6 +31,7 @@ public class ShipDataMock : IShipData
 	public int Level { get; set; }
 	public int ExpTotal { get; set; }
 	public int ExpNext { get; set; }
+	public double ExpNextPercentage { get; set; }
 	public int HPCurrent { get; set; }
 	public int HPMax => MasterShip.HPMax;
 	public int Speed { get; set; }
@@ -155,4 +156,10 @@ public class ShipDataMock : IShipData
 	{
 		throw new System.NotImplementedException();
 	}
+
+	public ShipDataMock Clone() => new(MasterShip)
+	{
+		// todo: copy all values
+		ID = ID,
+	};
 }

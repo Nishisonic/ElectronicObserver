@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows;
+using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.Input;
 using ElectronicObserver.Data;
 using ElectronicObserver.Observer;
 using ElectronicObserver.Resource;
+using ElectronicObserver.Services;
 using ElectronicObserver.Utility.Data;
 using ElectronicObserver.ViewModels;
 using ElectronicObserver.ViewModels.Translations;
@@ -21,6 +23,7 @@ namespace ElectronicObserver.Window.Wpf.Fleet;
 public partial class FleetViewModel : AnchorableViewModel
 {
 	public FormFleetTranslationViewModel FormFleet { get; }
+	private ToolService ToolService { get; }
 
 	public FleetStatusViewModel ControlFleet { get; }
 	public List<FleetItemViewModel> ControlMember { get; } = new();
@@ -31,7 +34,8 @@ public partial class FleetViewModel : AnchorableViewModel
 	public FleetViewModel(int fleetId) : base($"#{fleetId}", $"Fleet{fleetId}",
 		ImageSourceIcons.GetIcon(IconContent.FormFleet))
 	{
-		FormFleet = App.Current.Services.GetService<FormFleetTranslationViewModel>()!;
+		FormFleet = Ioc.Default.GetService<FormFleetTranslationViewModel>()!;
+		ToolService = Ioc.Default.GetService<ToolService>()!;
 
 		Title = $"#{fleetId}";
 		FormFleet.PropertyChanged += (_, _) => Title = $"#{fleetId}";
@@ -60,23 +64,23 @@ public partial class FleetViewModel : AnchorableViewModel
 		APIObserver o = APIObserver.Instance;
 
 		o.ApiReqNyukyo_Start.RequestReceived += Updated;
-		o.ApiReqNyukyo_Speedchange.RequestReceived += Updated;
+		o.ApiReqNyukyo_SpeedChange.RequestReceived += Updated;
 		o.ApiReqHensei_Change.RequestReceived += Updated;
-		o.ApiReqKousyou_Destroyship.RequestReceived += Updated;
-		o.ApiReqMember_Updatedeckname.RequestReceived += Updated;
+		o.ApiReqKousyou_DestroyShip.RequestReceived += Updated;
+		o.ApiReqMember_UpdateDeckName.RequestReceived += Updated;
 		o.ApiReqKaisou_Remodeling.RequestReceived += Updated;
 		o.ApiReqMap_Start.RequestReceived += Updated;
 		o.ApiReqHensei_Combined.RequestReceived += Updated;
-		o.ApiReqKaisou_OpenExslot.RequestReceived += Updated;
+		o.ApiReqKaisou_OpenExSlot.RequestReceived += Updated;
 
 		o.ApiPort_Port.ResponseReceived += Updated;
 		o.ApiGetMember_Ship2.ResponseReceived += Updated;
-		o.ApiGetMember_Ndock.ResponseReceived += Updated;
-		o.ApiReqKousyou_Getship.ResponseReceived += Updated;
+		o.ApiGetMember_NDock.ResponseReceived += Updated;
+		o.ApiReqKousyou_GetShip.ResponseReceived += Updated;
 		o.ApiReqHokyu_Charge.ResponseReceived += Updated;
-		o.ApiReqKousyou_Destroyship.ResponseReceived += Updated;
+		o.ApiReqKousyou_DestroyShip.ResponseReceived += Updated;
 		o.ApiGetMember_Ship3.ResponseReceived += Updated;
-		o.ApiReqKaisou_Powerup.ResponseReceived += Updated;        //requestのほうは面倒なのでこちらでまとめてやる
+		o.ApiReqKaisou_PowerUp.ResponseReceived += Updated;        //requestのほうは面倒なのでこちらでまとめてやる
 		o.ApiGetMember_Deck.ResponseReceived += Updated;
 		o.ApiGetMember_SlotItem.ResponseReceived += Updated;
 		o.ApiReqMap_Start.ResponseReceived += Updated;
@@ -620,10 +624,7 @@ public partial class FleetViewModel : AnchorableViewModel
 			string kyouka = $"\"api_kyouka\":[{string.Join(",", apiKyouka)}]";
 			string exp = $"\"api_exp\":[{string.Join(",", apiExp)}]";
 			string slotEx = $"\"api_slot_ex\":{ship.ExpansionSlot}";
-			// ship.SallyArea defaults to -1 if it doesn't exist on api 
-			// which breaks the app, changing the default to 0 would be 
-			// easier but I'd prefer not to mess with that
-			string sallyArea = $"\"api_sally_area\":{(ship.SallyArea >= 0 ? ship.SallyArea : 0)}";
+			string sallyArea = $"\"api_sally_area\":{(ship.SallyArea)}";
 
 			string[] analysisData = { shipId, level, kyouka, exp, slotEx, sallyArea };
 
@@ -788,6 +789,18 @@ public partial class FleetViewModel : AnchorableViewModel
 		{
 			dialog.ShowDialog(App.Current.MainWindow);
 		}
+	}
+
+	[ICommand]
+	private void OpenAirControlSimulator()
+	{
+		ToolService.AirControlSimulator(new()
+		{
+			Fleet1 = FleetId is 1,
+			Fleet2 = FleetId is 2 || (FleetId is 1 && KCDatabase.Instance.Fleet.CombinedFlag > 0),
+			Fleet3 = FleetId is 3,
+			Fleet4 = FleetId is 4,
+		});
 	}
 	#endregion
 }
