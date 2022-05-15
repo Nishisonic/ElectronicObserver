@@ -456,7 +456,7 @@ public partial class ResourceChartWPF
 			else
 			{
 				string date = DateTimeHelper.TimeToCSVString(DateTime.FromOADate(datePointX.Value));
-				ViewModel.ToolTip = string.Format("{0}\n{5}: {1}\n{6}: {2}\n{7}: {3}\n{8}: {4}", date, developmentmaterialpointY, moddingmaterialpointY, instantconstructionpointY, instantrepairpointY, development_material, modding_material, instant_construction, instant_repair);
+				ViewModel.ToolTip = string.Format("{0}\n{5}: {1}\n{6}: {2}\n{7}: {3}\n{8}: {4}", date, instantconstructionpointY, instantrepairpointY, developmentmaterialpointY, moddingmaterialpointY, instant_construction, instant_repair, development_material, modding_material);
 			}
 		}
 		else if (SelectedChartType == ChartType.MaterialDiff)
@@ -478,11 +478,11 @@ public partial class ResourceChartWPF
 
 				if (Menu_Option_DivideByDay.IsChecked)
 				{
-					ViewModel.ToolTip = string.Format("{0}\n{5}: {1:+0;-0;±0} /day\n{6}:{2:+0;-0;±0} /day\n{7}: {3:+0;-0;±0} /day\n{8}: {4:+0;-0;±0} /day", date, developmentmaterialpointY, moddingmaterialpointY, instantconstructionpointY, instantrepairpointY, development_material, modding_material, instant_construction, instant_repair);
+					ViewModel.ToolTip = string.Format("{0}\n{5}: {1:+0;-0;±0} /day\n{6}:{2:+0;-0;±0} /day\n{7}: {3:+0;-0;±0} /day\n{8}: {4:+0;-0;±0} /day", date, instantconstructionpointY, instantrepairpointY, developmentmaterialpointY, moddingmaterialpointY, instant_construction, instant_repair, development_material, modding_material);
 				}
 				else
 				{
-					ViewModel.ToolTip = string.Format("{0}\n{5}: {1}\n{6}:{2}\n{7}: {3}\n{8}: {4}", date, developmentmaterialpointY, moddingmaterialpointY, instantconstructionpointY, instantrepairpointY, development_material, modding_material, instant_construction, instant_repair);
+					ViewModel.ToolTip = string.Format("{0}\n{5}: {1}\n{6}:{2}\n{7}: {3}\n{8}: {4}", date, instantconstructionpointY, instantrepairpointY, developmentmaterialpointY, moddingmaterialpointY, instant_construction, instant_repair, development_material, modding_material);
 				}
 			}
 		}
