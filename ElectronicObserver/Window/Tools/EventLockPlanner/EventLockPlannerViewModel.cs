@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Text.Json;
 using System.Windows;
@@ -7,8 +8,10 @@ using System.Windows.Media;
 using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.Input;
 using ElectronicObserver.Common;
+using ElectronicObserver.Data.Translation;
 using ElectronicObserver.Database;
 using ElectronicObserver.Services;
+using ElectronicObserver.Utility;
 using ElectronicObserverTypes;
 using ElectronicObserverTypes.Serialization.EventLockPlanner;
 
@@ -16,8 +19,11 @@ namespace ElectronicObserver.Window.Tools.EventLockPlanner;
 
 public partial class EventLockPlannerViewModel : WindowViewModelBase
 {
+	private string EventLocksPath => Path.Join(DataAndTranslationManager.DataFolder, "Locks.json");
+
 	public EventLockPlannerTranslationViewModel EventLockPlanner { get; }
 	private DataSerializationService DataSerializationService { get; }
+	private LockTranslationData LockTranslator { get; }
 
 	private List<ShipLockViewModel> AllShipLocks { get; }
 
@@ -25,10 +31,11 @@ public partial class EventLockPlannerViewModel : WindowViewModelBase
 	public ObservableCollection<LockGroupViewModel> LockGroups { get; } = new();
 	public ObservableCollection<EventPhaseViewModel> EventPhases { get; } = new();
 
-	public EventLockPlannerViewModel(IEnumerable<IShipData> allShips)
+	public EventLockPlannerViewModel(IEnumerable<IShipData> allShips, LockTranslationData lockTranslator)
 	{
 		EventLockPlanner = Ioc.Default.GetService<EventLockPlannerTranslationViewModel>()!;
 		DataSerializationService = Ioc.Default.GetService<DataSerializationService>()!;
+		LockTranslator = lockTranslator;
 
 		AllShipLocks = allShips.Select(s => new ShipLockViewModel(s)).ToList();
 
@@ -224,7 +231,55 @@ public partial class EventLockPlannerViewModel : WindowViewModelBase
 	[ICommand]
 	private void LoadLocksFromClipboard()
 	{
+		if (MessageBox.Show
+		(
+			EventLockPlanner.LockLoadWarningText,
+			EventLockPlanner.Warning,
+			MessageBoxButton.OKCancel,
+			MessageBoxImage.Warning
+		) is not MessageBoxResult.OK)
+		{
+			return;
+		}
+
 		string json = Clipboard.GetText();
+
+		EventLockPlannerData? data = JsonSerializer.Deserialize<EventLockPlannerData>(json);
+
+		if (data is null)
+		{
+			// error
+			return;
+		}
+
+		ImportLocks(data);
+	}
+
+	[ICommand]
+	private void LoadEventLocks()
+	{
+		if (MessageBox.Show
+		(
+			EventLockPlanner.LockLoadWarningText,
+			EventLockPlanner.Warning,
+			MessageBoxButton.OKCancel,
+			MessageBoxImage.Warning
+		) is not MessageBoxResult.OK)
+		{
+			return;
+		}
+
+		string? json;
+
+		try
+		{
+			json = File.ReadAllText(EventLocksPath);
+		}
+		catch
+		{
+			Logger.Add(2, EventLockPlanner.FailedToLoadLockData);
+			return;
+		}
 
 		EventLockPlannerData? data = JsonSerializer.Deserialize<EventLockPlannerData>(json);
 
@@ -257,7 +312,7 @@ public partial class EventLockPlannerViewModel : WindowViewModelBase
 			LockGroups.Add(new(eventLock.Id)
 			{
 				Color = Color.FromArgb(eventLock.A, eventLock.R, eventLock.G, eventLock.B),
-				Name = eventLock.Name,
+				Name = LockTranslator.Lock(eventLock.Name),
 			});
 		}
 
@@ -301,7 +356,7 @@ public partial class EventLockPlannerViewModel : WindowViewModelBase
 
 		foreach ((List<ShipLockViewModel> eventPhase, int id) in eventPhases.Select((p, id) => (p, id)))
 		{
-			if(id > EventPhases.Count) continue;
+			if (id > EventPhases.Count) continue;
 
 			foreach (ShipLockViewModel shipLock in eventPhase)
 			{
