@@ -79,6 +79,15 @@ namespace ElectronicObserver.Window.Tools.EventLockPlanner {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to ロックを割り当てる.
+        /// </summary>
+        internal static string AssignLock {
+            get {
+                return ResourceManager.GetString("AssignLock", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to クリップボードにコピー(_C).
         /// </summary>
         internal static string CopyToClipboard {
@@ -111,6 +120,15 @@ namespace ElectronicObserver.Window.Tools.EventLockPlanner {
         internal static string File {
             get {
                 return ResourceManager.GetString("File", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 終了しました.
+        /// </summary>
+        internal static string IsFinished {
+            get {
+                return ResourceManager.GetString("IsFinished", resourceCulture);
             }
         }
         
@@ -170,6 +188,15 @@ namespace ElectronicObserver.Window.Tools.EventLockPlanner {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 終了したフェーズを表示する(_S).
+        /// </summary>
+        internal static string ShowFinishedPhases {
+            get {
+                return ResourceManager.GetString("ShowFinishedPhases", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 内火艇.
         /// </summary>
         internal static string Tank {
@@ -184,6 +211,15 @@ namespace ElectronicObserver.Window.Tools.EventLockPlanner {
         internal static string Title {
             get {
                 return ResourceManager.GetString("Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 表示(_V).
+        /// </summary>
+        internal static string View {
+            get {
+                return ResourceManager.GetString("View", resourceCulture);
             }
         }
         

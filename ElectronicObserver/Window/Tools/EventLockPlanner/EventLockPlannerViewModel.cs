@@ -31,6 +31,8 @@ public partial class EventLockPlannerViewModel : WindowViewModelBase
 	public ObservableCollection<LockGroupViewModel> LockGroups { get; } = new();
 	public ObservableCollection<EventPhaseViewModel> EventPhases { get; } = new();
 
+	public bool ShowFinishedPhases { get; set; } = true;
+
 	public EventLockPlannerViewModel(IEnumerable<IShipData> allShips, LockTranslationData lockTranslator)
 	{
 		EventLockPlanner = Ioc.Default.GetService<EventLockPlannerTranslationViewModel>()!;
@@ -118,6 +120,14 @@ public partial class EventLockPlannerViewModel : WindowViewModelBase
 		EventPhases.Remove(EventPhases[^1]);
 	}
 
+	[ICommand]
+	private void DeletePhase(EventPhaseViewModel? phase)
+	{
+		if(phase is null) return;
+
+		EventPhases.Remove(phase);
+	}
+
 	private void Save()
 	{
 		using ElectronicObserverContext db = new();
@@ -148,6 +158,7 @@ public partial class EventLockPlannerViewModel : WindowViewModelBase
 		model.Phases = EventPhases.Select(p => new EventPhaseModel
 		{
 			Name = p.Name,
+			IsFinished = p.IsFinished,
 			PhaseLockGroups = p.PhaseLockGroups.Select(g => g.Id).ToList(),
 			PhaseShips = p.Ships.Select(s => s.Ship.MasterID).ToList(),
 		}).ToList();
@@ -196,6 +207,7 @@ public partial class EventLockPlannerViewModel : WindowViewModelBase
 			EventPhaseViewModel phase = new(LockGroups)
 			{
 				Name = eventPhaseModel.Name,
+				IsFinished = eventPhaseModel.IsFinished,
 			};
 
 			EventPhases.Add(phase);
