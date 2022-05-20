@@ -2,20 +2,23 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Windows;
+using CommunityToolkit.Mvvm.DependencyInjection;
 using ElectronicObserver.Data;
 using ElectronicObserver.Observer;
 using ElectronicObserver.Resource;
 using ElectronicObserver.Utility.Data;
 using ElectronicObserver.ViewModels;
+using ElectronicObserver.ViewModels.Translations;
 using ElectronicObserverTypes;
-using Translation = ElectronicObserver.Properties.Window.FormInformation;
 using static ElectronicObserver.Observer.DiscordRPC;
-using System.Windows;
+using Translation = ElectronicObserver.Properties.Window.FormInformation;
 
 namespace ElectronicObserver.Window.Wpf.InformationView;
 
 public class InformationViewModel : AnchorableViewModel
 {
+	public FormInformationTranslationViewModel FormInformation { get; set; }
 	private int _ignorePort;
 	private List<int> _inSortie;
 	private int[] _prevResource;
@@ -24,6 +27,9 @@ public class InformationViewModel : AnchorableViewModel
 	public InformationViewModel() : base("Info", "Information",
 		ImageSourceIcons.GetIcon(IconContent.FormInformation))
 	{
+		FormInformation = Ioc.Default.GetService<FormInformationTranslationViewModel>()!;
+		Title = FormInformation.Title;
+		FormInformation.PropertyChanged += (_, _) => Title = FormInformation.Title;
 		_ignorePort = 0;
 		_inSortie = null;
 		_prevResource = new int[4];
