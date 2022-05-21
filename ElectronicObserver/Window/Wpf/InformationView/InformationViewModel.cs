@@ -20,7 +20,7 @@ public class InformationViewModel : AnchorableViewModel
 {
 	public FormInformationTranslationViewModel FormInformation { get; set; }
 	private int _ignorePort;
-	private List<int> _inSortie;
+	private List<int>? _inSortie;
 	private int[] _prevResource;
 
 	public string? Text { get; set; }
@@ -50,6 +50,12 @@ public class InformationViewModel : AnchorableViewModel
 		o.ApiReqPractice_Battle.ResponseReceived += Updated;
 		o.ApiGetMember_SortieConditions.ResponseReceived += Updated;
 		o.ApiReqMission_Start.RequestReceived += Updated;
+
+		Utility.Configuration.Instance.ConfigurationChanged += ConfigurationChanged;
+	}
+
+	private void ConfigurationChanged()
+	{
 	}
 
 	private void Updated(string apiname, dynamic data)

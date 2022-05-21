@@ -169,7 +169,6 @@ public partial class FormMainViewModel : ObservableObject
 
 	public HeadquartersViewModel Headquarters { get; }
 	public QuestViewModel Quest { get; }
-	//public FormInformationViewModel FormInformation { get; }
 	public InformationViewModel FormInformation { get; }
 
 	public CompassViewModel Compass { get; }
