@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.Collections.ObjectModel;
+using System.Threading;
 using System.Windows.Threading;
 using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.Input;
@@ -10,7 +11,7 @@ namespace ElectronicObserver.Window.Wpf.Log;
 public partial class LogViewViewModel : AnchorableViewModel
 {
 	public FormLogTranslationViewModel FormLog { get; set; }
-	public LogViewCollection LogList { get; set; } = new();
+	public ObservableCollection<string> LogList { get; set; } = new();
 	public LogViewViewModel() : base("Log", "Log",
 		ImageSourceIcons.GetIcon(IconContent.FormLog))
 	{

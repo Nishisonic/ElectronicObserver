@@ -176,7 +176,6 @@ public partial class FormMainViewModel : ObservableObject
 	public BattleViewModel Battle { get; }
 
 	public FormBrowserHostViewModel FormBrowserHost { get; }
-	//public FormLogViewModel FormLog { get; }
 	public LogViewViewModel FormLog { get;  }
 	public FormJsonViewModel FormJson { get; }
 	public FormWindowCaptureViewModel WindowCapture { get; }
