@@ -19,7 +19,6 @@ using ElectronicObserver.ViewModels;
 using ElectronicObserver.ViewModels.Translations;
 using ElectronicObserver.Window.Dialog.QuestTrackerManager;
 using ElectronicObserver.Window.Dialog.QuestTrackerManager.ViewModels;
-using Microsoft.Extensions.DependencyInjection;
 using Translation = ElectronicObserver.Properties.Window.FormQuest;
 
 namespace ElectronicObserver.Window.Wpf.Quest;
@@ -81,7 +80,7 @@ public partial class QuestViewModel : AnchorableViewModel
 	public ColumnViewModel ProgressColumn { get; } = new();
 
 	private List<ColumnViewModel> Columns { get; }
-
+	public bool CanUserResizeColumn { get; set; }
 	public QuestViewModel() : base("Quest", "Quest", ImageSourceIcons.GetIcon(IconContent.FormQuest))
 	{
 		FormQuest = Ioc.Default.GetService<FormQuestTranslationViewModel>()!;
@@ -216,6 +215,7 @@ public partial class QuestViewModel : AnchorableViewModel
 				column.SortDirection = sorts[i];
 			}
 		}
+		CanUserResizeColumn = !c.UI.IsLayoutFixed;
 		/*
 		foreach (DataGridViewColumn column in QuestView.Columns)
 		{
