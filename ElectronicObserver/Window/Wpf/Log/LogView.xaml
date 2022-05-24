@@ -7,18 +7,26 @@
 	xmlns:local="clr-namespace:ElectronicObserver.Window.Wpf.Log"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:ui="http://schemas.modernwpf.com/2019"
+	xmlns:window="clr-namespace:ElectronicObserver.Window"
 	d:DataContext="{d:DesignInstance Type=local:LogViewViewModel}"
 	d:DesignHeight="450"
 	d:DesignWidth="800"
+	TextElement.FontFamily="{Binding FontFamily, RelativeSource={RelativeSource AncestorType=Window}}"
+	TextElement.FontSize="{Binding FontSize, RelativeSource={RelativeSource AncestorType=Window}}"
+	TextElement.Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Window}}"
 	mc:Ignorable="d"
 	>
-
+	<UserControl.ContextMenu>
+		<ContextMenu>
+			<MenuItem Command="{Binding ContextMenuLog_Clear_ClickCommand}" Header="{Binding FormLog.Clear}" />
+		</ContextMenu>
+	</UserControl.ContextMenu>
 	<ScrollViewer
 		Name="ScrollViewer"
 		CanContentScroll="True"
-		VerticalScrollBarVisibility="Auto"
 		ScrollChanged="ScrollViewer_ScrollChanged"
+		VerticalScrollBarVisibility="Auto"
 		>
-		<ItemsControl ItemsSource="{Binding LogList}" />
+		<ItemsControl HorizontalAlignment="Left" ItemsSource="{Binding LogList}" />
 	</ScrollViewer>
 </UserControl>
