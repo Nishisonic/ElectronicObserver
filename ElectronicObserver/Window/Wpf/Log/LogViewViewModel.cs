@@ -13,12 +13,14 @@ public partial class LogViewViewModel : AnchorableViewModel
 {
 	public FormLogTranslationViewModel FormLog { get; set; }
 	public ObservableCollection<string> LogList { get; set; } = new();
+	private Dispatcher Dispatcher { get; set; }
 	public LogViewViewModel() : base("Log", "Log",
 		ImageSourceIcons.GetIcon(IconContent.FormLog))
 	{
 		FormLog = Ioc.Default.GetService<FormLogTranslationViewModel>()!;
 		Title = FormLog.Title;
 		FormLog.PropertyChanged += (_, _) => Title = FormLog.Title;
+		Dispatcher = Dispatcher.CurrentDispatcher;
 		foreach (var log in Utility.Logger.Log)
 		{
 			if (log.Priority >= Utility.Configuration.Config.Log.LogLevel)
@@ -26,12 +28,12 @@ public partial class LogViewViewModel : AnchorableViewModel
 		}
 		Utility.Logger.Instance.LogAdded += new LogAddedEventHandler((Utility.Logger.LogData data) =>
 		{
-			if (!Application.Current.Dispatcher.CheckAccess())
+			if (!Dispatcher.CheckAccess())
 			{
 				//Invokeはメッセージキューにジョブを投げて待つので、別のBeginInvokeされたジョブが既にキューにあると、
 				// それを実行してしまい、BeginInvokeされたジョブの順番が保てなくなる
 				// GUIスレッドによる処理は、順番が重要なことがあるので、GUIスレッドからInvokeを呼び出してはいけない
-				Application.Current.Dispatcher.Invoke(new Utility.LogAddedEventHandler(Logger_LogAdded), data);
+				Dispatcher.Invoke(new Utility.LogAddedEventHandler(Logger_LogAdded), data);
 			}
 			else
 			{
