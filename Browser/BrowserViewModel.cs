@@ -420,6 +420,10 @@ public partial class BrowserViewModel : ObservableObject, BrowserLibCore.IBrowse
 		{
 			HardRefreshCommand.Execute(null);
 		}
+		if(e.Key == Key.LeftAlt || e.Key == Key.RightAlt)
+		{
+			e.Handled = true;
+		}
 	}
 
 	private void CoreWebView2_ProcessFailed(object? sender, CoreWebView2ProcessFailedEventArgs e)
