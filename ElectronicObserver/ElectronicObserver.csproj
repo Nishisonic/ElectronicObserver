@@ -24,9 +24,9 @@
 		<Copyright>Copyright ©  2014 Andante</Copyright>
 		<Trademark />
 		<Culture />
-		<AssemblyVersion>5.1.6.0</AssemblyVersion>
-		<FileVersion>5.1.6.0</FileVersion>
-		<Version>5.1.6.0</Version>
+		<AssemblyVersion>5.1.7.0</AssemblyVersion>
+		<FileVersion>5.1.7.0</FileVersion>
+		<Version>5.1.7.0</Version>
 		<AnalysisLevel>preview</AnalysisLevel>
 		<EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
 	</PropertyGroup>
@@ -396,6 +396,7 @@
 		<PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.39" />
 		<PackageReference Include="Microsoft.Toolkit.Mvvm" Version="7.1.1" />
 		<PackageReference Include="ModernWpfUI" Version="0.9.4" />
+		<PackageReference Include="ModernWpfUI.MahApps" Version="0.9.4" />
 		<PackageReference Include="PropertyChanged.Fody" Version="3.4.0" PrivateAssets="All" />
 		<PackageReference Include="DynaJson" Version="2.2.0" />
 		<PackageReference Include="ScottPlot" Version="4.1.45" />

@@ -25,20 +25,16 @@ namespace ElectronicObserver.Window.Tools.DropRecordViewer;
 
 public partial class DropRecordViewerViewModel : WindowViewModelBase
 {
-	public FontFamily Font { get; set; }
-	public double FontSize { get; set; }
-	public SolidColorBrush FontBrush { get; set; }
-
 	public DialogDropRecordViewerTranslationViewModel DialogDropRecordViewer { get; }
 
-	private ShipDropRecord _record;
-	private BackgroundWorker Searcher { get; set; } = new();
+	private ShipDropRecord Record { get; }
+	private BackgroundWorker Searcher { get; } = new();
 
 	private ShipPickerViewModel ShipPickerViewModel { get; }
-	public List<object> Items { get; set; }
+	public List<object> Items { get; set; } = new();
 
-	public List<object> Worlds { get; set; }
-	public List<object> Maps { get; set; }
+	public List<object> Worlds { get; set; } = new();
+	public List<object> Maps { get; set; } = new();
 	public List<MapNode> Cells { get; set; } = new() { new(MapAny) };
 	public List<object> Difficulties { get; set; } = new() { MapAny };
 
@@ -53,10 +49,18 @@ public partial class DropRecordViewerViewModel : WindowViewModelBase
 	// DropRecordOption or UseItemMaster
 	public object ItemSearchOption { get; set; } = DropRecordOption.All;
 
+	private DateTime DateTimeBegin =>
+		new(DateBegin.Year, DateBegin.Month, DateBegin.Day, TimeBegin.Hour, TimeBegin.Minute, TimeBegin.Second);
+	private DateTime DateTimeEnd =>
+		new(DateEnd.Year, DateEnd.Month, DateEnd.Day, TimeEnd.Hour, TimeEnd.Minute, TimeEnd.Second);
+	
 	public DateTime DateBegin { get; set; }
+	public DateTime TimeBegin { get; set; }
 	public DateTime DateEnd { get; set; }
+	public DateTime TimeEnd { get; set; }
 	public DateTime MinDate { get; set; }
 	public DateTime MaxDate { get; set; }
+
 	public object MapAreaID { get; set; } = MapAny;
 	public object MapInfoID { get; set; } = MapAny;
 	public MapNode MapCellID { get; set; } = new(MapAny);
@@ -79,7 +83,7 @@ public partial class DropRecordViewerViewModel : WindowViewModelBase
 
 	public DropRecordViewerViewModel()
 	{
-		_record = RecordManager.Instance.ShipDrop;
+		Record = RecordManager.Instance.ShipDrop;
 
 		ShipIcon = ImageSourceIcons.GetIcon(IconContent.FormFleet);
 		ItemIcon = ImageSourceIcons.GetIcon(IconContent.ItemPresentBox);
@@ -110,7 +114,7 @@ public partial class DropRecordViewerViewModel : WindowViewModelBase
 			};
 
 			MapCellIdEnabled = true;
-			var cells = _record.Record
+			var cells = Record.Record
 				.Where(r => r.MapAreaID == world && r.MapInfoID == map)
 				.Select(r => r.CellID)
 				.Distinct()
@@ -157,13 +161,13 @@ public partial class DropRecordViewerViewModel : WindowViewModelBase
 
 	private void Loaded()
 	{
-		DateBegin = _record.Record.First().Date.Date;
-		MinDate = _record.Record.First().Date.Date;
+		DateBegin = Record.Record.First().Date.Date;
+		MinDate = Record.Record.First().Date.Date;
 
 		DateEnd = DateTime.Now.AddDays(1).Date;
 		MaxDate = DateTime.Now.AddDays(1).Date;
 
-		Worlds = _record.Record
+		Worlds = Record.Record
 			.Select(r => r.MapAreaID)
 			.Distinct()
 			.OrderBy(w => w)
@@ -171,7 +175,7 @@ public partial class DropRecordViewerViewModel : WindowViewModelBase
 			.Prepend(MapAny)
 			.ToList();
 
-		Maps = _record.Record
+		Maps = Record.Record
 			.Select(r => r.MapInfoID)
 			.Distinct()
 			.OrderBy(m => m)
@@ -179,7 +183,7 @@ public partial class DropRecordViewerViewModel : WindowViewModelBase
 			.Prepend(MapAny)
 			.ToList();
 
-		var includedItemNames = _record.Record
+		var includedItemNames = Record.Record
 			.Select(r => r.ItemName)
 			.Distinct()
 			.Except(new[] { NameNotExist });
@@ -195,7 +199,7 @@ public partial class DropRecordViewerViewModel : WindowViewModelBase
 			.Prepend(DropRecordOption.All)
 			.ToList();
 
-		Difficulties = _record.Record
+		Difficulties = Record.Record
 			.Select(r => r.Difficulty)
 			.Distinct()
 			.Except(new[] { 0 })
@@ -377,7 +381,7 @@ public partial class DropRecordViewerViewModel : WindowViewModelBase
 
 				#region Filtering
 
-				if (r.Date < DateBegin || DateEnd < r.Date)
+				if (r.Date < DateTimeBegin || DateTimeEnd < r.Date)
 					continue;
 
 				if (((r.Rank == "SS" || r.Rank == "S") && !RankS) ||
@@ -706,7 +710,7 @@ public partial class DropRecordViewerViewModel : WindowViewModelBase
 	private void SelectToday(Calendar? calendar)
 	{
 		if (calendar is null) return;
-		
+
 		calendar.SelectedDate = DateTime.Now.Date;
 	}
 
