@@ -788,18 +788,12 @@ public sealed class APIObserver
 	{
 		e.HttpClient.Request.KeepBody = true;
 		// need to read the request body here so it's available in ProxyOnBeforeResponse
-		Configuration.ConfigurationData.ConfigConnection c = Configuration.Config.Connection;
-		if (e.HttpClient.Request.RequestUri.AbsoluteUri.Contains("/kcs2/resources/bgm/") && c.SaveOtherFile && c.SaveReceivedData)
-		{
-			e.HttpClient.Request.Headers.RemoveHeader("Range");
-		}
 		await e.GetRequestBodyAsString();
 	}
 
 	private async Task ProxyOnBeforeResponse(object sender, SessionEventArgs e)
 	{
-		if (e.HttpClient.Response.StatusCode != 200) return;
-
+		if (e.HttpClient.Response.StatusCode is not (200 or 206)) return;
 		Configuration.ConfigurationData.ConfigConnection c = Configuration.Config.Connection;
 
 		string baseurl = e.HttpClient.Request.RequestUri.AbsoluteUri;
