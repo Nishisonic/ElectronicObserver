@@ -376,7 +376,6 @@ public partial class BrowserViewModel : ObservableObject, BrowserLibCore.IBrowse
 		Browser.Source = new Uri("about:blank");
 		Browser.CoreWebView2.WebResourceRequested += CoreWebView2_WebResourceRequested;
 		Browser.CoreWebView2.AddWebResourceRequestedFilter("*", CoreWebView2WebResourceContext.Script);
-		Browser.CoreWebView2.AddWebResourceRequestedFilter("*", CoreWebView2WebResourceContext.Media);
 		Browser.CoreWebView2.NavigationCompleted += CoreWebView2_NavigationCompleted;
 		Browser.CoreWebView2.FrameCreated += CoreWebView2_FrameCreated;
 		Browser.CoreWebView2.NavigationStarting += CoreWebView2_NavigationStarted;
@@ -485,11 +484,6 @@ public partial class BrowserViewModel : ObservableObject, BrowserLibCore.IBrowse
 		if (e.Request.Uri.Contains(@"gadget_html5") && Configuration.UseGadgetRedirect)
 		{
 			e.Request.Uri = e.Request.Uri.Replace("http://203.104.209.7/gadget_html5/", "https://kcwiki.github.io/cache/gadget_html5/");
-		}
-		if (e.Request.Uri.Contains("/kcs2/resources/bgm/"))
-		{
-			//not working in webview2
-			//e.Request.Headers.RemoveHeader("Range");
 		}
 	}
 	private void CoreWebView2_NavigationCompleted(object? sender, CoreWebView2NavigationCompletedEventArgs e)
